@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "StayLux — Bookings" %}{% endblock %}
+{% block page_title %}{% trans "Bookings" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Bookings" %}</div>
+    <div class="slx-hero-sub">
+      {% trans "Manage reservations, check-ins/outs, cancellations and archive." %}
+      {% if prop %}<strong>{% trans "Property:" %}</strong> {{ prop.name|default:"—" }}{% endif %}
+    </div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Bookings Overview" %}</div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        {% if is_hotel %}
+          <a class="slx-action" style="padding:10px 12px;" href="{% url 'booking_wizard_start' %}">
+            <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Booking" %}</span>
+          </a>
+        {% else %}
+          <a class="slx-action" style="padding:10px 12px;" href="{% url 'booking_wizard_start' %}?rent_cycle=nightly">
+            <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Daily Booking" %}</span>
+          </a>
+          <a class="slx-action" style="padding:10px 12px;" href="{% url 'booking_wizard_start' %}?rent_cycle=monthly">
+            <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Monthly Booking" %}</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12 col-md-3">
+        <input class="form-control" type="text" name="guest" placeholder="{% trans "Guest" %}" value="{{ filters.guest|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="text" name="unit" placeholder="{% trans "Room/Unit" %}" value="{{ filters.unit|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <select class="form-select" name="status">
+          <option value="">{% trans "Status" %}</option>
+          <option value="reserved" {% if filters.status == "reserved" %}selected{% endif %}>{% trans "Reserved" %}</option>
+          <option value="checked_in" {% if filters.status == "checked_in" %}selected{% endif %}>{% trans "Checked-in" %}</option>
+          <option value="checked_out" {% if filters.status == "checked_out" %}selected{% endif %}>{% trans "Checked-out" %}</option>
+          <option value="cancelled" {% if filters.status == "cancelled" %}selected{% endif %}>{% trans "Cancelled" %}</option>
+          <option value="no_show" {% if filters.status == "no_show" %}selected{% endif %}>{% trans "No-show" %}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="date" name="start_date" value="{{ filters.start_date|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="date" name="end_date" value="{{ filters.end_date|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-1" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Filter" %}</button>
+      </div>
+      <div class="col-12">
+        <label class="slx-check" style="margin:0;">
+          <input
+            type="checkbox"
+            name="include_archived"
+            value="1"
+            {% if include_archived %}checked{% endif %}
+            onchange="this.form.submit()"
+          >
+          <span>{% trans "Include Archived" %}</span>
+        </label>
+      </div>
+    </form>
+
+    <div class="px-3 pb-2">
+      <div class="slx-card-title" style="font-size:14px;">{% trans "Active Bookings" %}</div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{% trans "Guest" %}</th>
+            <th>{% trans "Unit" %}</th>
+            <th>{% trans "Check-in" %}</th>
+            <th>{% trans "Check-out" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for b in active_bookings %}
+            <tr>
+              <td class="text-muted">#{{ b.id }}</td>
+              <td>{{ b.guest.full_name|default:"—" }}</td>
+              <td>{{ b.unit.code|default:"—" }}</td>
+              <td>{{ b.start_date|date:"M d, Y" }}</td>
+              <td>{{ b.end_date|date:"M d, Y" }}</td>
+              <td>
+                <div style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span class="slx-status">{{ b.status|default:"—" }}</span>
+                  {% if b.is_mobile_source %}
+                    <span
+                      class="slx-status"
+                      title="{% trans 'Created from Mobile App' %}"
+                      style="background:#e0f2fe; color:#075985; display:inline-flex; align-items:center; gap:4px;"
+                    >
+                      <span aria-hidden="true">&#128241;</span>
+                      <span>{% trans "Mobile" %}</span>
+                    </span>
+                  {% endif %}
+                </div>
+              </td>
+
+              <td class="text-end">
+                <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
+
+                  <!-- NEW: Edit -->
+                  {% if can_manage %}
+                    <a
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);"
+                      href="{% url 'booking_edit' b.id %}"
+                    >
+                      {% trans "Edit" %}
+                    </a>
+
+                    <a
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;"
+                      href="{% url 'booking_delete' b.id %}"
+                    >
+                      {% trans "Delete" %}
+                    </a>
+                  {% endif %}
+
+                  <!-- Existing actions -->
+                  <form method="post" action="{% url 'booking_action' b.id %}" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="check_in">
+                    <button
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);"
+                      type="submit"
+                    >
+                      {% trans "Check-in" %}
+                    </button>
+                  </form>
+
+                  <button
+                    class="btn btn-sm"
+                    style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);"
+                    type="button"
+                    onclick="openCheckoutModal({{ b.id }})"
+                  >
+                    {% trans "Checkout" %}
+                  </button>
+
+                  <form method="post" action="{% url 'booking_action' b.id %}" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="cancel">
+                    <button
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;"
+                      type="submit"
+                    >
+                      {% trans "Cancel" %}
+                    </button>
+                  </form>
+
+                  <form method="post" action="{% url 'booking_action' b.id %}" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="archive">
+                    <button
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(15,23,42,0.05);"
+                      type="submit"
+                    >
+                      {% trans "Archive" %}
+                    </button>
+                  </form>
+
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="text-muted py-4">{% trans "No active bookings found." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="px-3 pt-3 pb-2">
+      <div class="slx-card-title" style="font-size:14px;">{% trans "Past Bookings" %}</div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{% trans "Guest" %}</th>
+            <th>{% trans "Unit" %}</th>
+            <th>{% trans "Check-in" %}</th>
+            <th>{% trans "Check-out" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for b in past_bookings %}
+            <tr>
+              <td class="text-muted">#{{ b.id }}</td>
+              <td>{{ b.guest.full_name|default:"—" }}</td>
+              <td>{{ b.unit.code|default:"—" }}</td>
+              <td>{{ b.start_date|date:"M d, Y" }}</td>
+              <td>{{ b.end_date|date:"M d, Y" }}</td>
+              <td>
+                <div style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span class="slx-status">{{ b.status|default:"—" }}</span>
+                  {% if b.is_mobile_source %}
+                    <span
+                      class="slx-status"
+                      title="{% trans 'Created from Mobile App' %}"
+                      style="background:#e0f2fe; color:#075985; display:inline-flex; align-items:center; gap:4px;"
+                    >
+                      <span aria-hidden="true">&#128241;</span>
+                      <span>{% trans "Mobile" %}</span>
+                    </span>
+                  {% endif %}
+                </div>
+              </td>
+
+              <td class="text-end">
+                <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
+                  {% if can_manage %}
+                    <a
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);"
+                      href="{% url 'booking_edit' b.id %}"
+                    >
+                      {% trans "Edit" %}
+                    </a>
+
+                    <a
+                      class="btn btn-sm"
+                      style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;"
+                      href="{% url 'booking_delete' b.id %}"
+                    >
+                      {% trans "Delete" %}
+                    </a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="text-muted py-4">{% trans "No past bookings found." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <div id="slx-checkout-backdrop" class="slx-modal-backdrop" hidden>
+    <div class="slx-modal">
+      <div class="slx-modal-head">
+        <div class="slx-modal-title">{% trans "Checkout" %}</div>
+        <button class="slx-modal-close" type="button" onclick="closeCheckoutModal()">✕</button>
+      </div>
+
+      <div id="slx-checkout-msg" class="slx-modal-msg" hidden></div>
+
+      <div class="slx-modal-body">
+        <div class="slx-modal-grid">
+          <div>
+            <div class="slx-modal-label">{% trans "Guest" %}</div>
+            <div id="slx-checkout-guest" class="slx-modal-value">—</div>
+          </div>
+          <div>
+            <div class="slx-modal-label">{% trans "Unit" %}</div>
+            <div id="slx-checkout-unit" class="slx-modal-value">—</div>
+          </div>
+          <div>
+            <div class="slx-modal-label">{% trans "Check-in" %}</div>
+            <div id="slx-checkout-in" class="slx-modal-value">—</div>
+          </div>
+          <div>
+            <div class="slx-modal-label">{% trans "Check-out" %}</div>
+            <div id="slx-checkout-out" class="slx-modal-value">—</div>
+          </div>
+        </div>
+
+        <div class="slx-modal-totals">
+          <div><span>{% trans "Total" %}</span><b id="slx-checkout-total">—</b></div>
+          <div><span>{% trans "Advance Paid" %}</span><b id="slx-checkout-advance">—</b></div>
+          <div><span>{% trans "Balance" %}</span><b id="slx-checkout-balance">—</b></div>
+        </div>
+
+        <div class="slx-modal-pay">
+          <div class="slx-modal-field">
+            <label class="slx-modal-label" for="slx-checkout-amount">{% trans "Collect Amount" %}</label>
+            <input id="slx-checkout-amount" class="form-control" type="number" step="0.001" min="0" value="0">
+          </div>
+          <div class="slx-modal-field">
+            <label class="slx-modal-label" for="slx-checkout-method">{% trans "Payment Method" %}</label>
+            <select id="slx-checkout-method" class="form-select">
+              <option value="cash">{% trans "Cash" %}</option>
+              <option value="card">{% trans "Card" %}</option>
+              <option value="bank">{% trans "Bank Transfer" %}</option>
+            </select>
+          </div>
+          <div class="slx-modal-field">
+            <label class="slx-modal-label" for="slx-checkout-ref">{% trans "Reference (optional)" %}</label>
+            <input id="slx-checkout-ref" class="form-control" type="text" placeholder="{% trans "Receipt / Transaction ID" %}">
+          </div>
+        </div>
+
+        <input type="hidden" id="slx-checkout-id" value="">
+        {% csrf_token %}
+      </div>
+
+      <div class="slx-modal-actions">
+        <button class="btn btn-sm" type="button" onclick="sendCheckoutWhatsApp()">{% trans "Send WhatsApp" %}</button>
+        <button class="btn btn-sm" type="button" onclick="openCheckoutPrint()">{% trans "Print Receipt" %}</button>
+        <button class="btn btn-sm btn-primary" type="button" onclick="submitCheckout()">{% trans "Checkout" %}</button>
+      </div>
+    </div>
+  </div>
+
+  {% trans "Failed to load checkout info." as msg_checkout_load_fail %}
+  {% trans "Failed to create invoice." as msg_invoice_fail %}
+  {% trans "WhatsApp send failed." as msg_whatsapp_fail %}
+  {% trans "WhatsApp queued." as msg_whatsapp_ok %}
+  {% trans "Checkout failed." as msg_checkout_fail %}
+  {% trans "Checkout completed." as msg_checkout_ok %}
+
+  <script>
+    const checkoutState = { invoiceId: null, printUrl: "" };
+    const isQtDesktop = /QtWebEngine|QtWebEngineCore/i.test((window.navigator && window.navigator.userAgent) || "");
+    const msgCheckoutLoadFail = "{{ msg_checkout_load_fail|escapejs }}";
+    const msgInvoiceFail = "{{ msg_invoice_fail|escapejs }}";
+    const msgWhatsAppFail = "{{ msg_whatsapp_fail|escapejs }}";
+    const msgWhatsAppOk = "{{ msg_whatsapp_ok|escapejs }}";
+    const msgCheckoutFail = "{{ msg_checkout_fail|escapejs }}";
+    const msgCheckoutOk = "{{ msg_checkout_ok|escapejs }}";
+
+    function getCsrfToken() {
+      const name = "csrftoken=";
+      const decodedCookie = decodeURIComponent(document.cookie || "");
+      const parts = decodedCookie.split(";");
+      for (let i = 0; i < parts.length; i += 1) {
+        let c = parts[i].trim();
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    function showCheckoutMsg(text, isError) {
+      const msg = document.getElementById("slx-checkout-msg");
+      msg.textContent = text;
+      msg.style.background = isError ? "#fee2e2" : "#dcfce7";
+      msg.style.color = isError ? "#991b1b" : "#166534";
+      msg.hidden = false;
+    }
+
+    function clearCheckoutMsg() {
+      const msg = document.getElementById("slx-checkout-msg");
+      msg.textContent = "";
+      msg.hidden = true;
+    }
+
+    function openCheckoutModal(bookingId) {
+      clearCheckoutMsg();
+      fetch(`/bookings/${bookingId}/checkout/info/`)
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("slx-checkout-id").value = bookingId;
+          document.getElementById("slx-checkout-guest").textContent = data.guest || "—";
+          document.getElementById("slx-checkout-unit").textContent = data.unit || "—";
+          document.getElementById("slx-checkout-in").textContent = data.check_in || "—";
+          document.getElementById("slx-checkout-out").textContent = data.check_out || "—";
+          document.getElementById("slx-checkout-total").textContent = `${data.total} ${data.currency}`;
+          document.getElementById("slx-checkout-advance").textContent = `${data.advance} ${data.currency}`;
+          document.getElementById("slx-checkout-balance").textContent = `${data.balance} ${data.currency}`;
+          document.getElementById("slx-checkout-amount").value = data.balance || "0";
+
+          checkoutState.invoiceId = data.invoice_id;
+          checkoutState.printUrl = data.print_url || "";
+
+          document.getElementById("slx-checkout-backdrop").hidden = false;
+        })
+        .catch(() => showCheckoutMsg(msgCheckoutLoadFail, true));
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("slx-checkout-backdrop").hidden = true;
+    }
+
+    function submitCheckoutRequest() {
+      const bookingId = document.getElementById("slx-checkout-id").value;
+      const amount = document.getElementById("slx-checkout-amount").value || "0";
+      const method = document.getElementById("slx-checkout-method").value || "cash";
+      const reference = document.getElementById("slx-checkout-ref").value || "";
+
+      const payload = new URLSearchParams();
+      payload.append("amount", amount);
+      payload.append("method", method);
+      payload.append("reference", reference);
+
+      return fetch(`/bookings/${bookingId}/checkout/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCsrfToken(),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: payload.toString(),
+      }).then((res) => res.json());
+    }
+
+    function openCheckoutPrint() {
+      clearCheckoutMsg();
+      submitCheckoutRequest()
+        .then((data) => {
+          if (!data.ok) {
+            showCheckoutMsg(data.error || msgCheckoutFail, true);
+            return;
+          }
+          checkoutState.invoiceId = data.invoice_id;
+          checkoutState.printUrl = data.print_url || "";
+          showCheckoutMsg(msgCheckoutOk, false);
+          const printUrl = checkoutState.printUrl;
+          if (!printUrl) {
+            showCheckoutMsg(msgInvoiceFail, true);
+            return;
+          }
+          const hasQuery = printUrl.includes("?");
+          const bookingId = document.getElementById("slx-checkout-id").value || "";
+          const backStateUrl = new URL(window.location.href);
+          if (bookingId) {
+            backStateUrl.searchParams.set("open_checkout", bookingId);
+          }
+          const backUrl = encodeURIComponent(backStateUrl.pathname + backStateUrl.search);
+          const finalPrintUrl = `${printUrl}${hasQuery ? "&" : "?"}back=${backUrl}`;
+
+          // Desktop (Qt WebEngine) usually blocks popup tabs, so use same-tab navigation.
+          if (isQtDesktop) {
+            window.location.href = finalPrintUrl;
+            return;
+          }
+
+          window.open(finalPrintUrl, "_blank");
+          window.location.reload();
+        })
+        .catch(() => showCheckoutMsg(msgCheckoutFail, true));
+    }
+
+    (function restoreCheckoutModalFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get("open_checkout");
+      if (!bookingId) return;
+
+      // Clean URL so refresh/back won't keep re-opening the modal.
+      params.delete("open_checkout");
+      const cleaned = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`;
+      window.history.replaceState({}, "", cleaned);
+
+      // Reopen checkout modal after returning from receipt page.
+      openCheckoutModal(bookingId);
+    })();
+
+    function sendCheckoutWhatsApp() {
+      const bookingId = document.getElementById("slx-checkout-id").value;
+      fetch(`/bookings/${bookingId}/checkout/whatsapp/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCsrfToken() },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.ok) {
+            showCheckoutMsg(data.error || msgWhatsAppFail, true);
+            return;
+          }
+          showCheckoutMsg(msgWhatsAppOk, false);
+        })
+        .catch(() => showCheckoutMsg(msgWhatsAppFail, true));
+    }
+
+    function submitCheckout() {
+      submitCheckoutRequest()
+        .then((data) => {
+          if (!data.ok) {
+            showCheckoutMsg(data.error || msgCheckoutFail, true);
+            return;
+          }
+          showCheckoutMsg(msgCheckoutOk, false);
+          window.location.reload();
+        })
+        .catch(() => showCheckoutMsg(msgCheckoutFail, true));
+    }
+  </script>
+{% endblock %}

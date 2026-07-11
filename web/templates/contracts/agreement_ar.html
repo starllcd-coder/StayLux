@@ -1,0 +1,85 @@
+﻿{% load currency %}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>عقد {{ contract.contract_no|default:contract.id }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --paper:#ffffff; }
+    body { margin:0; font-family:"Cairo","Segoe UI",Tahoma,Arial,sans-serif; direction:rtl; background:#f8fafc; color:var(--ink); }
+    .page { max-width:900px; margin:24px auto; background:var(--paper); border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 30px rgba(15,23,42,.08); padding:24px; }
+    .card { border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:12px; background:#fff; }
+    .muted { color:var(--muted); font-size:12px; }
+    h1,h2,h3 { margin:0 0 8px 0; text-transform:none; }
+    .no-print { display:flex; gap:12px; align-items:center; }
+    .no-print button { border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    @media print { .no-print{display:none;} body{margin:0;background:#fff;} .page{margin:0;border:none;box-shadow:none;border-radius:0;} .card{border:none;} }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="no-print">
+      <button onclick="window.print()">طباعة</button>
+      <a href="?lang=en">English</a>
+    </div>
+
+    <h1>عقد إيجار شهري</h1>
+    <div class="muted">
+      المنشأة: <b>{{ property.name_ar|default:property.name_en|default:"StayLux" }}</b><br>
+      رقم العقد: <b>{{ contract.contract_no|default:contract.id }}</b>
+    </div>
+
+    <div class="card">
+      <h3>الأطراف</h3>
+      <div><b>المالك/المشغل:</b> {{ property.name_ar|default:property.name_en|default:"StayLux" }}</div>
+      <div><b>المستأجر:</b> {{ guest.full_name }} {% if guest.phone %} ({{ guest.phone }}){% endif %}</div>
+    </div>
+
+    <div class="card">
+      <h3>الوحدة</h3>
+      <div><b>رمز الوحدة:</b> {{ unit.code }}</div>
+      <div><b>تاريخ البداية:</b> {{ contract.start_date }}</div>
+      <div><b>تاريخ النهاية:</b> {{ contract.end_date|default:"مفتوح" }}</div>
+    </div>
+
+    <div class="card">
+      <h3>الإيجار والفوترة</h3>
+      <div><b>الإيجار الشهري:</b> {{ contract.monthly_rent|currency3 }} {{ contract.currency }}</div>
+      <div><b>يوم الفوترة:</b> {{ contract.billing_day }}</div>
+    </div>
+
+    <div class="card">
+      <h3>الضمان</h3>
+      <div><b>قيمة الضمان:</b> {{ contract.security_deposit|currency3 }} {{ contract.currency }}</div>
+      <div><b>المستلم:</b> {{ contract.deposit_received|currency3 }} {{ contract.currency }}</div>
+      <div><b>المسترجع:</b> {{ contract.deposit_refunded|currency3 }} {{ contract.currency }}</div>
+      <div><b>الحالة:</b> {{ contract.deposit_status }}</div>
+    </div>
+
+    <div class="card">
+      <h3>الشروط (قالب مرحلة A)</h3>
+      <ol>
+        <li>يلتزم المستأجر بالمحافظة على الوحدة والالتزام بتعليمات المنشأة.</li>
+        <li>يدفع الإيجار الشهري في يوم الفوترة. قد يتم اتخاذ إجراءات عند التأخر وفق سياسة المنشأة.</li>
+        <li>يمكن استرجاع الضمان بعد المعاينة عند الخروج مع خصم الأضرار/المبالغ غير المسددة.</li>
+        <li>يحق للمشغل إنهاء العقد عند عدم السداد أو مخالفة الشروط وفق الأنظمة المحلية.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>التوقيعات</h3>
+      <div style="display:flex; justify-content:space-between; gap:24px;">
+        <div>
+          <b>توقيع المشغل</b><br><br>
+          ______________________
+        </div>
+        <div>
+          <b>توقيع المستأجر</b><br><br>
+          ______________________
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

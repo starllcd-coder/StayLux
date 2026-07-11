@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load currency i18n %}
+{% block title %}StayLux — {% if mode_label %}{% trans mode_label %}{% else %}{% trans "Units" %}{% endif %}{% endblock %}
+{% block page_title %}{% if mode_label %}{% trans mode_label %}{% else %}{% trans "Units" %}{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% if mode_label %}{% trans mode_label %}{% else %}{% trans "Units" %}{% endif %}</div>
+    <div class="slx-hero-sub">{% trans "Manage rooms and units, pricing, and amenities." %}</div>
+  </div>
+
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Unit List" %}</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="slx-action" style="padding:10px 12px;" href="{% url 'unit_create' %}">
+          <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "Add" %} {% if mode_item_label %}{% trans mode_item_label %}{% else %}{% trans "Unit" %}{% endif %}</span>
+        </a>
+        <a class="slx-mini-link" href="{% url 'unit_types_list' %}">{% if prop and prop.business_type == "apartments" %}{% trans "Unit Types" %}{% else %}{% trans "Room Types" %}{% endif %} →</a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Category" %}</th>
+            <th>{% trans "Bed" %}</th>
+            <th>{% trans "Guests" %}</th>
+            <th>{% trans "Amenity Tier" %}</th>
+            <th>{% trans "Floor" %}</th>
+            <th>{% trans "Prices" %}</th>
+            <th>{% trans "Amenities" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Active" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in units %}
+            <tr>
+              <td><strong>{{ u.code }}</strong></td>
+              <td>{{ u.get_category_display|default:"—" }}</td>
+              <td>{{ u.get_bed_config_display|default:"—" }}</td>
+              <td>{{ u.guest_capacity|default:"—" }}</td>
+              <td>{{ u.unit_type.name_en|default:"—" }}</td>
+              <td>{{ u.floor|default:"—" }}</td>
+              <td>
+                <div>{% trans "Daily" %}: {{ u.daily_price|currency3 }}</div>
+                <div>{% trans "Monthly" %}: {{ u.monthly_price|currency3 }}</div>
+                <div>{% trans "Seasonal" %}: {{ u.seasonal_price|currency3 }}</div>
+              </td>
+              <td>
+                {% for a in u.amenities.all %}
+                  <span class="slx-pill" style="margin:2px 4px 2px 0;">{{ a.name_en }}</span>
+                {% empty %}
+                  —
+                {% endfor %}
+              </td>
+              <td><span class="slx-status">{{ u.status }}</span></td>
+              <td>{% if u.is_active %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
+              <td class="text-end">
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'unit_edit' u.id %}">{% trans "Edit" %}</a>
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'unit_delete' u.id %}">{% trans "Delete" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="10" class="text-muted py-4">{% trans "No units yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

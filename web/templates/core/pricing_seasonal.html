@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "StayLux — Seasonal Rates" %}{% endblock %}
+{% block page_title %}{% trans "Seasonal Rates" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Seasonal Rate Rules" %}</div>
+    <div class="slx-hero-sub">{% trans "Override rates by date range and priority." %}</div>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-xl-5">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "Create / Update" %}</div>
+          <a class="slx-mini-link" href="{% url 'rateplans_list' %}">{% trans "Rate Plans" %} →</a>
+        </div>
+
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="col-12">
+              <label class="slx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="slx-error">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <div class="col-12">
+            <button class="slx-btn" style="max-width:300px;" type="submit">{% trans "Save Seasonal Rule" %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-7">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "All Seasonal Rules" %}</div>
+          <div class="slx-pill">{% trans "Configured" %}</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table align-middle slx-table">
+            <thead>
+              <tr>
+                <th>{% trans "ID" %}</th>
+                <th>{% trans "Rate Plan" %}</th>
+                <th>{% trans "Date Range" %}</th>
+                <th>{% trans "Priority" %}</th>
+                <th>{% trans "Status" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in items %}
+                <tr>
+                  <td class="text-muted">#{{ r.id }}</td>
+                  <td>{{ r.rate_plan.name|default:"—" }}</td>
+                  <td>
+                    {{ r.start_date|date:"M d, Y" }} → {{ r.end_date|date:"M d, Y" }}
+                  </td>
+                  <td>{{ r.priority|default:"—" }}</td>
+                  <td><span class="slx-status">{% if r.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}</span></td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="5" class="text-muted py-4">{% trans "No seasonal rules yet." %}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

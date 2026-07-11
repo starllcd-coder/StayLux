@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "StayLux — New Booking Wizard" %}{% endblock %}
+{% block page_title %}{% trans "New Booking" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "New Booking Wizard" %}</div>
+    <div class="slx-hero-sub">{% blocktrans with step_num=step %}Step {{ step_num }} of 4 — Dates & Guests{% endblocktrans %}{% if prop %} • <strong>{% trans "Property:" %}</strong> {{ prop.name|default:"—" }}{% endif %}</div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Step 1 — Dates & Guests" %}</div>
+      <div style="display:flex; gap:10px;">
+        <a class="btn btn-sm" href="{% url 'booking_wizard_cancel' %}" style="border-radius:12px;">{% trans "Cancel" %}</a>
+      </div>
+    </div>
+
+    <div class="p-3">
+      <div class="progress" style="height:10px; border-radius:999px;">
+        <div class="progress-bar" role="progressbar" style="width:25%"></div>
+      </div>
+
+      <form method="post" class="mt-3">
+        {% csrf_token %}
+
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Check-in" %}</label>
+            <input class="form-control" type="date" name="start_date" value="{{ state.start_date|default:"" }}" />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Check-out" %}</label>
+            <input class="form-control" type="date" name="end_date" value="{{ state.end_date|default:"" }}" />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Adults" %}</label>
+            <input class="form-control" type="number" name="adults" min="1" value="{{ state.adults|default:"1" }}" />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Children" %}</label>
+            <input class="form-control" type="number" name="children" min="0" value="{{ state.children|default:"0" }}" />
+          </div>
+        </div>
+
+        <div class="mt-4" style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn btn-primary" type="submit" style="border-radius:12px; font-weight:900;">{% trans "Next" %} →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

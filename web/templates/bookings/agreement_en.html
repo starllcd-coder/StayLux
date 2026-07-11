@@ -1,0 +1,149 @@
+{% load currency %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Booking Agreement {{ group.id }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #0f3d5f;
+      --paper: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: var(--ink); background: #f8fafc; }
+    .page { max-width: 900px; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); }
+    .header { padding: 24px 28px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; position: relative; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 56px; height: 56px; border-radius: 12px; object-fit: contain; border: 1px solid var(--line); background: #fff; }
+    .brand h2 { margin: 0; font-size: 20px; letter-spacing: 0.2px; }
+    .brand .meta { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .doc { text-align: right; }
+    .doc h1 { margin: 0; font-size: 26px; letter-spacing: 0.5px; }
+    .doc .meta { color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 6px; }
+    .content { padding: 24px 28px 16px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: #fff; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    h3 { margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+    .value { font-weight: 600; }
+    .list { margin: 0; padding-left: 18px; }
+    .sig { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .sig .line { margin-top: 18px; border-bottom: 1px solid var(--line); height: 28px; }
+    .footer { padding: 16px 28px 22px; border-top: 1px solid var(--line); display: grid; gap: 8px; color: var(--muted); font-size: 12px; }
+    .footer .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .no-print { margin-top: 10px; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; position: relative; z-index: 20; pointer-events: auto; }
+    .no-print a { border: 1px solid var(--line); background: #fff; padding: 8px 12px; border-radius: 10px; cursor: pointer; text-decoration: none; color: var(--ink); font-size: 13px; display: inline-flex; align-items: center; pointer-events: auto; }
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; border: none; border-radius: 0; box-shadow: none; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="brand">
+        {% if property.logo %}
+          <img class="logo" src="{{ property.logo.url }}" alt="Logo">
+        {% else %}
+          <div class="logo"></div>
+        {% endif %}
+        <div>
+          <h2>{{ property.name_en|default:"StayLux" }}</h2>
+          <div class="meta">
+            {% if property.address_en %}{{ property.address_en }}{% endif %}
+            {% if property.property_number %}<br>Property No: {{ property.property_number }}{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="doc">
+        <h1>Booking Agreement</h1>
+        <div class="meta">
+          Agreement No: <span class="value">{{ group.id }}</span><br>
+          Created: {{ group.created_at|date:"Y-m-d" }}
+        </div>
+        <div class="no-print">
+          {% if request.GET.back %}
+            <a href="{{ request.GET.back }}">Back</a>
+          {% endif %}
+          {% if is_desktop_qt %}
+            <a href="?desktop_print=1&lang=en{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">Print</a>
+            <a href="?desktop_save=1&lang=en{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">Save as PDF</a>
+          {% else %}
+            <a href="#" onclick="window.print(); return false;">Print</a>
+            <a href="?download=1&inline=1&lang=en{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">Save as PDF</a>
+          {% endif %}
+          <a href="?lang=ar{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">Arabic</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="grid">
+        <div class="card">
+          <h3>Guest</h3>
+          <div><span class="value">{{ guest.full_name }}</span></div>
+          <div class="meta">{% if guest.phone %}Phone: {{ guest.phone }}{% endif %}</div>
+        </div>
+        <div class="card">
+          <h3>Stay</h3>
+          <div>Check-in: <span class="value">{{ group.start_date }}</span></div>
+          <div>Check-out: <span class="value">{{ group.end_date }}</span></div>
+          <div>Units:
+            {% for u in units %}
+              <span class="value">{{ u.code }}</span>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Pricing</h3>
+        <div>Total: <span class="value">{{ total|currency3 }} {{ currency }}</span></div>
+        <div>Advance: <span class="value">{{ advance|currency3 }} {{ currency }}</span></div>
+        <div>Balance: <span class="value">{{ balance|currency3 }} {{ currency }}</span></div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Terms</h3>
+        <ol class="list">
+          <li>Guest agrees to comply with property rules and policies.</li>
+          <li>Damage or loss may incur additional charges.</li>
+          <li>Check-in/out times and extensions are subject to availability.</li>
+        </ol>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Signatures</h3>
+        <div class="sig">
+          <div>
+            <div class="value">Operator Signature</div>
+            <div class="line"></div>
+          </div>
+          <div>
+            <div class="value">Guest Signature</div>
+            <div class="line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="grid">
+        <div>{% if property.phone %}Phone: {{ property.phone }}{% endif %}</div>
+        <div>{% if property.address_en %}Address: {{ property.address_en }}{% endif %}</div>
+        <div>{% if property.cr_no %}CR: {{ property.cr_no }}{% endif %}</div>
+      </div>
+    </div>
+  </div>
+  {% if auto %}
+  <script>
+    window.addEventListener("load", () => window.print());
+  </script>
+  {% endif %}
+</body>
+</html>

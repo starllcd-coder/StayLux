@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}StayLux — {{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{{ title }}</div>
+      <a class="slx-mini-link" href="{% url back_url %}">{% trans "Back" %} →</a>
+    </div>
+
+    <div class="slx-empty" style="border-radius:14px; border:1px solid rgba(229,231,235,0.85); background:rgba(255,255,255,0.75);">
+      {% trans "You are about to delete:" %}
+      <div style="margin-top:8px; font-weight:950; color:#0b2340;">
+        {{ object_label }}
+      </div>
+      <div class="text-muted small" style="margin-top:6px;">
+        {% trans "This action cannot be undone." %}
+      </div>
+    </div>
+
+    <form method="post" style="margin-top:14px;">
+      {% csrf_token %}
+      <button type="submit" class="slx-btn" style="max-width:320px; background:linear-gradient(180deg,#ef4444 0%, #b91c1c 100%);">
+        {% trans "Delete" %}
+      </button>
+    </form>
+  </div>
+{% endblock %}

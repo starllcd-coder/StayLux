@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Billing" %}{% endblock %}
+{% block page_title %}{% trans "Billing" %}{% endblock %}
+
+{% block content %}
+  {% trans "Guest" as guest_label %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Billing" %}</div>
+    <div class="slx-hero-sub">{% trans "Invoices and payments overview." %}</div>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-xl-6">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "Invoices" %}</div>
+          <div class="slx-pill">{% blocktrans with total=totals.invoices %}Total: {{ total }}{% endblocktrans %}</div>
+        </div>
+
+        {% if invoices %}
+          <div class="table-responsive">
+            <table class="table align-middle slx-table">
+              <thead>
+                <tr>
+                  <th>{% trans "ID" %}</th>
+                  <th>{% trans "Guest" %}</th>
+                  <th>{% trans "Total" %}</th>
+                  <th>{% trans "Status" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for inv in invoices %}
+                  <tr>
+                    <td class="text-muted">#{{ inv.id }}</td>
+                    <td>
+                      {% if inv.guest %}{{ inv.guest.full_name|default:guest_label }}{% else %}—{% endif %}
+                    </td>
+                    <td>{{ inv.total|default:inv.total_amount|default:"—" }}</td>
+                    <td><span class="slx-status">{{ inv.status|default:"—" }}</span></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="slx-empty">{% trans "No invoices found (or billing models not enabled)." %}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "Payments" %}</div>
+          <div class="slx-pill">{% blocktrans with total=totals.payments %}Total: {{ total }}{% endblocktrans %}</div>
+        </div>
+
+        {% if payments %}
+          <div class="table-responsive">
+            <table class="table align-middle slx-table">
+              <thead>
+                <tr>
+                  <th>{% trans "ID" %}</th>
+                  <th>{% trans "Invoice" %}</th>
+                  <th>{% trans "Amount" %}</th>
+                  <th>{% trans "Method" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in payments %}
+                  <tr>
+                    <td class="text-muted">#{{ p.id }}</td>
+                    <td>{% if p.invoice %}#{{ p.invoice.id }}{% else %}—{% endif %}</td>
+                    <td>{{ p.amount|default:"—" }}</td>
+                    <td><span class="slx-status">{{ p.method|default:"—" }}</span></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="slx-empty">{% trans "No payments found (or billing models not enabled)." %}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

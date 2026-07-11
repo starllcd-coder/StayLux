@@ -1,0 +1,155 @@
+﻿{% extends "base.html" %}
+{% load i18n %}
+{% block title %}StayLux - {% if mode_item_label %}{% trans "Add" %} {% trans mode_item_label %}{% else %}{{ title }}{% endif %}{% endblock %}
+{% block page_title %}{% if mode_item_label %}{% trans "Add" %} {% trans mode_item_label %}{% else %}{{ title }}{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{{ title }}</div>
+      <a class="slx-mini-link" href="{% url back_url %}">{% trans "Back" %} &rarr;</a>
+    </div>
+
+    <form method="post" class="row g-3" {% if multipart %}enctype="multipart/form-data"{% endif %}>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="col-12">
+          <div class="slx-error">{{ form.non_field_errors|striptags }}</div>
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div class="col-12 col-md-6">
+          <label class="slx-label" for="{{ field.id_for_label }}">
+            {% if field.name == 'guest_capacity' %}{% trans "Guest capacity" %}
+            {% elif field.name == 'daily_price' %}{% trans "Daily price" %}
+            {% elif field.name == 'monthly_price' %}{% trans "Monthly price" %}
+            {% elif field.name == 'seasonal_price' %}{% trans "Seasonal price" %}
+            {% elif field.name == 'code' %}{% trans "Code" %}
+            {% elif field.name == 'floor' %}{% trans "Floor" %}
+            {% elif field.name == 'amenities' %}{% trans "Amenities" %}
+            {% elif field.name == 'status' %}{% trans "Status" %}
+            {% elif field.name == 'is_active' %}{% trans "Is active" %}
+            {% elif field.name == 'category' %}{% trans "Room Type" %}
+            {% elif field.name == 'bed_config' %}{% trans "Bed Configuration" %}
+            {% elif field.name == 'full_name' %}{% trans "Full Name" %}
+            {% elif field.name == 'phone' %}{% trans "Phone" %}
+            {% elif field.name == 'whatsapp' %}{% trans "WhatsApp" %}
+            {% elif field.name == 'email' %}{% trans "Email" %}
+            {% elif field.name == 'username' %}{% trans "Username" %}
+            {% elif field.name == 'password' %}{% trans "Password" %}
+            {% elif field.name == 'first_name' %}{% trans "First name" %}
+            {% elif field.name == 'last_name' %}{% trans "Last name" %}
+            {% elif field.name == 'role' %}{% trans "Role" %}
+            {% elif field.name == 'is_active' %}{% trans "Is active" %}
+            {% elif field.name == 'reset_password' %}{% trans "Reset password" %}
+            {% elif field.name == 'nationality' %}{% trans "Nationality" %}
+            {% elif field.name == 'id_type' %}{% trans "ID Type" %}
+            {% elif field.name == 'id_number' %}{% trans "ID Number" %}
+            {% elif field.name == 'id_expiry' %}{% trans "ID Expiry" %}
+            {% elif field.name == 'id_document' %}{% trans "ID Document" %}
+            {% elif field.name == 'address' %}{% trans "Address" %}
+            {% elif field.name == 'notes' %}{% trans "Notes" %}
+            {% elif field.name == 'unit' %}{% trans "Unit" %}
+            {% elif field.name == 'reported_by' %}{% trans "Reported by" %}
+            {% elif field.name == 'assigned_to' %}{% trans "Assigned to" %}
+            {% elif field.name == 'priority' %}{% trans "Priority" %}
+            {% elif field.name == 'maintenance_type' %}{% trans "Maintenance type" %}
+            {% elif field.name == 'title' %}{% trans "Title" %}
+            {% elif field.name == 'before_photo' %}{% trans "Before photo" %}
+            {% elif field.name == 'description' %}{% trans "Description" %}
+            {% elif field.name == 'after_photo' %}{% trans "After photo" %}
+            {% elif field.name == 'material_cost' %}{% trans "Material cost" %}
+            {% elif field.name == 'labor_cost' %}{% trans "Labor cost" %}
+            {% elif field.name == 'total_cost' %}{% trans "Total cost" %}
+            {% elif field.name == 'completed_notes' %}{% trans "Completed notes" %}
+            {% else %}{{ field.label }}{% endif %}
+          </label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="slx-error">{{ field.errors|striptags }}</div>
+          {% endif %}
+          {% if field.help_text %}
+            <div class="text-muted small">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="col-12 mt-2" style="display:flex; gap:10px; flex-wrap:wrap;">
+        {% if form_actions %}
+          {% for action in form_actions %}
+            <button
+              class="{{ action.class }}"
+              type="submit"
+              name="action"
+              value="{{ action.value }}"
+            >{{ action.label }}</button>
+          {% endfor %}
+        {% else %}
+          <button class="slx-btn" style="max-width:320px;" type="submit">{% trans "Save" %}</button>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      const unitTypeSelect = document.getElementById("id_unit_type");
+      if (!unitTypeSelect) return;
+
+      const amenityInputs = Array.from(document.querySelectorAll("input[name='amenities']"));
+      if (!amenityInputs.length) return;
+
+      function setAmenitySelection(ids) {
+        const idSet = new Set((ids || []).map(String));
+        amenityInputs.forEach((input) => {
+          input.checked = idSet.has(String(input.value));
+        });
+      }
+
+      function anyAmenityChecked() {
+        return amenityInputs.some((input) => input.checked);
+      }
+
+      function loadAmenitiesForType(unitTypeId, forceApply) {
+        if (!unitTypeId) return;
+        fetch(`/room-types/${unitTypeId}/amenities/`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (forceApply || !anyAmenityChecked()) {
+              setAmenitySelection(data.amenity_ids || []);
+            }
+          })
+          .catch(() => {});
+      }
+
+      unitTypeSelect.addEventListener("change", () => {
+        loadAmenitiesForType(unitTypeSelect.value, true);
+      });
+
+      if (unitTypeSelect.value) {
+        loadAmenitiesForType(unitTypeSelect.value, false);
+      }
+    })();
+
+    (function () {
+      const material = document.getElementById("id_material_cost");
+      const labor = document.getElementById("id_labor_cost");
+      const total = document.getElementById("id_total_cost");
+      if (!material || !labor || !total) return;
+
+      function toNumber(val) {
+        const num = Number(val);
+        return Number.isFinite(num) ? num : 0;
+      }
+
+      function updateTotal() {
+        const sum = toNumber(material.value) + toNumber(labor.value);
+        total.value = sum.toFixed(3);
+      }
+
+      material.addEventListener("input", updateTotal);
+      labor.addEventListener("input", updateTotal);
+      updateTotal();
+    })();
+  </script>
+{% endblock %}

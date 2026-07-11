@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Guests" %}{% endblock %}
+{% block page_title %}{% trans "Guests" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Guests" %}</div>
+    <div class="slx-hero-sub">{% trans "Manage guest profiles, IDs, and stay history." %}</div>
+  </div>
+
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Guest Directory" %}</div>
+      <a class="slx-action" style="padding:10px 12px;" href="{% url 'guest_create' %}">
+        <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "Add Guest" %}</span>
+      </a>
+    </div>
+
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12 col-md-4">
+        <input class="form-control" type="text" name="q" placeholder="{% trans "Guest Name" %}" value="{{ filters.q|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-3">
+        <input class="form-control" type="text" name="id_number" placeholder="{% trans "ID Number" %}" value="{{ filters.id_number|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-3">
+        <input class="form-control" type="text" name="phone" placeholder="{% trans "Phone" %}" value="{{ filters.phone|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Filter" %}</button>
+      </div>
+    </form>
+
+    <div class="px-3 pb-2" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button class="slx-action" type="button" id="btn-upload-id" style="padding:10px 12px;">
+        <span class="slx-action-ico">🪪</span><span class="slx-action-text">{% trans "Upload ID" %}</span>
+      </button>
+      <button class="slx-action" type="button" id="btn-view-id" style="padding:10px 12px;">
+        <span class="slx-action-ico">👁</span><span class="slx-action-text">{% trans "View ID" %}</span>
+      </button>
+      <a class="slx-action" id="btn-guests-print" style="padding:10px 12px;" href="{% url 'guests_report_print' %}?q={{ filters.q|urlencode }}&id_number={{ filters.id_number|urlencode }}&phone={{ filters.phone|urlencode }}&lang={{ LANGUAGE_CODE|slice:":2" }}&back={{ request.get_full_path|urlencode }}" target="_blank">
+        <span class="slx-action-ico">🖨️</span><span class="slx-action-text">{% trans "Print" %}</span>
+      </a>
+      <a class="slx-action" id="btn-guests-pdf" style="padding:10px 12px;" href="{% url 'guests_export_pdf' %}?q={{ filters.q|urlencode }}&id_number={{ filters.id_number|urlencode }}&phone={{ filters.phone|urlencode }}&lang={{ LANGUAGE_CODE|slice:":2" }}">
+        <span class="slx-action-ico">📄</span><span class="slx-action-text">{% trans "Export PDF" %}</span>
+      </a>
+      <a class="slx-action" id="btn-guests-excel" style="padding:10px 12px;" href="{% url 'guests_export_excel' %}?q={{ filters.q|urlencode }}&id_number={{ filters.id_number|urlencode }}&phone={{ filters.phone|urlencode }}&lang={{ LANGUAGE_CODE|slice:":2" }}">
+        <span class="slx-action-ico">📊</span><span class="slx-action-text">{% trans "Export Excel" %}</span>
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "ID" %}</th>
+            <th>{% trans "Number" %}</th>
+            <th>{% trans "Address" %}</th>
+            <th>{% trans "Check-in" %}</th>
+            <th>{% trans "Check-out" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for g in guests %}
+            <tr>
+              <td>
+                <input type="radio" name="selected_guest" value="{{ g.id }}" />
+              </td>
+              <td><strong>{{ g.full_name }}</strong></td>
+              <td>{{ g.id_number|default:"—" }}</td>
+              <td>{{ g.phone|default:"—" }}</td>
+              <td>{{ g.address|default:"—" }}</td>
+              <td>{% if g.last_check_in %}{{ g.last_check_in }}{% else %}—{% endif %}</td>
+              <td>{% if g.last_check_out %}{{ g.last_check_out }}{% else %}—{% endif %}</td>
+              <td class="text-end">
+                {% if can_manage %}
+                  <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'guest_edit' g.id %}">{% trans "Edit" %}</a>
+                  <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'guest_delete' g.id %}">{% trans "Delete" %}</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="8" class="text-muted py-4">{% trans "No guests yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% trans "Please select a guest first." as msg_select_guest %}
+
+  <script>
+    (function () {
+      const isQtDesktop = /QtWebEngine|QtWebEngineCore/i.test((window.navigator && window.navigator.userAgent) || "");
+
+      function getSelectedGuestId() {
+        var el = document.querySelector("input[name='selected_guest']:checked");
+        return el ? el.value : "";
+      }
+      document.getElementById("btn-upload-id").addEventListener("click", function () {
+        var id = getSelectedGuestId();
+        if (!id) {
+          alert("{{ msg_select_guest|escapejs }}");
+          return;
+        }
+        window.location.href = "/guests/" + id + "/upload-id/";
+      });
+      document.getElementById("btn-view-id").addEventListener("click", function () {
+        var id = getSelectedGuestId();
+        if (!id) {
+          alert("{{ msg_select_guest|escapejs }}");
+          return;
+        }
+        var back = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.href = "/guests/" + id + "/view-id/?back=" + back;
+      });
+
+      // Desktop Qt WebEngine can block popup tabs; keep report actions in same tab there.
+      if (isQtDesktop) {
+        var printLink = document.getElementById("btn-guests-print");
+        if (printLink) printLink.setAttribute("target", "_self");
+      }
+    })();
+  </script>
+{% endblock %}

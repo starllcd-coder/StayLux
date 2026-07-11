@@ -1,0 +1,3804 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: StayLux\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-26 02:12+0400\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Roles (StaffRole)
+#: .\accounts\models.py:9
+msgid "Owner/Admin"
+msgstr "المالك/المسؤول"
+
+#: .\accounts\models.py:10
+msgid "Manager"
+msgstr "مدير"
+
+#: .\accounts\models.py:11
+msgid "Reception/Front Desk"
+msgstr "الاستقبال/مكتب الاستقبال"
+
+#: .\accounts\models.py:12 .\inventory\models.py:11 .\templates\base.html:63
+#: .\templates\core\housekeeping.html:4 .\templates\core\housekeeping.html:9
+#: .\templates\owner_portal\home.html:57
+msgid "Housekeeping"
+msgstr "التدبير المنزلي"
+
+#: .\accounts\models.py:13 .\inventory\models.py:12 .\templates\base.html:59
+#: .\templates\core\housekeeping.html:89 .\templates\core\maintenance.html:4
+#: .\templates\core\maintenance.html:9 .\templates\core\maintenance_list.html:4
+#: .\templates\owner_portal\home.html:63
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#: .\billing\models.py:17
+msgid "Draft"
+msgstr "مسودة"
+
+#: .\billing\models.py:18
+msgid "Issued"
+msgstr "صادرة"
+
+#: .\billing\models.py:19
+msgid "Paid"
+msgstr "مدفوع"
+
+#: .\billing\models.py:20 .\templates\core\payments_list.html:70
+msgid "Void"
+msgstr "ملغى"
+
+#: .\billing\models.py:24 .\templates\core\bookings_list.html:289
+#: .\templates\core\payments_list.html:27
+msgid "Cash"
+msgstr "نقدا"
+
+#: .\billing\models.py:25 .\templates\core\bookings_list.html:290
+#: .\templates\core\payments_list.html:28
+msgid "Card"
+msgstr "بطاقة"
+
+#: .\billing\models.py:26 .\templates\core\bookings_list.html:291
+#: .\templates\core\payments_list.html:29
+msgid "Bank Transfer"
+msgstr "تحويل بنكي"
+
+#: .\billing\models.py:27 .\templates\core\payments_list.html:30
+msgid "Wallet"
+msgstr "محفظة"
+
+#: .\billing\models.py:28 .\templates\core\payments_list.html:31
+msgid "Other"
+msgstr "أخرى"
+
+#: .\billing\models.py:32 .\templates\core\payments_list.html:37
+msgid "Money In"
+msgstr "وارد"
+
+#: .\billing\models.py:33 .\templates\core\payments_list.html:38
+msgid "Money Out (Refund)"
+msgstr "صادر"
+
+#: .\core\forms.py:122 .\core\forms.py:150
+#, fuzzy
+#| msgid "Business Type:"
+msgid "Business Mode"
+msgstr "نوع النشاط:"
+
+#: .\core\forms.py:125 .\core\forms.py:164
+#, fuzzy
+#| msgid "Currency"
+msgid "Currency (GCC)"
+msgstr "العملة"
+
+#: .\core\forms.py:151 .\templates\core\settings.html:45
+#, fuzzy
+#| msgid "Name"
+msgid "Name en"
+msgstr "الاسم (EN)"
+
+#: .\core\forms.py:152 .\templates\core\settings.html:41
+#, fuzzy
+#| msgid "Name"
+msgid "Name ar"
+msgstr "الاسم (AR)"
+
+#: .\core\forms.py:153 .\templates\core\settings.html:53
+#, fuzzy
+#| msgid "Property"
+msgid "Property number"
+msgstr "رقم المنشأة"
+
+#: .\core\forms.py:154 .\core\forms.py:390
+#: .\templates\core\booking_wizard_step3.html:52
+#: .\templates\core\form_page.html:35 .\templates\core\guests.html:24
+#: .\templates\core\guests_list.html:23 .\templates\core\settings.html:61
+msgid "Phone"
+msgstr "الهاتف"
+
+#: .\core\forms.py:155 .\templates\core\settings.html:65
+#, fuzzy
+#| msgid "WhatsApp"
+msgid "Whatsapp"
+msgstr "واتساب"
+
+#: .\core\forms.py:156 .\core\forms.py:392
+#: .\templates\core\booking_wizard_step3.html:62
+#: .\templates\core\form_page.html:37 .\templates\core\guests.html:25
+#: .\templates\core\owners_list.html:26 .\templates\core\settings.html:69
+#: .\templates\core\staff_list.html:26
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: .\core\forms.py:157 .\templates\core\settings.html:89
+#, fuzzy
+#| msgid "Address"
+msgid "Address en"
+msgstr "العنوان"
+
+#: .\core\forms.py:158 .\templates\core\settings.html:93
+#, fuzzy
+#| msgid "Address"
+msgid "Address ar"
+msgstr "العنوان"
+
+#: .\core\forms.py:159 .\templates\core\settings.html:85
+msgid "City"
+msgstr "المدينة"
+
+#: .\core\forms.py:160 .\templates\core\settings.html:81
+#, fuzzy
+#| msgid "Amount"
+msgid "Country"
+msgstr "البلد"
+
+#: .\core\forms.py:161 .\templates\core\settings.html:49
+#, fuzzy
+#| msgid "Logout"
+msgid "Logo"
+msgstr "الشعار"
+
+#: .\core\forms.py:162 .\templates\core\settings.html:73
+msgid "Vat no"
+msgstr "الرقم الضريبي"
+
+#: .\core\forms.py:163 .\templates\core\settings.html:77
+msgid "Cr no"
+msgstr "رقم السجل التجاري"
+
+#: .\core\forms.py:165 .\templates\core\settings.html:97
+msgid "Receipt footer en"
+msgstr "تذييل الإيصال (EN)"
+
+#: .\core\forms.py:166 .\templates\core\settings.html:101
+msgid "Receipt footer ar"
+msgstr "تذييل الإيصال (AR)"
+
+#: .\core\forms.py:167 .\templates\core\dashboard.html:59
+#: .\templates\core\owners_list.html:28
+#: .\templates\core\pricing_rateplans.html:44
+#: .\templates\core\pricing_rateplans.html:63
+#: .\templates\core\pricing_seasonal.html:67 .\templates\core\settings.html:256
+#: .\templates\core\settings.html:270 .\templates\core\staff_list.html:28
+#: .\templates\core\unit_types_list.html:23 .\templates\core\units_list.html:31
+msgid "Active"
+msgstr "نشط"
+
+#: .\core\forms.py:232
+msgid "Standard"
+msgstr "قياسي"
+
+#: .\core\forms.py:233
+msgid "Deluxe"
+msgstr "ديلوكس"
+
+#: .\core\forms.py:234
+msgid "Premium"
+msgstr "بريميوم"
+
+#: .\core\forms.py:235
+msgid "Luxury"
+msgstr "فاخر"
+
+#: .\core\forms.py:237 .\core\forms.py:300
+#: .\templates\core\booking_wizard_step2.html:33
+#: .\templates\core\units_list.html:26
+msgid "Amenity Tier"
+msgstr "فئة المرافق"
+
+#: .\core\forms.py:273
+msgid "Unit Type"
+msgstr "نوع الوحدة"
+
+#: .\core\forms.py:275 .\inventory\models.py:72
+msgid "Studio Apartment"
+msgstr "شقة استوديو"
+
+#: .\core\forms.py:276 .\inventory\models.py:73
+msgid "1-Room / BHK"
+msgstr "غرفة واحدة / BHK"
+
+#: .\core\forms.py:277 .\inventory\models.py:74
+msgid "2-Room / BHK"
+msgstr "غرفتان / BHK"
+
+#: .\core\forms.py:278 .\inventory\models.py:75
+msgid "3-Room / BHK"
+msgstr "3 غرف / BHK"
+
+#: .\core\forms.py:279 .\inventory\models.py:76
+msgid "4-Room / BHK"
+msgstr "4 غرف / BHK"
+
+#: .\core\forms.py:280 .\inventory\models.py:77
+msgid "5-Room / BHK"
+msgstr "5 غرف / BHK"
+
+#: .\core\forms.py:281 .\inventory\models.py:78
+msgid "Duplex / Triplex"
+msgstr "دوبلكس / تربلكس"
+
+#: .\core\forms.py:282 .\inventory\models.py:79
+msgid "Penthouse"
+msgstr "بنتهاوس"
+
+#: .\core\forms.py:283 .\inventory\models.py:80
+msgid "Loft Apartment"
+msgstr "شقة لوفت"
+
+#: .\core\forms.py:286 .\templates\core\form_page.html:32
+msgid "Room Type"
+msgstr "نوع الغرفة"
+
+#: .\core\forms.py:288 .\inventory\models.py:61
+msgid "Single"
+msgstr "مفرد"
+
+#: .\core\forms.py:289 .\inventory\models.py:62
+msgid "Double"
+msgstr "مزدوج"
+
+#: .\core\forms.py:290 .\inventory\models.py:63
+msgid "Triple"
+msgstr "ثلاثي"
+
+#: .\core\forms.py:291 .\inventory\models.py:64
+msgid "Twin Room"
+msgstr "غرفة مزدوجة بسريرين"
+
+#: .\core\forms.py:292 .\inventory\models.py:65
+msgid "King Room"
+msgstr "غرفة كينغ"
+
+#: .\core\forms.py:293 .\inventory\models.py:66
+msgid "Queen Room"
+msgstr "غرفة كوين"
+
+#: .\core\forms.py:294 .\inventory\models.py:67
+msgid "Connecting / Adjoining Rooms"
+msgstr "غرف متصلة / متجاورة"
+
+#: .\core\forms.py:295 .\inventory\models.py:68
+msgid "Studio"
+msgstr "ستوديو"
+
+#: .\core\forms.py:296 .\inventory\models.py:69
+msgid "Villa"
+msgstr "فيلا"
+
+#: .\core\forms.py:303 .\templates\core\form_page.html:33
+msgid "Bed Configuration"
+msgstr "تكوين السرير"
+
+#: .\core\forms.py:306 .\templates\core\form_page.html:27
+#: .\templates\core\units_list.html:22
+msgid "Code"
+msgstr "الرمز"
+
+#: .\core\forms.py:307 .\templates\core\form_page.html:28
+#: .\templates\core\units_list.html:27
+msgid "Floor"
+msgstr "الطابق"
+
+#: .\core\forms.py:308 .\templates\core\form_page.html:23
+msgid "Guest capacity"
+msgstr "سعة الضيوف"
+
+#: .\core\forms.py:309 .\templates\core\form_page.html:24
+msgid "Daily price"
+msgstr "السعر اليومي"
+
+#: .\core\forms.py:310 .\templates\core\form_page.html:25
+msgid "Monthly price"
+msgstr "السعر الشهري"
+
+#: .\core\forms.py:311 .\templates\core\form_page.html:26
+msgid "Seasonal price"
+msgstr "السعر الموسمي"
+
+#: .\core\forms.py:312 .\templates\core\booking_wizard_step2.html:35
+#: .\templates\core\form_page.html:29 .\templates\core\settings.html:21
+#: .\templates\core\units_list.html:29
+msgid "Amenities"
+msgstr "المرافق"
+
+#: .\core\forms.py:313 .\core\forms.py:640 .\core\forms.py:697
+#: .\templates\core\billing.html:29 .\templates\core\bookings_list.html:45
+#: .\templates\core\bookings_list.html:89
+#: .\templates\core\bookings_list.html:198 .\templates\core\dashboard.html:158
+#: .\templates\core\form_page.html:30 .\templates\core\housekeeping.html:25
+#: .\templates\core\housekeeping.html:45 .\templates\core\invoices_list.html:21
+#: .\templates\core\maintenance.html:28
+#: .\templates\core\maintenance_list.html:24
+#: .\templates\core\maintenance_list.html:44
+#: .\templates\core\pricing_rateplans.html:54
+#: .\templates\core\pricing_seasonal.html:55
+#: .\templates\core\units_list.html:30
+msgid "Status"
+msgstr "الحالة"
+
+#: .\core\forms.py:314 .\templates\core\form_page.html:31
+#: .\templates\core\form_page.html:43
+msgid "Is active"
+msgstr "نشط"
+
+#: .\core\forms.py:389 .\templates\core\booking_wizard_step3.html:47
+#: .\templates\core\form_page.html:34 .\templates\core\guests.html:23
+msgid "Full Name"
+msgstr "الاسم الكامل"
+
+#: .\core\forms.py:391 .\templates\core\booking_wizard_step3.html:57
+#: .\templates\core\form_page.html:36
+msgid "WhatsApp"
+msgstr "واتساب"
+
+#: .\core\forms.py:393 .\templates\core\booking_wizard_step3.html:67
+#: .\templates\core\form_page.html:45
+msgid "Nationality"
+msgstr "الجنسية"
+
+#: .\core\forms.py:394 .\templates\core\booking_wizard_step3.html:72
+#: .\templates\core\form_page.html:46
+msgid "ID Type"
+msgstr "نوع الهوية"
+
+#: .\core\forms.py:395 .\templates\core\booking_wizard_step3.html:81
+#: .\templates\core\form_page.html:47 .\templates\core\guests_list.html:20
+msgid "ID Number"
+msgstr "رقم الهوية"
+
+# ID field labels
+#: .\core\forms.py:396 .\templates\core\form_page.html:48
+msgid "ID Expiry"
+msgstr "تاريخ انتهاء الهوية"
+
+#: .\core\forms.py:397 .\templates\core\form_page.html:49
+msgid "ID Document"
+msgstr "مستند الهوية"
+
+#: .\core\forms.py:398 .\templates\core\booking_wizard_step3.html:86
+#: .\templates\core\form_page.html:50 .\templates\core\guests_list.html:46
+msgid "Address"
+msgstr "العنوان"
+
+#: .\core\forms.py:399 .\core\forms.py:707 .\core\forms.py:741
+#: .\templates\core\booking_wizard_step3.html:91
+#: .\templates\core\form_page.html:51
+msgid "Notes"
+msgstr "ملاحظات"
+
+#: .\core\forms.py:610 .\core\views.py:330 .\core\views.py:344
+#: .\core\views.py:367 .\templates\core\booking_wizard_step2.html:31
+#: .\templates\core\bookings_list.html:86
+#: .\templates\core\bookings_list.html:195
+#: .\templates\core\bookings_list.html:262 .\templates\core\dashboard.html:8
+#: .\templates\core\dashboard.html:158 .\templates\core\form_page.html:52
+#: .\templates\core\housekeeping.html:7 .\templates\core\housekeeping.html:43
+#: .\templates\core\maintenance.html:7 .\templates\core\maintenance.html:25
+#: .\templates\core\maintenance_list.html:40 .\templates\core\reports.html:29
+msgid "Unit"
+msgstr "الوحدة"
+
+#: .\core\forms.py:611 .\templates\core\form_page.html:53
+msgid "Reported by"
+msgstr "تم الإبلاغ بواسطة"
+
+#: .\core\forms.py:612 .\templates\core\form_page.html:54
+msgid "Assigned to"
+msgstr "مخصص إلى"
+
+#: .\core\forms.py:613 .\templates\core\form_page.html:55
+#: .\templates\core\maintenance.html:27
+#: .\templates\core\maintenance_list.html:43
+#: .\templates\core\pricing_seasonal.html:54
+msgid "Priority"
+msgstr "الأولوية"
+
+#: .\core\forms.py:614 .\templates\core\form_page.html:56
+msgid "Maintenance type"
+msgstr "نوع الصيانة"
+
+#: .\core\forms.py:615 .\templates\core\form_page.html:57
+#: .\templates\core\maintenance.html:26
+#: .\templates\core\maintenance_list.html:41
+msgid "Title"
+msgstr "العنوان"
+
+#: .\core\forms.py:616 .\templates\core\form_page.html:59
+msgid "Description"
+msgstr "الوصف"
+
+#: .\core\forms.py:617 .\templates\core\form_page.html:58
+msgid "Before photo"
+msgstr "صورة قبل"
+
+#: .\core\forms.py:641 .\templates\core\form_page.html:60
+msgid "After photo"
+msgstr "صورة بعد"
+
+#: .\core\forms.py:642 .\templates\core\form_page.html:61
+msgid "Material cost"
+msgstr "تكلفة المواد"
+
+#: .\core\forms.py:643 .\templates\core\form_page.html:62
+msgid "Labor cost"
+msgstr "تكلفة العمالة"
+
+#: .\core\forms.py:644 .\templates\core\form_page.html:63
+msgid "Total cost"
+msgstr "التكلفة الإجمالية"
+
+#: .\core\forms.py:645 .\templates\core\form_page.html:64
+msgid "Completed notes"
+msgstr "ملاحظات الإنجاز"
+
+# Invoice form labels and messages
+#: .\core\forms.py:694
+msgid "Booking"
+msgstr "الحجز"
+
+#: .\core\forms.py:695 .\templates\core\billing.html:7
+#: .\templates\core\billing.html:27 .\templates\core\bookings_list.html:38
+#: .\templates\core\bookings_list.html:85
+#: .\templates\core\bookings_list.html:194
+#: .\templates\core\bookings_list.html:258 .\templates\core\dashboard.html:7
+#: .\templates\core\dashboard.html:158 .\templates\core\invoices_list.html:20
+#: .\templates\core\payments_list.html:45
+#: .\templates\core\payments_list.html:65
+msgid "Guest"
+msgstr "الضيف"
+
+#: .\core\forms.py:696
+msgid "Invoice no"
+msgstr "رقم الفاتورة"
+
+#: .\core\forms.py:698
+msgid "Issue date"
+msgstr "تاريخ الإصدار"
+
+#: .\core\forms.py:699
+msgid "Due date"
+msgstr "تاريخ الاستحقاق"
+
+#: .\core\forms.py:700
+msgid "Currency"
+msgstr "العملة"
+
+#: .\core\forms.py:701
+msgid "Subtotal"
+msgstr "المجموع الفرعي"
+
+#: .\core\forms.py:702
+msgid "Discount total"
+msgstr "إجمالي الخصم"
+
+#: .\core\forms.py:703
+msgid "Tax total"
+msgstr "إجمالي الضريبة"
+
+#: .\core\forms.py:704 .\templates\core\billing.html:28
+#: .\templates\core\bookings_list.html:276
+#: .\templates\core\invoices_list.html:22
+msgid "Total"
+msgstr "الإجمالي"
+
+#: .\core\forms.py:705
+msgid "Amount paid"
+msgstr "المبلغ المدفوع"
+
+#: .\core\forms.py:706
+msgid "Balance due"
+msgstr "الرصيد المستحق"
+
+#: .\core\forms.py:734 .\templates\core\billing.html:65
+#: .\templates\core\payments_list.html:64
+msgid "Invoice"
+msgstr "الفاتورة"
+
+#: .\core\forms.py:735 .\templates\core\billing.html:67
+#: .\templates\core\payments_list.html:26
+#: .\templates\core\payments_list.html:66
+msgid "Method"
+msgstr "الطريقة"
+
+#: .\core\forms.py:736 .\templates\core\payments_list.html:36
+#: .\templates\core\payments_list.html:67
+msgid "Direction"
+msgstr "الاتجاه"
+
+#: .\core\forms.py:737 .\templates\core\billing.html:66
+#: .\templates\core\payments_list.html:68
+msgid "Amount"
+msgstr "المبلغ"
+
+#: .\core\forms.py:738 .\templates\core\payments_list.html:69
+msgid "Reference"
+msgstr "المرجع"
+
+#: .\core\forms.py:739
+#, fuzzy
+#| msgid "Paid"
+msgid "Paid at"
+msgstr "مدفوع"
+
+#: .\core\forms.py:740
+msgid "Is void"
+msgstr "ملغى"
+
+#: .\core\views.py:328
+msgid "Room/Unit created."
+msgstr "تم إنشاء الغرفة/الوحدة."
+
+#: .\core\views.py:330 .\core\views.py:344 .\core\views.py:367
+#: .\templates\core\units_list.html:12
+msgid "Room"
+msgstr "غرفة"
+
+#: .\core\views.py:331
+#, python-format
+msgid "Add %(label)s"
+msgstr "إضافة %(label)s"
+
+#: .\core\views.py:342
+msgid "Room/Unit updated."
+msgstr "تم تحديث الغرفة/الوحدة."
+
+#: .\core\views.py:345
+#, python-format
+msgid "Edit %(label)s #%(id)s"
+msgstr "تعديل %(label)s رقم %(id)s"
+
+#: .\core\views.py:359
+msgid "Cannot delete this unit while it has active housekeeping tasks."
+msgstr "لا يمكن حذف هذه الوحدة أثناء وجود مهام خدمة غرف نشطة."
+
+#: .\core\views.py:363
+msgid "Room/Unit deleted."
+msgstr "تم حذف الغرفة/الوحدة."
+
+#: .\core\views.py:365
+msgid ""
+"Cannot delete this unit because it has related records (e.g., housekeeping, "
+"bookings, or maintenance)."
+msgstr ""
+"لا يمكن حذف هذه الوحدة لوجود سجلات مرتبطة (مثل خدمة الغرف أو الحجوزات أو "
+"الصيانة)."
+
+#: .\core\views.py:368
+#, python-format
+msgid "Delete %(label)s"
+msgstr "حذف %(label)s"
+
+# Messages for guest create/edit/delete
+#: .\core\views.py:1628
+msgid "Guest created."
+msgstr "تم إنشاء الضيف."
+
+#: .\core\views.py:1636 .\templates\core\guests_list.html:11
+msgid "Add Guest"
+msgstr "إضافة ضيف"
+
+#: .\core\views.py:1651
+msgid "Guest updated."
+msgstr "تم تحديث الضيف."
+
+#: .\core\views.py:1659
+#, fuzzy, python-format
+#| msgid "Edit %(label)s #%(id)s"
+msgid "Edit Guest #%(id)s"
+msgstr "تعديل %(label)s رقم %(id)s"
+
+#: .\core\views.py:1674
+msgid "Guest deleted."
+msgstr "تم حذف الضيف."
+
+#: .\core\views.py:1679
+msgid "Guest has bookings and cannot be deleted. Deactivated instead."
+msgstr "لدى الضيف حجوزات ولا يمكن حذفه. تم إلغاء تفعيله بدلاً من ذلك."
+
+#: .\core\views.py:1746
+msgid "Maintenance ticket created."
+msgstr "تم إنشاء تذكرة الصيانة."
+
+#: .\core\views.py:1749 .\core\views.py:1804
+msgid "Save Draft"
+msgstr "حفظ كمسودة"
+
+#: .\core\views.py:1750 .\core\views.py:1805
+msgid "Start Work"
+msgstr "بدء العمل"
+
+# Maintenance form labels and actions
+#: .\core\views.py:1757
+msgid "Maintenance Step 1 — Draft"
+msgstr "الخطوة 1 — صيانة (مسودة)"
+
+#: .\core\views.py:1801
+msgid "Maintenance ticket updated."
+msgstr "تم تحديث تذكرة الصيانة."
+
+#: .\core\views.py:1812
+#, python-format
+msgid "Maintenance Step 1 — Draft #%(id)s"
+msgstr "الخطوة 1 — صيانة (مسودة) رقم %(id)s"
+
+#: .\core\views.py:1849
+msgid "Maintenance ticket completed."
+msgstr "تم إكمال تذكرة الصيانة."
+
+#: .\core\views.py:1853
+msgid "Finish"
+msgstr "إنهاء"
+
+#: .\core\views.py:1860
+#, python-format
+msgid "Maintenance Step 2 — Complete #%(id)s"
+msgstr "الخطوة 2 — صيانة (اكتمل) رقم %(id)s"
+
+#: .\core\views.py:2024
+msgid "Invoice created."
+msgstr "تم إنشاء الفاتورة."
+
+#: .\core\views.py:2026
+msgid "Add Invoice"
+msgstr "إضافة فاتورة"
+
+#: .\core\views.py:2036
+msgid "Invoice updated."
+msgstr "تم تحديث الفاتورة."
+
+#: .\core\views.py:2041
+#, python-format
+msgid "Edit Invoice #%(id)s"
+msgstr "تعديل الفاتورة رقم %(id)s"
+
+#: .\core\views.py:2051
+msgid "Invoice deleted."
+msgstr "تم حذف الفاتورة."
+
+#: .\core\views.py:2056
+msgid "Delete Invoice"
+msgstr "حذف الفاتورة"
+
+# Messages for guest create/edit/delete
+#: .\core\views.py:2265
+msgid "Payment created."
+msgstr "تم إنشاء الدفعة."
+
+#: .\core\views.py:2267
+msgid "Add Payment"
+msgstr "إضافة دفعة"
+
+#: .\core\views.py:2281
+msgid "Payment updated."
+msgstr "تم تحديث الدفعة."
+
+#: .\core\views.py:2283
+#, python-format
+msgid "Edit Payment #%(id)s"
+msgstr "تعديل الدفعة رقم %(id)s"
+
+#: .\core\views.py:2296
+msgid "Payment deleted."
+msgstr "تم حذف الدفعة."
+
+#: .\core\views.py:2925
+msgid "Database settings saved."
+msgstr ""
+
+#: .\core\views.py:2929
+msgid "Connection successful."
+msgstr ""
+
+#: .\core\views.py:2955
+#, fuzzy
+#| msgid ""
+#| "Migration copies the current database into PostgreSQL. Restart the app to "
+#| "switch databases."
+msgid "Migration completed. Restart the app to switch databases."
+msgstr ""
+"ينسخ الترحيل قاعدة البيانات الحالية إلى PostgreSQL. أعد تشغيل التطبيق لتبديل "
+"القاعدة."
+
+#: .\core\views.py:2981
+#, fuzzy
+#| msgid "Payment updated."
+msgid "Amenity updated."
+msgstr "تم تحديث الدفعة."
+
+#: .\core\views.py:2988
+#, fuzzy
+#| msgid "Payment deleted."
+msgid "Amenity deleted."
+msgstr "تم حذف الدفعة."
+
+#: .\core\views.py:3007
+#, python-format
+msgid "%s amenities updated"
+msgstr "تم تحديث مرافق %s"
+
+#: .\core\views.py:3013
+msgid "Settings saved."
+msgstr "تم حفظ الإعدادات."
+
+#: .\core\views.py:3220 .\core\views.py:3326
+msgid "Username already exists."
+msgstr ""
+
+#: .\core\views.py:3221 .\core\views.py:3242
+#: .\templates\core\staff_list.html:15
+msgid "Add Employee"
+msgstr "إضافة موظف"
+
+#: .\core\views.py:3239
+#, fuzzy
+#| msgid "Invoice created."
+msgid "Employee created."
+msgstr "تم إنشاء الفاتورة."
+
+#: .\core\views.py:3275
+#, fuzzy
+#| msgid "Invoice updated."
+msgid "Employee updated."
+msgstr "تم تحديث الفاتورة."
+
+#: .\core\views.py:3295
+msgid "Employee deactivated."
+msgstr ""
+
+#: .\core\views.py:3298
+#, fuzzy
+#| msgid "Deactivate"
+msgid "Deactivate Employee"
+msgstr "تعطيل"
+
+#: .\core\views.py:3304
+msgid "Owner management is available for Admin/Manager only."
+msgstr ""
+
+#: .\core\views.py:3327 .\core\views.py:3348
+#: .\templates\core\owners_list.html:15
+msgid "Add Owner"
+msgstr "إضافة مالك"
+
+#: .\core\views.py:3345
+#, fuzzy
+#| msgid "Invoice created."
+msgid "Owner created."
+msgstr "تم إنشاء الفاتورة."
+
+#: .\guests\models.py:8 .\templates\core\booking_wizard_step3.html:75
+msgid "National ID"
+msgstr "الهوية الوطنية"
+
+#: .\guests\models.py:9 .\templates\core\booking_wizard_step3.html:76
+msgid "Passport"
+msgstr "جواز السفر"
+
+#: .\guests\models.py:10 .\templates\core\booking_wizard_step3.html:77
+msgid "License"
+msgstr "الرخصة"
+
+#: .\inventory\models.py:9 .\templates\core\reports.html:80
+#: .\templates\owner_portal\home.html:49
+msgid "Available"
+msgstr "متاح"
+
+#: .\inventory\models.py:10 .\templates\core\reports.html:81
+#: .\templates\owner_portal\home.html:50
+msgid "Occupied"
+msgstr "مشغول"
+
+#: .\inventory\models.py:83
+msgid "King"
+msgstr "كينغ"
+
+#: .\inventory\models.py:84
+msgid "Twin"
+msgstr "توأم"
+
+#: .\inventory\models.py:85
+msgid "Queen"
+msgstr "كوين"
+
+#: .\maintenance\models.py:12 .\templates\core\maintenance_list.html:25
+msgid "Open"
+msgstr "مفتوح"
+
+#: .\maintenance\models.py:13 .\templates\core\housekeeping.html:27
+#: .\templates\core\maintenance_list.html:26
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#: .\maintenance\models.py:14 .\templates\core\maintenance_list.html:27
+msgid "Resolved"
+msgstr "تم الحل"
+
+#: .\maintenance\models.py:15 .\templates\core\bookings_list.html:49
+#: .\templates\core\housekeeping.html:29
+#: .\templates\core\maintenance_list.html:28
+msgid "Cancelled"
+msgstr "ملغى"
+
+#: .\maintenance\models.py:19
+msgid "Low"
+msgstr ""
+
+#: .\maintenance\models.py:20
+msgid "Normal"
+msgstr ""
+
+#: .\maintenance\models.py:21
+msgid "High"
+msgstr ""
+
+#: .\maintenance\models.py:22
+msgid "Urgent"
+msgstr ""
+
+#: .\maintenance\models.py:26
+msgid "Electrical"
+msgstr ""
+
+#: .\maintenance\models.py:27
+msgid "Plumbing"
+msgstr ""
+
+#: .\maintenance\models.py:28
+msgid "HVAC"
+msgstr ""
+
+#: .\maintenance\models.py:29
+#, fuzzy
+#| msgid "Balance"
+msgid "Appliance"
+msgstr "الرصيد"
+
+#: .\maintenance\models.py:30
+msgid "Carpentry"
+msgstr ""
+
+#: .\maintenance\models.py:31
+#, fuzzy
+#| msgid "Maint"
+msgid "Painting"
+msgstr "الصيانة"
+
+#: .\maintenance\models.py:32
+msgid "Deep Cleaning"
+msgstr ""
+
+#: .\maintenance\models.py:33
+msgid "General"
+msgstr ""
+
+#: .\maintenance\models.py:51
+#, fuzzy
+#| msgid "Maintenance Costs"
+msgid "Maintenance request"
+msgstr "تكاليف الصيانة"
+
+#: .\settings_app\models.py:7 .\templates\core\settings.html:176
+msgid "Hotel"
+msgstr "فندق"
+
+# BusinessType labels from models
+#: .\settings_app\models.py:8
+msgid "Apartments"
+msgstr "شقق"
+
+# GCC currency labels
+#: .\settings_app\models.py:37
+msgid "Omani Rial (OMR)"
+msgstr "ريال عماني (OMR)"
+
+#: .\settings_app\models.py:38
+msgid "UAE Dirham (AED)"
+msgstr "درهم إماراتي (AED)"
+
+#: .\settings_app\models.py:39
+msgid "Saudi Riyal (SAR)"
+msgstr "ريال سعودي (SAR)"
+
+#: .\settings_app\models.py:40
+msgid "Kuwaiti Dinar (KWD)"
+msgstr "دينار كويتي (KWD)"
+
+#: .\settings_app\models.py:41
+msgid "Bahraini Dinar (BHD)"
+msgstr "دينار بحريني (BHD)"
+
+#: .\settings_app\models.py:42
+msgid "Qatari Riyal (QAR)"
+msgstr "ريال قطري (QAR)"
+
+#: .\templates\base.html:27 .\templates\core\login.html:21
+#: .\templates\core\settings.html:431
+msgid "Redefining Modern Hospitality"
+msgstr "نعيد تعريف الضيافة الحديثة"
+
+#: .\templates\base.html:36 .\templates\base.html:97
+#: .\templates\core\dashboard.html:4
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+#: .\templates\base.html:43 .\templates\core\owners_list.html:27
+#: .\templates\core\reports.html:74 .\templates\owner_portal\home.html:46
+msgid "Units"
+msgstr "الوحدات"
+
+#: .\templates\base.html:45
+msgid "Rooms"
+msgstr "الغرف"
+
+#: .\templates\base.html:51 .\templates\core\bookings_list.html:5
+#: .\templates\core\bookings_list.html:9 .\templates\core\bookings_list.html:18
+msgid "Bookings"
+msgstr "الحجوزات"
+
+#: .\templates\base.html:55 .\templates\core\booking_wizard_step2.html:34
+#: .\templates\core\dashboard.html:89 .\templates\core\guests.html:4
+#: .\templates\core\guests.html:8 .\templates\core\guests_list.html:4
+#: .\templates\core\guests_list.html:9 .\templates\core\units_list.html:25
+msgid "Guests"
+msgstr "الضيوف"
+
+#: .\templates\base.html:68 .\templates\core\billing.html:17
+#: .\templates\core\invoices_list.html:4 .\templates\core\invoices_list.html:9
+msgid "Invoices"
+msgstr "الفواتير"
+
+#: .\templates\base.html:73 .\templates\core\billing.html:55
+#: .\templates\core\payments_list.html:4 .\templates\core\payments_list.html:9
+msgid "Payments"
+msgstr "المدفوعات"
+
+#: .\templates\base.html:78 .\templates\core\dashboard.html:95
+#: .\templates\core\reports.html:5 .\templates\core\reports.html:9
+#: .\templates\core\reports.html:16
+msgid "Reports"
+msgstr "التقارير"
+
+#: .\templates\base.html:84 .\templates\core\settings.html:5
+#: .\templates\core\settings.html:9
+msgid "Settings"
+msgstr "الإعدادات"
+
+#: .\templates\base.html:88 .\templates\base.html:145
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: .\templates\base.html:105 .\templates\core\login.html:33
+msgid "English"
+msgstr "الإنجليزية"
+
+#: .\templates\base.html:111 .\templates\base.html:116
+msgid "Notifications"
+msgstr "الإشعارات"
+
+#: .\templates\core\settings.html:26
+msgid "Notification Settings"
+msgstr "إعدادات الإشعارات"
+
+#: .\templates\core\settings.html:27
+msgid "Configure outgoing notification channels."
+msgstr "تهيئة قنوات الإشعارات الصادرة."
+
+#: .\templates\core\settings.html:32
+msgid "Enable WhatsApp"
+msgstr "تفعيل واتساب"
+
+#: .\templates\core\settings.html:36
+msgid "Default channel"
+msgstr "القناة الافتراضية"
+
+#: .\templates\core\settings.html:61
+msgid "Outbox Messages"
+msgstr "رسائل الإرسال"
+
+#: .\templates\core\settings.html:68
+msgid "Channel"
+msgstr "القناة"
+
+#: .\templates\core\settings.html:69
+msgid "Event"
+msgstr "الحدث"
+
+#: .\templates\core\settings.html:70
+msgid "Recipient"
+msgstr "المستلم"
+
+#: .\templates\core\settings.html:71
+msgid "Message"
+msgstr "الرسالة"
+
+#: .\templates\core\settings.html:73
+msgid "Created"
+msgstr "تاريخ الإنشاء"
+
+#: .\templates\core\settings.html:91
+msgid "No notification messages yet."
+msgstr "لا توجد رسائل إشعار بعد."
+
+#: .\templates\base.html:117
+msgid "Mark all as read"
+msgstr "تعيين الكل كمقروء"
+
+#: .\templates\base.html:120
+msgid "No notifications yet"
+msgstr "لا توجد إشعارات بعد"
+
+#: .\templates\base.html:123 .\templates\core\dashboard.html:81
+#: .\templates\core\dashboard.html:151
+msgid "View all"
+msgstr "عرض الكل"
+
+#: .\templates\core\settings.html:128
+msgid "All"
+msgstr "الكل"
+
+#: .\templates\core\settings.html:145
+msgid "Search"
+msgstr "بحث"
+
+#: .\templates\core\settings.html:146
+msgid "Recipient or message"
+msgstr "المستلم أو الرسالة"
+
+#: .\templates\core\settings.html:150
+msgid "Unread only"
+msgstr "غير المقروء فقط"
+
+#: .\templates\core\settings.html:153
+msgid "Apply"
+msgstr "تطبيق"
+
+#: .\templates\core\settings.html:154
+msgid "Clear"
+msgstr "مسح"
+
+#: .\templates\core\settings.html:165
+msgid "Mark selected as read"
+msgstr "تعيين المحدد كمقروء"
+
+#: .\core\views.py:2871
+msgid "Selected notifications marked as read."
+msgstr "تم تعيين الإشعارات المحددة كمقروءة."
+
+#: .\core\views.py:2873
+msgid "Select at least one notification."
+msgstr "اختر إشعارًا واحدًا على الأقل."
+
+#: .\core\views.py:2878
+msgid "All filtered notifications marked as read."
+msgstr "تم تعيين جميع الإشعارات المفلترة كمقروءة."
+
+#: .\core\views.py:2880
+msgid "No notifications to mark as read."
+msgstr "لا توجد إشعارات لتعيينها كمقروءة."
+
+#: .\core\views.py:2882
+msgid "Unknown notification action."
+msgstr "إجراء إشعارات غير معروف."
+
+#: .\templates\core\settings.html:222
+msgid "Page"
+msgstr "صفحة"
+
+#: .\templates\core\settings.html:222
+msgid "of"
+msgstr "من"
+
+#: .\templates\core\settings.html:226
+msgid "Previous"
+msgstr "السابق"
+
+#: .\templates\core\settings.html:229
+msgid "Next"
+msgstr "التالي"
+
+#: .\templates\base.html:129
+msgid "Account"
+msgstr "الحساب"
+
+#: .\templates\base.html:137
+msgid "Owner"
+msgstr "المالك"
+
+#: .\templates\base.html:139
+msgid "User"
+msgstr "المستخدم"
+
+# Avatar dropdown / user menu
+#: .\templates\base.html:144
+msgid "Account settings"
+msgstr "إعدادات الحساب"
+
+#: .\core\views.py:2809
+msgid "Notification settings saved."
+msgstr "تم حفظ إعدادات الإشعارات."
+
+#: .\templates\core\billing.html:3
+msgid "StayLux — Billing"
+msgstr "ستي لوكس — الفوترة"
+
+#: .\templates\core\billing.html:4 .\templates\core\billing.html:9
+#: .\templates\core\dashboard.html:92
+msgid "Billing"
+msgstr "الفوترة"
+
+#: .\templates\core\billing.html:10
+msgid "Invoices and payments overview."
+msgstr "نظرة عامة على الفواتير والمدفوعات."
+
+#: .\templates\core\billing.html:18 .\templates\core\billing.html:56
+#, python-format
+msgid "Total: %(total)s"
+msgstr "الإجمالي: %(total)s"
+
+#: .\templates\core\billing.html:26 .\templates\core\billing.html:64
+#: .\templates\core\dashboard.html:158 .\templates\core\guests.html:22
+#: .\templates\core\guests_list.html:44 .\templates\core\maintenance.html:24
+#: .\templates\core\pricing_rateplans.html:51
+#: .\templates\core\pricing_seasonal.html:51
+msgid "ID"
+msgstr "المعرف"
+
+#: .\templates\core\billing.html:47
+msgid "No invoices found (or billing models not enabled)."
+msgstr "لا توجد فواتير (أو أن النماذج غير مفعلة)."
+
+#: .\templates\core\billing.html:83
+msgid "No payments found (or billing models not enabled)."
+msgstr "لا توجد مدفوعات (أو أن النماذج غير مفعلة)."
+
+#: .\templates\core\booking_form.html:4
+msgid "StayLux — New Booking"
+msgstr "ستي لوكس — حجز جديد"
+
+#: .\templates\core\booking_form.html:5
+#: .\templates\core\booking_wizard_step1.html:5
+#: .\templates\core\booking_wizard_step2.html:5
+#: .\templates\core\booking_wizard_step3.html:5
+#: .\templates\core\booking_wizard_step4.html:5
+#: .\templates\core\bookings_list.html:23 .\templates\core\dashboard.html:86
+msgid "New Booking"
+msgstr "حجز جديد"
+
+#: .\templates\core\booking_form.html:9 .\templates\core\booking_form.html:39
+msgid "Create Booking"
+msgstr "إنشاء حجز"
+
+#: .\templates\core\booking_form.html:10
+msgid "Fill in the details to create a new reservation."
+msgstr "املأ التفاصيل لإنشاء حجز جديد."
+
+#: .\templates\core\booking_form.html:15
+msgid "Booking Details"
+msgstr "تفاصيل الحجز"
+
+#: .\templates\core\booking_form.html:16
+msgid "Back to list"
+msgstr "العودة إلى القائمة"
+
+#: .\templates\core\booking_wizard_step1.html:4
+#: .\templates\core\booking_wizard_step2.html:4
+#: .\templates\core\booking_wizard_step3.html:4
+#: .\templates\core\booking_wizard_step4.html:4
+msgid "StayLux — New Booking Wizard"
+msgstr "ستي لوكس — معالج حجز جديد"
+
+#: .\templates\core\booking_wizard_step1.html:9
+#: .\templates\core\booking_wizard_step2.html:9
+#: .\templates\core\booking_wizard_step3.html:9
+#: .\templates\core\booking_wizard_step4.html:9
+msgid "New Booking Wizard"
+msgstr "معالج حجز جديد"
+
+#: .\templates\core\booking_wizard_step1.html:10
+#, python-format
+msgid "Step %(step_num)s of 4 — Dates & Guests"
+msgstr "الخطوة %(step_num)s من 4 — التواريخ والضيوف"
+
+#: .\templates\core\booking_wizard_step1.html:10
+#: .\templates\core\booking_wizard_step2.html:10
+#: .\templates\core\booking_wizard_step3.html:10
+#: .\templates\core\booking_wizard_step4.html:10
+#: .\templates\core\bookings_list.html:12
+msgid "Property:"
+msgstr "المنشأة:"
+
+#: .\templates\core\booking_wizard_step1.html:15
+msgid "Step 1 — Dates & Guests"
+msgstr "الخطوة 1 — التواريخ والضيوف"
+
+#: .\templates\core\booking_wizard_step1.html:17
+#: .\templates\core\booking_wizard_step2.html:18
+#: .\templates\core\booking_wizard_step3.html:18
+#: .\templates\core\booking_wizard_step4.html:18
+#: .\templates\core\bookings_list.html:156
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: .\templates\core\booking_wizard_step1.html:31
+#: .\templates\core\bookings_list.html:87
+#: .\templates\core\bookings_list.html:135
+#: .\templates\core\bookings_list.html:196
+#: .\templates\core\bookings_list.html:266 .\templates\core\guests_list.html:47
+msgid "Check-in"
+msgstr "تسجيل الدخول"
+
+#: .\templates\core\booking_wizard_step1.html:35
+#: .\templates\core\bookings_list.html:88
+#: .\templates\core\bookings_list.html:197
+#: .\templates\core\bookings_list.html:270 .\templates\core\guests_list.html:48
+msgid "Check-out"
+msgstr "تسجيل الخروج"
+
+#: .\templates\core\booking_wizard_step1.html:39
+msgid "Adults"
+msgstr "بالغون"
+
+#: .\templates\core\booking_wizard_step1.html:43
+msgid "Children"
+msgstr "أطفال"
+
+#: .\templates\core\booking_wizard_step1.html:49
+#: .\templates\core\booking_wizard_step2.html:88
+#: .\templates\core\booking_wizard_step3.html:98
+msgid "Next"
+msgstr "التالي"
+
+#: .\templates\core\booking_wizard_step2.html:10
+#, python-format
+msgid "Step %(step_num)s of 4 — Select Unit • %(check_in)s → %(check_out)s"
+msgstr ""
+"الخطوة %(step_num)s من 4 — اختيار الوحدة • %(check_in)s → %(check_out)s"
+
+#: .\templates\core\booking_wizard_step2.html:15
+msgid "Step 2 — Select Unit"
+msgstr "الخطوة 2 — اختيار الوحدة"
+
+#: .\templates\core\booking_wizard_step2.html:17
+#: .\templates\core\booking_wizard_step3.html:17
+#: .\templates\core\booking_wizard_step4.html:17
+#: .\templates\core\confirm_delete.html:10 .\templates\core\form_page.html:10
+#: .\templates\core\owners_list.html:12 .\templates\core\staff_list.html:12
+#: .\templates\core\unit_types_list.html:47
+msgid "Back"
+msgstr "رجوع"
+
+#: .\templates\core\booking_wizard_step2.html:32
+#: .\templates\core\units_list.html:23
+msgid "Category"
+msgstr "الفئة"
+
+#: .\templates\core\booking_wizard_step2.html:36
+#: .\templates\core\units_list.html:28
+msgid "Prices"
+msgstr "الأسعار"
+
+#: .\templates\core\booking_wizard_step2.html:37
+msgid "Estimated Total"
+msgstr "الإجمالي التقديري"
+
+#: .\templates\core\booking_wizard_step2.html:55
+#: .\templates\core\units_list.html:45
+msgid "Daily"
+msgstr "يومي"
+
+#: .\templates\core\booking_wizard_step2.html:56
+#: .\templates\core\units_list.html:46
+msgid "Monthly"
+msgstr "شهري"
+
+#: .\templates\core\booking_wizard_step2.html:57
+#: .\templates\core\units_list.html:47
+msgid "Seasonal"
+msgstr "موسمي"
+
+#: .\templates\core\booking_wizard_step2.html:63
+msgid "No available units for the selected dates."
+msgstr "لا توجد وحدات متاحة للتواريخ المحددة."
+
+#: .\templates\core\booking_wizard_step2.html:79
+msgid "Choose Unit(s)"
+msgstr "اختر وحدة/وحدات"
+
+#: .\templates\core\booking_wizard_step2.html:85
+msgid "Select one or multiple units based on guest count."
+msgstr "اختر وحدة واحدة أو عدة وحدات حسب عدد الضيوف."
+
+#: .\templates\core\booking_wizard_step3.html:10
+#, python-format
+msgid "Step %(step_num)s of 4 — Guest Details"
+msgstr "الخطوة %(step_num)s من 4 — بيانات الضيف"
+
+#: .\templates\core\booking_wizard_step3.html:15
+msgid "Step 3 — Guest Details"
+msgstr "الخطوة 3 — بيانات الضيف"
+
+#: .\templates\core\booking_wizard_step3.html:36
+msgid "Select Existing Guest (optional)"
+msgstr "اختر ضيفا موجودا (اختياري)"
+
+#: .\templates\core\booking_wizard_step3.html:39
+msgid "If selected, the fields below are optional."
+msgstr "إذا تم الاختيار، تصبح الحقول أدناه اختيارية."
+
+#: .\templates\core\booking_wizard_step3.html:74
+msgid "Select"
+msgstr "اختر"
+
+#: .\templates\core\booking_wizard_step4.html:10
+#, python-format
+msgid "Step %(step_num)s of 4 — Payment & Confirm"
+msgstr "الخطوة %(step_num)s من 4 — الدفع والتأكيد"
+
+#: .\templates\core\booking_wizard_step4.html:15
+msgid "Step 4 — Payment"
+msgstr "الخطوة 4 — الدفع"
+
+#: .\templates\core\booking_wizard_step4.html:31
+msgid "Summary"
+msgstr "ملخص"
+
+#: .\templates\core\booking_wizard_step4.html:34
+msgid "Units:"
+msgstr "الوحدات:"
+
+#: .\templates\core\booking_wizard_step4.html:39
+msgid "Dates:"
+msgstr "التواريخ:"
+
+#: .\templates\core\booking_wizard_step4.html:40
+msgid "Nights:"
+msgstr "الليالي:"
+
+#: .\templates\core\booking_wizard_step4.html:42
+msgid "Base Total"
+msgstr "الإجمالي الأساسي"
+
+#: .\templates\core\booking_wizard_step4.html:43
+msgid "Calculated from unit prices"
+msgstr "محسوب من أسعار الوحدات"
+
+#: .\templates\core\booking_wizard_step4.html:60
+msgid "Discount"
+msgstr "الخصم"
+
+#: .\templates\core\booking_wizard_step4.html:64
+msgid "Advance Payment"
+msgstr "الدفعة المقدمة"
+
+#: .\templates\core\booking_wizard_step4.html:68
+msgid "Total Amount"
+msgstr "إجمالي المبلغ"
+
+#: .\templates\core\booking_wizard_step4.html:73
+#: .\templates\core\bookings_list.html:287
+msgid "Payment Method"
+msgstr "طريقة الدفع"
+
+#: .\templates\core\booking_wizard_step4.html:81
+msgid "Notes (optional)"
+msgstr "ملاحظات (اختياري)"
+
+#: .\templates\core\booking_wizard_step4.html:87
+msgid "Final Total"
+msgstr "الإجمالي النهائي"
+
+#: .\templates\core\booking_wizard_step4.html:88
+msgid "Balance Amount"
+msgstr "المبلغ المتبقي"
+
+#: .\templates\core\booking_wizard_step4.html:92
+#: .\templates\core\bookings_list.html:305
+msgid "Send WhatsApp"
+msgstr "إرسال واتساب"
+
+#: .\templates\core\booking_wizard_step4.html:93
+#: .\templates\core\bookings_list.html:306
+msgid "Print Receipt"
+msgstr "طباعة الإيصال"
+
+#: .\templates\core\booking_wizard_step4.html:94
+msgid "Save PDF"
+msgstr "حفظ PDF"
+
+#: .\templates\core\booking_wizard_step4.html:96
+msgid "Print Agreement"
+msgstr "طباعة العقد"
+
+#: .\templates\core\booking_wizard_step4.html:97
+msgid "Save Agreement (PDF)"
+msgstr "حفظ العقد (PDF)"
+
+#: .\templates\core\booking_wizard_step4.html:99
+msgid "Save / Finish"
+msgstr "حفظ / إنهاء"
+
+#: .\templates\core\bookings_list.html:4
+msgid "StayLux — Bookings"
+msgstr "ستي لوكس — الحجوزات"
+
+#: .\templates\core\bookings_list.html:11
+msgid "Manage reservations, check-ins/outs, cancellations and archive."
+msgstr "إدارة الحجوزات وتسجيل الدخول/الخروج والإلغاء والأرشفة."
+
+#: .\templates\core\bookings_list.html:27
+msgid "New Daily Booking"
+msgstr "حجز يومي جديد"
+
+#: .\templates\core\bookings_list.html:30
+msgid "New Monthly Booking"
+msgstr "حجز شهري جديد"
+
+#: .\templates\core\bookings_list.html:41 .\templates\core\housekeeping.html:21
+#: .\templates\core\maintenance_list.html:17
+msgid "Room/Unit"
+msgstr "غرفة/وحدة"
+
+#: .\templates\core\bookings_list.html:46
+msgid "Reserved"
+msgstr "محجوز"
+
+#: .\templates\core\bookings_list.html:47
+msgid "Checked-in"
+msgstr "تم تسجيل الدخول"
+
+#: .\templates\core\bookings_list.html:48
+msgid "Checked-out"
+msgstr "تم تسجيل الخروج"
+
+#: .\templates\core\bookings_list.html:50
+msgid "No-show"
+msgstr "لم يحضر"
+
+#: .\templates\core\bookings_list.html:60 .\templates\core\guests_list.html:26
+#: .\templates\core\housekeeping.html:33
+#: .\templates\core\maintenance_list.html:32
+#: .\templates\core\payments_list.html:54
+msgid "Filter"
+msgstr "تصفية"
+
+#: .\templates\core\bookings_list.html:71
+msgid "Include Archived"
+msgstr "تضمين المؤرشف"
+
+#: .\templates\core\bookings_list.html:77
+msgid "Active Bookings"
+msgstr "الحجوزات النشطة"
+
+#: .\templates\core\bookings_list.html:90
+#: .\templates\core\bookings_list.html:199 .\templates\core\guests_list.html:49
+#: .\templates\core\housekeeping.html:47 .\templates\core\invoices_list.html:24
+#: .\templates\core\maintenance_list.html:46
+#: .\templates\core\owners_list.html:29 .\templates\core\payments_list.html:71
+#: .\templates\core\settings.html:271 .\templates\core\staff_list.html:29
+#: .\templates\core\unit_types_list.html:24 .\templates\core\units_list.html:32
+msgid "Actions"
+msgstr "الإجراءات"
+
+#: .\templates\core\bookings_list.html:114
+#: .\templates\core\bookings_list.html:221 .\templates\core\guests_list.html:66
+#: .\templates\core\invoices_list.html:36 .\templates\core\owners_list.html:41
+#: .\templates\core\payments_list.html:87 .\templates\core\staff_list.html:41
+#: .\templates\core\unit_types_list.html:35 .\templates\core\units_list.html:59
+msgid "Edit"
+msgstr "تعديل"
+
+#: .\templates\core\bookings_list.html:122
+#: .\templates\core\bookings_list.html:229
+#: .\templates\core\confirm_delete.html:26 .\templates\core\guests_list.html:67
+#: .\templates\core\invoices_list.html:37
+#: .\templates\core\maintenance_list.html:65
+#: .\templates\core\payments_list.html:88 .\templates\core\settings.html:297
+#: .\templates\core\unit_types_list.html:36 .\templates\core\units_list.html:60
+#: .\venv\Lib\site-packages\django\forms\formsets.py:499
+msgid "Delete"
+msgstr "حذف"
+
+#: .\templates\core\bookings_list.html:145
+#: .\templates\core\bookings_list.html:249
+#: .\templates\core\bookings_list.html:308
+msgid "Checkout"
+msgstr "تسجيل الخروج"
+
+#: .\templates\core\bookings_list.html:168
+msgid "Archive"
+msgstr "أرشفة"
+
+#: .\templates\core\bookings_list.html:177
+msgid "No active bookings found."
+msgstr "لا توجد حجوزات نشطة."
+
+#: .\templates\core\bookings_list.html:186
+msgid "Past Bookings"
+msgstr "الحجوزات السابقة"
+
+#: .\templates\core\bookings_list.html:237
+msgid "No past bookings found."
+msgstr "لا توجد حجوزات سابقة."
+
+#: .\templates\core\bookings_list.html:277
+msgid "Advance Paid"
+msgstr "المدفوع مقدما"
+
+#: .\templates\core\bookings_list.html:278
+#: .\templates\core\invoices_list.html:23
+msgid "Balance"
+msgstr "الرصيد"
+
+#: .\templates\core\bookings_list.html:283
+msgid "Collect Amount"
+msgstr "تحصيل المبلغ"
+
+#: .\templates\core\bookings_list.html:295
+msgid "Reference (optional)"
+msgstr "المرجع (اختياري)"
+
+#: .\templates\core\bookings_list.html:296
+msgid "Receipt / Transaction ID"
+msgstr "رقم الإيصال / المعاملة"
+
+#: .\templates\core\bookings_list.html:307
+msgid "Export Receipt PDF"
+msgstr "تصدير الإيصال PDF"
+
+#: .\templates\core\bookings_list.html:313
+msgid "Failed to load checkout info."
+msgstr "فشل تحميل معلومات الخروج."
+
+#: .\templates\core\bookings_list.html:314
+msgid "Failed to create invoice."
+msgstr "فشل إنشاء الفاتورة."
+
+#: .\templates\core\bookings_list.html:315
+msgid "WhatsApp send failed."
+msgstr "فشل إرسال واتساب."
+
+#: .\templates\core\bookings_list.html:316
+msgid "WhatsApp queued."
+msgstr "تمت جدولة واتساب."
+
+#: .\templates\core\bookings_list.html:317
+msgid "Checkout failed."
+msgstr "فشل تسجيل الخروج."
+
+#: .\templates\core\bookings_list.html:318
+msgid "Checkout completed."
+msgstr "تم تسجيل الخروج بنجاح."
+
+#: .\templates\core\confirm_delete.html:14
+msgid "You are about to delete:"
+msgstr "أنت على وشك الحذف:"
+
+#: .\templates\core\confirm_delete.html:19
+msgid "This action cannot be undone."
+msgstr "لا يمكن التراجع عن هذا الإجراء."
+
+#: .\templates\core\dashboard.html:11
+#, python-format
+msgid "Welcome Back, %(user_name)s!"
+msgstr "مرحبا بعودتك، %(user_name)s!"
+
+#: .\templates\core\dashboard.html:17 .\templates\core\dashboard.html:19
+#, python-format
+msgid "Here is what's happening at <strong>%(prop_name)s</strong>."
+msgstr "إليك ما يحدث في <strong>%(prop_name)s</strong>."
+
+# Fallback when property has no name
+#: .\templates\core\dashboard.html:19
+msgid "your property"
+msgstr "المنشأة الخاصة بك"
+
+#: .\templates\core\dashboard.html:22
+msgid "Here is what's happening today."
+msgstr "إليك ما يحدث اليوم."
+
+#: .\templates\core\dashboard.html:32 .\templates\core\dashboard.html:101
+#: .\templates\core\reports.html:73 .\templates\core\reports.html:77
+#: .\templates\core\reports.html:135
+msgid "Occupancy"
+msgstr "الإشغال"
+
+#: .\templates\core\dashboard.html:35
+#, python-format
+msgid "Active: %(active)s"
+msgstr "نشط: %(active)s"
+
+#: .\templates\core\dashboard.html:36
+#, python-format
+msgid "Units: %(units)s"
+msgstr "الوحدات: %(units)s"
+
+#: .\templates\core\dashboard.html:46
+msgid "Total Guests"
+msgstr "إجمالي الضيوف"
+
+#: .\templates\core\dashboard.html:48 .\templates\core\guests.html:15
+msgid "Profiles"
+msgstr "الملفات"
+
+#: .\templates\core\dashboard.html:57 .\templates\core\pricing_rateplans.html:5
+#: .\templates\core\pricing_rateplans.html:9
+#: .\templates\core\pricing_seasonal.html:18
+msgid "Rate Plans"
+msgstr "خطط الأسعار"
+
+#: .\templates\core\dashboard.html:68
+#: .\templates\core\pricing_rateplans.html:18
+msgid "Seasonal Rules"
+msgstr "قواعد موسمية"
+
+#: .\templates\core\dashboard.html:70 .\templates\core\pricing_seasonal.html:44
+msgid "Configured"
+msgstr "مهيأ"
+
+#: .\templates\core\dashboard.html:80
+msgid "Quick Actions"
+msgstr "إجراءات سريعة"
+
+#: .\templates\core\dashboard.html:102
+msgid "Last 7 days (visual)"
+msgstr "آخر 7 أيام (مرئي)"
+
+#: .\templates\core\dashboard.html:121
+msgid "Today's Activity"
+msgstr "نشاط اليوم"
+
+#: .\templates\core\dashboard.html:122
+msgid "Latest"
+msgstr "الأحدث"
+
+#: .\templates\core\dashboard.html:135
+#, python-format
+msgid "Booking #%(booking_id)s · %(status)s"
+msgstr "الحجز رقم %(booking_id)s · %(status)s"
+
+#: .\templates\core\dashboard.html:141
+msgid "No activity yet today."
+msgstr "لا يوجد نشاط حتى الآن اليوم."
+
+#: .\templates\core\dashboard.html:150
+msgid "Recent Bookings"
+msgstr "أحدث الحجوزات"
+
+#: .\templates\core\dashboard.html:158
+msgid "Check-In"
+msgstr "تسجيل الدخول"
+
+#: .\templates\core\dashboard.html:171
+msgid "No bookings yet."
+msgstr "لا توجد حجوزات بعد."
+
+#: .\templates\core\form_page.html:3 .\templates\core\form_page.html:4
+#: .\templates\core\settings.html:259 .\templates\core\units_list.html:12
+msgid "Add"
+msgstr "إضافة"
+
+#: .\templates\core\form_page.html:38 .\templates\core\owners_list.html:24
+#: .\templates\core\settings.html:346 .\templates\core\staff_list.html:24
+msgid "Username"
+msgstr "اسم المستخدم"
+
+#: .\templates\core\form_page.html:39 .\templates\core\login.html:71
+#: .\templates\core\settings.html:350
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: .\templates\core\form_page.html:40
+msgid "First name"
+msgstr "الاسم الأول"
+
+#: .\templates\core\form_page.html:41
+msgid "Last name"
+msgstr "اسم العائلة"
+
+#: .\templates\core\form_page.html:42 .\templates\core\staff_list.html:27
+msgid "Role"
+msgstr "الدور"
+
+#: .\templates\core\form_page.html:44
+#, fuzzy
+#| msgid "Password"
+msgid "Reset password"
+msgstr "كلمة المرور"
+
+#: .\templates\core\form_page.html:88 .\templates\core\settings.html:106
+#: .\templates\core\settings.html:119 .\templates\core\settings.html:132
+#: .\templates\core\settings.html:149 .\templates\core\settings.html:292
+#: .\templates\core\settings.html:309 .\templates\core\settings.html:356
+#: .\templates\core\settings.html:417
+msgid "Save"
+msgstr "حفظ"
+
+#: .\templates\core\guests.html:3 .\templates\core\guests_list.html:3
+msgid "StayLux — Guests"
+msgstr "ستي لوكس — الضيوف"
+
+#: .\templates\core\guests.html:9
+msgid "Guest profiles and contact details."
+msgstr "ملفات الضيوف وتفاصيل الاتصال."
+
+#: .\templates\core\guests.html:14
+msgid "Guest List"
+msgstr "قائمة الضيوف"
+
+#: .\templates\core\guests.html:37 .\templates\core\guests_list.html:72
+msgid "No guests yet."
+msgstr "لا يوجد ضيوف بعد."
+
+#: .\templates\core\guests_list.html:17
+msgid "Guest Name"
+msgstr "اسم الضيف"
+
+#: .\templates\core\guests_list.html:31
+msgid "Upload ID"
+msgstr "رفع الهوية"
+
+#: .\templates\core\guests_list.html:32
+msgid "View ID"
+msgstr "عرض الهوية"
+
+#: .\templates\core\guests_list.html:33 .\templates\core\reports.html:95
+msgid "Print"
+msgstr "طباعة"
+
+#: .\templates\core\guests_list.html:34
+msgid "Export PDF"
+msgstr "تصدير PDF"
+
+# Headings (list pages)
+msgid "Bookings Overview"
+msgstr "نظرة عامة على الحجوزات"
+
+msgid "Manage guest profiles, IDs, and stay history."
+msgstr "إدارة ملفات الضيوف والهويات وسجل الإقامة."
+
+msgid "Guest Directory"
+msgstr "دليل الضيوف"
+
+msgid "Manage rooms and units, pricing, and amenities."
+msgstr "إدارة الغرف/الوحدات والأسعار والمرافق."
+
+msgid "Room / Unit List"
+msgstr "قائمة الغرف/الوحدات"
+
+msgid "Record payments and track cashflow."
+msgstr "تسجيل المدفوعات وتتبع التدفق النقدي."
+
+msgid "Payment Records"
+msgstr "سجلات المدفوعات"
+
+msgid "Create, issue, and track guest invoices."
+msgstr "إنشاء فواتير الضيوف وإصدارها ومتابعتها."
+
+msgid "Invoice Register"
+msgstr "سجل الفواتير"
+
+msgid "Log issues, track progress, and costs."
+msgstr "تسجيل الأعطال ومتابعة التقدم والتكاليف."
+
+#: .\templates\core\guests_list.html:35
+msgid "Export Excel"
+msgstr "تصدير Excel"
+
+#: .\templates\core\guests_list.html:43 .\templates\core\owners_list.html:25
+#: .\templates\core\pricing_rateplans.html:52
+#: .\templates\core\staff_list.html:25
+msgid "Name"
+msgstr "الاسم"
+
+#: .\templates\core\guests_list.html:45
+msgid "Number"
+msgstr "الرقم"
+
+#: .\templates\core\guests_list.html:79
+msgid "Please select a guest first."
+msgstr "يرجى اختيار ضيف أولا."
+
+#: .\templates\core\housekeeping.html:3
+msgid "StayLux — Housekeeping"
+msgstr "ستي لوكس — التدبير المنزلي"
+
+#: .\templates\core\housekeeping.html:10
+msgid "Tasks and room readiness workflow."
+msgstr "مهام سير العمل وتجهيز الغرف."
+
+#: .\templates\core\housekeeping.html:15
+msgid "Tasks"
+msgstr "المهام"
+
+#: .\templates\core\housekeeping.html:16
+msgid "Workflow"
+msgstr "سير العمل"
+
+#: .\templates\core\housekeeping.html:26
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#: .\templates\core\housekeeping.html:28 .\templates\core\housekeeping.html:84
+msgid "Done"
+msgstr "تم"
+
+#: .\templates\core\housekeeping.html:44
+msgid "Task"
+msgstr "المهمة"
+
+#: .\templates\core\housekeeping.html:46
+#: .\templates\core\maintenance_list.html:20
+msgid "Assigned To"
+msgstr "مُسند إلى"
+
+#: .\templates\core\housekeeping.html:66
+msgid "Assign worker"
+msgstr "تعيين عامل"
+
+#: .\templates\core\housekeeping.html:73
+msgid "Assign"
+msgstr "تعيين"
+
+#: .\templates\core\housekeeping.html:79
+msgid "Start"
+msgstr "بدء"
+
+#: .\templates\core\housekeeping.html:99
+msgid "No housekeeping tasks found (or housekeeping models not enabled)."
+msgstr "لا توجد مهام تدبير منزلي (أو أن النماذج غير مفعلة)."
+
+#: .\templates\core\invoices_list.html:3
+msgid "StayLux — Invoices"
+msgstr "ستي لوكس — الفواتير"
+
+#: .\templates\core\invoices_list.html:11
+msgid "New Invoice"
+msgstr "فاتورة جديدة"
+
+#: .\templates\core\invoices_list.html:19
+#: .\templates\core\payments_list.html:42
+msgid "Invoice #"
+msgstr "رقم الفاتورة"
+
+#: .\templates\core\invoices_list.html:41
+msgid "No invoices yet."
+msgstr "لا توجد فواتير بعد."
+
+#: .\templates\core\login.html:9
+msgid "StayLux — Login"
+msgstr "ستي لوكس — تسجيل الدخول"
+
+#: .\templates\core\login.html:41
+msgid "Welcome Back!"
+msgstr "مرحبا بعودتك!"
+
+#: .\templates\core\login.html:44
+msgid "Please sign in to your account"
+msgstr "يرجى تسجيل الدخول إلى حسابك"
+
+#: .\templates\core\login.html:59
+msgid "Username or Email"
+msgstr "اسم المستخدم أو البريد الإلكتروني"
+
+#: .\templates\core\login.html:85
+msgid "Remember Me"
+msgstr "تذكرني"
+
+#: .\templates\core\login.html:87
+msgid "Forgot Password?"
+msgstr "نسيت كلمة المرور؟"
+
+#: .\templates\core\login.html:90
+msgid "Sign In"
+msgstr "تسجيل الدخول"
+
+#: .\templates\core\login.html:93
+msgid "Having trouble?"
+msgstr "هل تواجه مشكلة؟"
+
+#: .\templates\core\login.html:94
+msgid "Contact Support"
+msgstr "تواصل مع الدعم"
+
+#: .\templates\core\maintenance.html:3 .\templates\core\maintenance_list.html:3
+msgid "StayLux — Maintenance"
+msgstr "ستي لوكس — الصيانة"
+
+#: .\templates\core\maintenance.html:10
+msgid "Track issues, assign technicians, and monitor status."
+msgstr "تتبع الأعطال، وتعيين الفنيين، ومراقبة الحالة."
+
+#: .\templates\core\maintenance.html:15
+msgid "Tickets"
+msgstr "التذاكر"
+
+#: .\templates\core\maintenance.html:16
+msgid "Requests"
+msgstr "الطلبات"
+
+#: .\templates\core\maintenance.html:45
+msgid "No maintenance tickets found (or maintenance models not enabled)."
+msgstr "لا توجد تذاكر صيانة (أو أن النماذج غير مفعلة)."
+
+#: .\templates\core\maintenance_list.html:9
+msgid "Maintenance Tickets"
+msgstr "تذاكر الصيانة"
+
+#: .\templates\core\maintenance_list.html:11
+msgid "New Ticket"
+msgstr "تذكرة جديدة"
+
+#: .\templates\core\maintenance_list.html:42 .\templates\core\reports.html:25
+msgid "Type"
+msgstr "النوع"
+
+#: .\templates\core\maintenance_list.html:45
+msgid "Costs"
+msgstr "التكاليف"
+
+#: .\templates\core\maintenance_list.html:60
+msgid "View"
+msgstr "عرض"
+
+#: .\templates\core\maintenance_list.html:62
+msgid "Edit Draft"
+msgstr "تعديل المسودة"
+
+#: .\templates\core\maintenance_list.html:63
+msgid "Complete"
+msgstr "إكمال"
+
+#: .\templates\core\maintenance_list.html:69
+msgid "No tickets yet."
+msgstr "لا توجد تذاكر بعد."
+
+#: .\templates\core\owners_list.html:3
+msgid "StayLux — Owners"
+msgstr "ستي لوكس — المالكون"
+
+#: .\templates\core\owners_list.html:4 .\templates\core\owners_list.html:9
+#: .\templates\core\settings.html:20
+msgid "Owners"
+msgstr "المالكون"
+
+#: .\templates\core\owners_list.html:39 .\templates\core\payments_list.html:85
+#: .\templates\core\staff_list.html:39 .\templates\core\unit_types_list.html:33
+#: .\templates\core\units_list.html:57
+#: .\venv\Lib\site-packages\django\forms\widgets.py:867
+msgid "Yes"
+msgstr "نعم"
+
+#: .\templates\core\owners_list.html:39 .\templates\core\payments_list.html:85
+#: .\templates\core\staff_list.html:39 .\templates\core\unit_types_list.html:33
+#: .\templates\core\units_list.html:57
+#: .\venv\Lib\site-packages\django\forms\widgets.py:868
+msgid "No"
+msgstr "لا"
+
+#: .\templates\core\owners_list.html:42 .\templates\core\staff_list.html:42
+msgid "Deactivate"
+msgstr "تعطيل"
+
+#: .\templates\core\owners_list.html:46
+msgid "No owners yet."
+msgstr "لا يوجد مالكون بعد."
+
+#: .\templates\core\payments_list.html:3
+msgid "StayLux — Payments"
+msgstr "ستي لوكس — المدفوعات"
+
+#: .\templates\core\payments_list.html:12
+msgid "New Payment"
+msgstr "دفعة جديدة"
+
+#: .\templates\core\payments_list.html:15
+msgid "Print Report"
+msgstr "طباعة التقرير"
+
+#: .\templates\core\payments_list.html:18
+msgid "Export Report PDF"
+msgstr "تصدير التقرير PDF"
+
+#: .\templates\core\payments_list.html:63
+msgid "Date"
+msgstr "التاريخ"
+
+#: .\templates\core\payments_list.html:92
+msgid "No payments yet."
+msgstr "لا توجد مدفوعات بعد."
+
+#: .\templates\core\pricing_rateplans.html:4
+msgid "StayLux — Rate Plans"
+msgstr "ستي لوكس — خطط الأسعار"
+
+#: .\templates\core\pricing_rateplans.html:10
+msgid "Create and manage pricing plans for your units."
+msgstr "إنشاء وإدارة خطط التسعير للوحدات."
+
+#: .\templates\core\pricing_rateplans.html:17
+#: .\templates\core\pricing_seasonal.html:17
+msgid "Create / Update"
+msgstr "إنشاء / تحديث"
+
+#: .\templates\core\pricing_rateplans.html:34
+msgid "Save Rate Plan"
+msgstr "حفظ خطة الأسعار"
+
+#: .\templates\core\pricing_rateplans.html:43
+msgid "All Rate Plans"
+msgstr "كل خطط الأسعار"
+
+#: .\templates\core\pricing_rateplans.html:53
+#: .\templates\core\unit_types_list.html:22
+msgid "Base Rate"
+msgstr "السعر الأساسي"
+
+#: .\templates\core\pricing_rateplans.html:63
+#: .\templates\core\pricing_seasonal.html:67
+msgid "Inactive"
+msgstr "غير نشط"
+
+#: .\templates\core\pricing_rateplans.html:66
+msgid "No rate plans yet."
+msgstr "لا توجد خطط أسعار بعد."
+
+#: .\templates\core\pricing_seasonal.html:4
+msgid "StayLux — Seasonal Rates"
+msgstr "ستي لوكس — الأسعار الموسمية"
+
+#: .\templates\core\pricing_seasonal.html:5
+#, fuzzy
+#| msgid "Seasonal Rules"
+msgid "Seasonal Rates"
+msgstr "قواعد موسمية"
+
+#: .\templates\core\pricing_seasonal.html:9
+msgid "Seasonal Rate Rules"
+msgstr "قواعد الأسعار الموسمية"
+
+#: .\templates\core\pricing_seasonal.html:10
+msgid "Override rates by date range and priority."
+msgstr "تجاوز الأسعار حسب نطاق التاريخ والأولوية."
+
+#: .\templates\core\pricing_seasonal.html:34
+msgid "Save Seasonal Rule"
+msgstr "حفظ قاعدة موسمية"
+
+#: .\templates\core\pricing_seasonal.html:43
+msgid "All Seasonal Rules"
+msgstr "كل القواعد الموسمية"
+
+#: .\templates\core\pricing_seasonal.html:52
+#, fuzzy
+#| msgid "Rate Plans"
+msgid "Rate Plan"
+msgstr "خطط الأسعار"
+
+#: .\templates\core\pricing_seasonal.html:53
+msgid "Date Range"
+msgstr "نطاق التاريخ"
+
+#: .\templates\core\pricing_seasonal.html:70
+msgid "No seasonal rules yet."
+msgstr "لا توجد قواعد موسمية بعد."
+
+#: .\templates\core\reports.html:4
+msgid "StayLux — Reports"
+msgstr "ستي لوكس — التقارير"
+
+#: .\templates\core\reports.html:10
+msgid "Revenue, occupancy, and maintenance performance."
+msgstr "الإيرادات والإشغال وأداء الصيانة."
+
+#: .\templates\core\reports.html:15
+msgid "Filters"
+msgstr "المرشحات"
+
+#: .\templates\core\reports.html:21
+msgid "Period"
+msgstr "الفترة"
+
+#: .\templates\core\reports.html:33
+msgid "From"
+msgstr "من"
+
+#: .\templates\core\reports.html:37
+msgid "To"
+msgstr "إلى"
+
+#: .\templates\core\reports.html:41
+msgid "Run"
+msgstr "تشغيل"
+
+#: .\templates\core\reports.html:46
+msgid "Include archived bookings"
+msgstr "تضمين الحجوزات المؤرشفة"
+
+#: .\templates\core\reports.html:57 .\templates\owner_portal\home.html:34
+msgid "Revenue"
+msgstr "الإيرادات"
+
+#: .\templates\core\reports.html:61
+msgid "Total Revenue"
+msgstr "إجمالي الإيرادات"
+
+#: .\templates\core\reports.html:62
+msgid "Maintenance Costs"
+msgstr "تكاليف الصيانة"
+
+#: .\templates\core\reports.html:63
+msgid "Net Income"
+msgstr "صافي الدخل"
+
+#: .\templates\core\reports.html:64
+msgid "Collections"
+msgstr "التحصيلات"
+
+#: .\templates\core\reports.html:65 .\templates\owner_portal\home.html:40
+msgid "Outstanding"
+msgstr "المستحقات"
+
+#: .\templates\core\reports.html:78
+msgid "Booked Nights"
+msgstr "الليالي المحجوزة"
+
+#: .\templates\core\reports.html:79
+msgid "Total Nights"
+msgstr "إجمالي الليالي"
+
+#: .\templates\core\reports.html:89
+msgid "Exports"
+msgstr "التصدير"
+
+#: .\templates\core\reports.html:90
+msgid "PDF / Excel"
+msgstr "PDF / Excel"
+
+#: .\templates\core\reports.html:98
+msgid "Excel"
+msgstr "Excel"
+
+#: .\templates\core\reports.html:101
+msgid "PDF"
+msgstr "PDF"
+
+#: .\templates\core\reports.html:105
+msgid "Run a report to enable exports."
+msgstr "شغل تقريرا لتفعيل التصدير."
+
+#: .\templates\core\reports.html:115
+msgid "Revenue Mix"
+msgstr "مزيج الإيرادات"
+
+#: .\templates\core\reports.html:116
+msgid "Bar"
+msgstr "شريطي"
+
+#: .\templates\core\reports.html:136
+msgid "Percent"
+msgstr "نسبة"
+
+#: .\templates\core\reports.html:142
+#, fuzzy, python-format
+#| msgid "Occupancy %(pct)s%"
+msgid "Occupancy %(pct)s%%"
+msgstr "الإشغال %(pct)s%"
+
+#: .\templates\core\reports.html:151
+msgid "API Links"
+msgstr "روابط API"
+
+#: .\templates\core\reports.html:152
+msgid "Owner Portal"
+msgstr "بوابة المالك"
+
+#: .\templates\core\reports.html:155
+msgid "Occupancy API URL:"
+msgstr "رابط API للإشغال:"
+
+#: .\templates\core\reports.html:161
+msgid "Select filters and run a report to see charts and summaries."
+msgstr "اختر المرشحات وشغل تقريرا لرؤية الرسوم والملخصات."
+
+#: .\templates\core\settings.html:4
+msgid "StayLux — Settings"
+msgstr "ستي لوكس — الإعدادات"
+
+#: .\templates\core\settings.html:10
+msgid "Property configuration and system preferences."
+msgstr "إعدادات المنشأة وتفضيلات النظام."
+
+#: .\templates\core\settings.html:18
+msgid "Property"
+msgstr "المنشأة"
+
+#: .\templates\core\settings.html:19 .\templates\core\staff_list.html:4
+#: .\templates\core\staff_list.html:9
+msgid "Employees"
+msgstr "الموظفون"
+
+#: .\templates\core\settings.html:22 .\templates\core\settings.html:425
+msgid "System"
+msgstr "النظام"
+
+#: .\templates\core\settings.html:23
+msgid "Database"
+msgstr "قاعدة البيانات"
+
+#: .\templates\core\settings.html:24
+msgid "Backup & Restore"
+msgstr "النسخ الاحتياطي والاستعادة"
+
+#: .\templates\core\settings.html:35
+msgid "Hotel / Apartments"
+msgstr "فندق / شقق"
+
+#: .\templates\core\settings.html:107 .\templates\core\settings.html:150
+#: .\templates\core\settings.html:410
+msgid "Reset"
+msgstr "إعادة ضبط"
+
+#: .\templates\core\settings.html:112
+msgid "Manage employees from the Employees tab below."
+msgstr "إدارة الموظفين من تبويب الموظفين أدناه."
+
+#: .\templates\core\settings.html:115 .\templates\core\settings.html:120
+msgid "Open Employees"
+msgstr "فتح الموظفين"
+
+#: .\templates\core\settings.html:125
+msgid "Manage unit owners and assignments."
+msgstr "إدارة مالكي الوحدات والتعيينات."
+
+#: .\templates\core\settings.html:128 .\templates\core\settings.html:133
+msgid "Open Owners"
+msgstr "فتح المالكين"
+
+#: .\templates\core\settings.html:158
+msgid "Amenity Tier Presets"
+msgstr "إعدادات فئات المرافق"
+
+#: .\templates\core\settings.html:159
+msgid ""
+"Choose amenities for each tier. Settings apply to the active business mode."
+msgstr "اختر المرافق لكل فئة. تنطبق الإعدادات على وضع العمل النشط."
+
+#: .\templates\core\settings.html:192
+msgid "No hotel amenities loaded."
+msgstr "لا توجد مرافق للفندق."
+
+#: .\templates\core\settings.html:196
+msgid "Save Hotel Tier"
+msgstr "حفظ فئة الفندق"
+
+#: .\templates\core\settings.html:205
+msgid "Serviced Apartments"
+msgstr "شقق مخدومة"
+
+#: .\templates\core\settings.html:221
+msgid "No apartment amenities loaded."
+msgstr "لا توجد مرافق للشقق."
+
+#: .\templates\core\settings.html:225
+msgid "Save Apartment Tier"
+msgstr "حفظ فئة الشقق"
+
+#: .\templates\core\settings.html:239
+msgid "Amenity List"
+msgstr "قائمة المرافق"
+
+#: .\templates\core\settings.html:247
+msgid "Amenity (EN)"
+msgstr "مرفق (إنجليزي)"
+
+#: .\templates\core\settings.html:251
+msgid "Amenity (AR)"
+msgstr "مرفق (عربي)"
+
+#: .\templates\core\settings.html:268 .\templates\core\unit_types_list.html:20
+msgid "Name (EN)"
+msgstr "الاسم (إنجليزي)"
+
+#: .\templates\core\settings.html:269 .\templates\core\unit_types_list.html:21
+msgid "Name (AR)"
+msgstr "الاسم (عربي)"
+
+#: .\templates\core\settings.html:302
+msgid "No amenities yet."
+msgstr "لا توجد مرافق بعد."
+
+#: .\templates\core\settings.html:310
+msgid "Add Amenity"
+msgstr "إضافة مرفق"
+
+#: .\templates\core\settings.html:322
+msgid "PostgreSQL / Neon"
+msgstr "PostgreSQL / Neon"
+
+#: .\templates\core\settings.html:324
+msgid "Save credentials, test connection, or migrate data to a new database."
+msgstr "احفظ البيانات، اختبر الاتصال، أو انقل البيانات إلى قاعدة جديدة."
+
+#: .\templates\core\settings.html:338
+msgid "SSL Mode"
+msgstr "وضع SSL"
+
+#: .\templates\core\settings.html:342
+msgid "Database Name"
+msgstr "اسم قاعدة البيانات"
+
+#: .\templates\core\settings.html:357
+msgid "Test Connection"
+msgstr "اختبار الاتصال"
+
+#: .\templates\core\settings.html:358
+msgid "Migrate Data"
+msgstr "ترحيل البيانات"
+
+#: .\templates\core\settings.html:361
+msgid ""
+"Migration copies the current database into PostgreSQL. Restart the app to "
+"switch databases."
+msgstr ""
+"ينسخ الترحيل قاعدة البيانات الحالية إلى PostgreSQL. أعد تشغيل التطبيق لتبديل "
+"القاعدة."
+
+#: .\templates\core\settings.html:376 .\templates\core\settings.html:380
+msgid "Backup"
+msgstr "نسخ احتياطي"
+
+#: .\templates\core\settings.html:377
+msgid "Download a backup of the current database."
+msgstr "تنزيل نسخة احتياطية من قاعدة البيانات الحالية."
+
+#: .\templates\core\settings.html:386 .\templates\core\settings.html:392
+msgid "Restore"
+msgstr "استعادة"
+
+#: .\templates\core\settings.html:387
+msgid "Upload a backup file to restore the database."
+msgstr "ارفع ملف النسخة الاحتياطية لاستعادة قاعدة البيانات."
+
+#: .\templates\core\settings.html:399
+msgid "Reset Data (Danger)"
+msgstr "إعادة ضبط البيانات (خطر)"
+
+#: .\templates\core\settings.html:400
+msgid ""
+"Deletes Rooms, Guests, Bookings, Maintenance, Housekeeping, and Reports data "
+"for the active business mode."
+msgstr ""
+"يحذف بيانات الغرف والضيوف والحجوزات والصيانة والتدبير المنزلي والتقارير "
+"للوضع النشط."
+
+#: .\templates\core\settings.html:405
+msgid "Type DELETE to confirm"
+msgstr "اكتب DELETE للتأكيد"
+
+#: .\templates\core\settings.html:406
+msgid "DELETE"
+msgstr "DELETE"
+
+#: .\templates\core\settings.html:409
+msgid "Reset Data"
+msgstr "إعادة ضبط البيانات"
+
+#: .\templates\core\settings.html:426
+msgid "Info"
+msgstr "معلومات"
+
+#: .\templates\core\settings.html:430
+msgid "Theme:"
+msgstr "السمة:"
+
+#: .\templates\core\settings.html:430
+msgid "StayLux Navy & Gold"
+msgstr "ستي لوكس كحلي وذهبي"
+
+#: .\templates\core\settings.html:431
+msgid "Tagline:"
+msgstr "الشعار:"
+
+#: .\templates\core\settings.html:432
+msgid "Mode:"
+msgstr "الوضع:"
+
+#: .\templates\core\settings.html:432
+msgid "Web + API"
+msgstr "ويب + API"
+
+#: .\templates\core\settings.html:434
+msgid "Business Type:"
+msgstr "نوع النشاط:"
+
+#: .\templates\core\settings.html:435
+msgid "Currency:"
+msgstr "العملة:"
+
+#: .\templates\core\staff_list.html:3
+msgid "StayLux — Employees"
+msgstr "ستي لوكس — الموظفون"
+
+#: .\templates\core\staff_list.html:46
+msgid "No employees yet."
+msgstr "لا يوجد موظفون بعد."
+
+#: .\templates\core\unit_types_list.html:3 .\templates\core\units_list.html:14
+msgid "Room Types"
+msgstr "أنواع الغرف"
+
+#: .\templates\core\unit_types_list.html:12
+msgid "Add Type"
+msgstr "إضافة نوع"
+
+#: .\templates\core\unit_types_list.html:40
+msgid "No types yet."
+msgstr "لا توجد أنواع بعد."
+
+#: .\templates\core\units_list.html:3 .\templates\core\units_list.html:4
+#: .\templates\core\units_list.html:9
+msgid "Rooms / Units"
+msgstr "غرف / وحدات"
+
+#: .\templates\core\units_list.html:14
+msgid "Unit Types"
+msgstr "أنواع الوحدات"
+
+#: .\templates\core\units_list.html:24
+msgid "Bed"
+msgstr "السرير"
+
+#: .\templates\core\units_list.html:64
+msgid "No rooms/units yet."
+msgstr "لا توجد غرف/وحدات بعد."
+
+#: .\templates\owner_portal\home.html:8 .\templates\owner_portal\home.html:22
+msgid "Owner Dashboard"
+msgstr "لوحة المالك"
+
+#: .\templates\owner_portal\home.html:23
+#, python-format
+msgid "Property Profile ID: <b>%(pid)s</b>"
+msgstr "معرف ملف المنشأة: <b>%(pid)s</b>"
+
+#: .\templates\owner_portal\home.html:28
+#, python-format
+msgid "Occupancy (%(start)s → %(end)s)"
+msgstr "الإشغال (%(start)s → %(end)s)"
+
+#: .\templates\owner_portal\home.html:30
+#, python-format
+msgid "Booked nights: %(booked)s / %(total)s"
+msgstr "الليالي المحجوزة: %(booked)s / %(total)s"
+
+#: .\templates\owner_portal\home.html:36
+#, python-format
+msgid "Collections: %(collections)s"
+msgstr "التحصيلات: %(collections)s"
+
+#: .\templates\owner_portal\home.html:42
+msgid "Invoices & balances"
+msgstr "الفواتير والأرصدة"
+
+#: .\templates\owner_portal\home.html:51
+msgid "HK"
+msgstr "التدبير"
+
+#: .\templates\owner_portal\home.html:52
+msgid "Maint"
+msgstr "الصيانة"
+
+#: .\templates\owner_portal\home.html:59
+msgid "Pending tasks"
+msgstr "المهام المعلقة"
+
+#: .\templates\owner_portal\home.html:65
+msgid "Open requests"
+msgstr "طلبات مفتوحة"
+
+#: .\templates\owner_portal\home.html:70
+msgid "View dashboard JSON"
+msgstr "عرض لوحة JSON"
+
+#: .\templates\owner_portal\home.html:74
+msgid "Dashboard not available."
+msgstr "لوحة التحكم غير متاحة."
+
+#: .\templates\owner_portal\home.html:75
+msgid "Create StaffProfile with property_profile for this user, then refresh."
+msgstr ""
+"قم بإنشاء StaffProfile مع property_profile لهذا المستخدم، ثم أعد التحديث."
+
+#: .\venv\Lib\site-packages\django\contrib\messages\apps.py:16
+msgid "Messages"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\contrib\sitemaps\apps.py:8
+msgid "Site Maps"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\contrib\staticfiles\apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\contrib\syndication\apps.py:7
+#, fuzzy
+#| msgid "Direction"
+msgid "Syndication"
+msgstr "الاتجاه"
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: .\venv\Lib\site-packages\django\core\paginator.py:30
+msgid "…"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\paginator.py:32
+msgid "That page number is not an integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\paginator.py:33
+msgid "That page number is less than 1"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\paginator.py:34
+msgid "That page contains no results"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:22
+msgid "Enter a valid value."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:70
+msgid "Enter a valid domain name."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:153
+#: .\venv\Lib\site-packages\django\forms\fields.py:775
+msgid "Enter a valid URL."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:200
+msgid "Enter a valid integer."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:211
+msgid "Enter a valid email address."
+msgstr ""
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: .\venv\Lib\site-packages\django\core\validators.py:289
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:297
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:309
+#: .\venv\Lib\site-packages\django\core\validators.py:318
+#: .\venv\Lib\site-packages\django\core\validators.py:332
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2220
+#, python-format
+msgid "Enter a valid %(protocol)s address."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:311
+msgid "IPv4"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:320
+#: .\venv\Lib\site-packages\django\utils\ipv6.py:43
+msgid "IPv6"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:334
+msgid "IPv4 or IPv6"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:375
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:381
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:416
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:425
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:434
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:441
+#, python-format
+msgid ""
+"Ensure this value is a multiple of step size %(limit_value)s, starting from "
+"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:473
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:491
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:514
+#: .\venv\Lib\site-packages\django\forms\fields.py:366
+#: .\venv\Lib\site-packages\django\forms\fields.py:405
+msgid "Enter a number."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:516
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:521
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:526
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:597
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\core\validators.py:659
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\base.py:1600
+#: .\venv\Lib\site-packages\django\forms\models.py:908
+msgid "and"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\base.py:1602
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\constraints.py:22
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:134
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:135
+#, fuzzy
+#| msgid "This action cannot be undone."
+msgid "This field cannot be null."
+msgstr "لا يمكن التراجع عن هذا الإجراء."
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:136
+#, fuzzy
+#| msgid "This action cannot be undone."
+msgid "This field cannot be blank."
+msgstr "لا يمكن التراجع عن هذا الإجراء."
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:137
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:141
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:180
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1162
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1163
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1165
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1215
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1217
+msgid "String (unlimited)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1326
+#, fuzzy
+#| msgid "Completed notes"
+msgid "Comma-separated integers"
+msgstr "ملاحظات الإنجاز"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1427
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1431
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1566
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1435
+msgid "Date (without time)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1562
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1570
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1575
+msgid "Date (with time)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1702
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1704
+#, fuzzy
+#| msgid "ID Number"
+msgid "Decimal number"
+msgstr "رقم الهوية"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1864
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] "
+"[[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1868
+#, fuzzy
+#| msgid "Direction"
+msgid "Duration"
+msgstr "الاتجاه"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1920
+#, fuzzy
+#| msgid "Address"
+msgid "Email address"
+msgstr "العنوان"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1945
+msgid "File path"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2023
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2025
+msgid "Floating point number"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2065
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2067
+msgid "Integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2163
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2180
+msgid "Small integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2188
+#, fuzzy
+#| msgid "Address"
+msgid "IPv4 address"
+msgstr "العنوان"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2219
+#, fuzzy
+#| msgid "Address"
+msgid "IP address"
+msgstr "العنوان"
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2310
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2311
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2313
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2364
+msgid "Positive big integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2379
+msgid "Positive integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2394
+msgid "Positive small integer"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2410
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2446
+msgid "Text"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2526
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2530
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2534
+msgid "Time"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2642
+msgid "URL"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2666
+msgid "Raw binary data"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2731
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2733
+msgid "Universally unique identifier"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\files.py:244
+msgid "File"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\files.py:420
+msgid "Image"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\json.py:24
+msgid "A JSON object"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\json.py:26
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:979
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r is not a valid choice."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:982
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1276
+msgid "One-to-one relationship"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1333
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1335
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1383
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: .\venv\Lib\site-packages\django\forms\boundfield.py:185
+msgid ":?.!"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:95
+msgid "This field is required."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:315
+msgid "Enter a whole number."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:486
+#: .\venv\Lib\site-packages\django\forms\fields.py:1267
+msgid "Enter a valid date."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:509
+#: .\venv\Lib\site-packages\django\forms\fields.py:1268
+msgid "Enter a valid time."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:536
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:570
+msgid "Enter a valid duration."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:571
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:640
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:641
+msgid "No file was submitted."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:642
+msgid "The submitted file is empty."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:644
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:649
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:717
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:889
+#: .\venv\Lib\site-packages\django\forms\fields.py:975
+#: .\venv\Lib\site-packages\django\forms\models.py:1592
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:977
+#: .\venv\Lib\site-packages\django\forms\fields.py:1096
+#: .\venv\Lib\site-packages\django\forms\models.py:1590
+msgid "Enter a list of values."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:1097
+msgid "Enter a complete value."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:1339
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\fields.py:1369
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: .\venv\Lib\site-packages\django\forms\forms.py:97
+msgid ":"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\forms.py:239
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\formsets.py:61
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\formsets.py:65
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\forms\formsets.py:70
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\forms\formsets.py:484
+#: .\venv\Lib\site-packages\django\forms\formsets.py:491
+msgid "Order"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:901
+#, python-format
+msgid "Please correct the duplicate data for %(field)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:906
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:913
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:922
+msgid "Please correct the duplicate values below."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:1359
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:1450
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\models.py:1594
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\utils.py:229
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\widgets.py:527
+msgid "Clear"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\widgets.py:528
+#, fuzzy
+#| msgid "Currency"
+msgid "Currently"
+msgstr "العملة"
+
+#: .\venv\Lib\site-packages\django\forms\widgets.py:529
+msgid "Change"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\forms\widgets.py:866
+msgid "Unknown"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:873
+msgid "yes,no,maybe"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:903
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:920
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:922
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:924
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:926
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:928
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:930
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:74
+msgid "p.m."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:75
+msgid "a.m."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:80
+msgid "PM"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:81
+msgid "AM"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:153
+msgid "midnight"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:155
+msgid "noon"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:7
+msgid "Monday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:8
+msgid "Tuesday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:9
+msgid "Wednesday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
+msgid "Thursday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:11
+msgid "Friday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:12
+msgid "Saturday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:13
+msgid "Sunday"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:16
+#, fuzzy
+#| msgid "Monthly"
+msgid "Mon"
+msgstr "شهري"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:17
+msgid "Tue"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:18
+#, fuzzy
+#| msgid "Bed"
+msgid "Wed"
+msgstr "السرير"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
+msgid "Thu"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
+msgid "Fri"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:21
+#, fuzzy
+#| msgid "Start"
+msgid "Sat"
+msgstr "بدء"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:22
+#, fuzzy
+#| msgid "Run"
+msgid "Sun"
+msgstr "تشغيل"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:25
+msgid "January"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:26
+msgid "February"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:27
+msgid "March"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:28
+msgid "April"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:29
+msgid "May"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:30
+msgid "June"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:31
+msgid "July"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:32
+msgid "August"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:33
+#, fuzzy
+#| msgid "Remember Me"
+msgid "September"
+msgstr "تذكرني"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:34
+msgid "October"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:35
+#, fuzzy
+#| msgid "Number"
+msgid "November"
+msgstr "الرقم"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:36
+#, fuzzy
+#| msgid "Remember Me"
+msgid "December"
+msgstr "تذكرني"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:39
+msgid "jan"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:40
+msgid "feb"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:41
+#, fuzzy
+#| msgid "Bar"
+msgid "mar"
+msgstr "شريطي"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:42
+#, fuzzy
+#| msgid "Bar"
+msgid "apr"
+msgstr "شريطي"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:43
+#, fuzzy
+#| msgid "Summary"
+msgid "may"
+msgstr "ملخص"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:44
+#, fuzzy
+#| msgid "Run"
+msgid "jun"
+msgstr "تشغيل"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:45
+msgid "jul"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:46
+msgid "aug"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:47
+msgid "sep"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:48
+msgid "oct"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:49
+msgid "nov"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:50
+msgid "dec"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:53
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:54
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:55
+msgctxt "abbrev. month"
+msgid "March"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:56
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:57
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:58
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:59
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:60
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:61
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:62
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:63
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:64
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:67
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:68
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:69
+msgctxt "alt. month"
+msgid "March"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:70
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:71
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:72
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:73
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:74
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:75
+#, fuzzy
+#| msgid "Remember Me"
+msgctxt "alt. month"
+msgid "September"
+msgstr "تذكرني"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:76
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:77
+#, fuzzy
+#| msgid "Number"
+msgctxt "alt. month"
+msgid "November"
+msgstr "الرقم"
+
+#: .\venv\Lib\site-packages\django\utils\dates.py:78
+#, fuzzy
+#| msgid "Remember Me"
+msgctxt "alt. month"
+msgid "December"
+msgstr "تذكرني"
+
+#: .\venv\Lib\site-packages\django\utils\ipv6.py:20
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\text.py:76
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\text.py:288
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: .\venv\Lib\site-packages\django\utils\text.py:307
+#: .\venv\Lib\site-packages\django\utils\timesince.py:135
+msgid ", "
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:8
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:9
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:10
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:11
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:12
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\utils\timesince.py:13
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:29
+msgid "Forbidden"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:30
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:34
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:40
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:45
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:54
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:60
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\csrf.py:66
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:44
+msgid "No year specified"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:64
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:115
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:214
+#, fuzzy
+#| msgid "Date Range"
+msgid "Date out of range"
+msgstr "نطاق التاريخ"
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:94
+msgid "No month specified"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:147
+msgid "No day specified"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:194
+msgid "No week specified"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:353
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:384
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:680
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because "
+"%(class_name)s.allow_future is False."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:720
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\detail.py:56
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\list.py:70
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\list.py:77
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\generic\list.py:173
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\static.py:49
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\static.py:51
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\static.py:68
+#: .\venv\Lib\site-packages\django\views\templates\directory_index.html:8
+#: .\venv\Lib\site-packages\django\views\templates\directory_index.html:11
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:7
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:204
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:206
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:208
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:217
+#, fuzzy
+#| msgid "ID Document"
+msgid "Django Documentation"
+msgstr "مستند الهوية"
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:218
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:226
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:227
+msgid "Get started with Django"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:235
+msgid "Django Community"
+msgstr ""
+
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:236
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+
+#~ msgid "Money Out"
+#~ msgstr "صادر"
+
+#~ msgid "StayLux — Dashboard"
+#~ msgstr "ستي لوكس — لوحة التحكم"

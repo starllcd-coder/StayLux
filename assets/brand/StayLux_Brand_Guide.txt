@@ -1,0 +1,102 @@
+
+StayLux Brand Guide
+===================
+
+Brand Name:
+StayLux
+
+Tagline:
+Smart Management for Hotels & Residences
+
+--------------------------------------------------
+COLOR PALETTE
+--------------------------------------------------
+Primary Color (Navy): #0A192F
+Secondary Color (Gold): #C9A24D
+Accent Color (White): #FFFFFF
+UI Gray (Optional): #6B7280
+
+--------------------------------------------------
+TYPOGRAPHY (OFFICIAL)
+--------------------------------------------------
+
+ENGLISH FONTS
+-------------
+Primary (Headings):
+- Playfair Display
+  or
+- Libre Baskerville
+
+Secondary (Body / UI):
+- Inter (Recommended)
+  or
+- Poppins
+
+--------------------------------------------------
+ARABIC FONTS (GCC-READY)
+--------------------------------------------------
+
+Primary Arabic Font (Recommended):
+- Cairo
+  Usage:
+  - Arabic UI
+  - Forms & tables
+  - Reports
+  - Mobile apps
+
+Secondary Arabic Font (Headings / Elegant):
+- Tajawal
+  Usage:
+  - Page titles
+  - Section headings
+  - Marketing material
+
+Alternative Corporate Arabic Font:
+- IBM Plex Sans Arabic
+  Usage:
+  - Enterprise dashboards
+  - Reports
+  - Long text readability
+
+--------------------------------------------------
+FONT USAGE RULES
+--------------------------------------------------
+- English UI: Inter / Poppins
+- Arabic UI: Cairo
+- Arabic headings: Tajawal (optional)
+- Maintain consistent numeral formatting with currency
+- Ensure proper RTL alignment and spacing
+
+--------------------------------------------------
+DOCUMENTS & REPORTS
+--------------------------------------------------
+Invoices, contracts, receipts:
+- English: Inter
+- Arabic: Cairo
+
+Bilingual documents:
+- Arabic on right side
+- English on left side
+- Equal visual weight for both languages
+
+--------------------------------------------------
+MOBILE APPS
+--------------------------------------------------
+Android:
+- Inter (English)
+- Cairo (Arabic)
+
+iOS:
+- Inter (English)
+- Cairo (Arabic)
+(Font files must be bundled with the app)
+
+--------------------------------------------------
+FINAL RECOMMENDATION
+--------------------------------------------------
+If only one safe combination is used across all platforms:
+
+English Font: Inter
+Arabic Font: Cairo
+
+This combination is modern, premium, readable, and widely accepted in GCC markets.

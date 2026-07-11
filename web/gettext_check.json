@@ -1,0 +1,62 @@
+{
+  "Reported by": {
+    "gettext": "Reported by",
+    "lazy_repr": "'Reported by'",
+    "lazy_str": "Reported by",
+    "is_lazy": true
+  },
+  "Assigned to": {
+    "gettext": "Assigned to",
+    "lazy_repr": "'Assigned to'",
+    "lazy_str": "Assigned to",
+    "is_lazy": true
+  },
+  "Maintenance type": {
+    "gettext": "Maintenance type",
+    "lazy_repr": "'Maintenance type'",
+    "lazy_str": "Maintenance type",
+    "is_lazy": true
+  },
+  "Before photo": {
+    "gettext": "Before photo",
+    "lazy_repr": "'Before photo'",
+    "lazy_str": "Before photo",
+    "is_lazy": true
+  },
+  "After photo": {
+    "gettext": "After photo",
+    "lazy_repr": "'After photo'",
+    "lazy_str": "After photo",
+    "is_lazy": true
+  },
+  "Description": {
+    "gettext": "Description",
+    "lazy_repr": "'Description'",
+    "lazy_str": "Description",
+    "is_lazy": true
+  },
+  "Material cost": {
+    "gettext": "Material cost",
+    "lazy_repr": "'Material cost'",
+    "lazy_str": "Material cost",
+    "is_lazy": true
+  },
+  "Labor cost": {
+    "gettext": "Labor cost",
+    "lazy_repr": "'Labor cost'",
+    "lazy_str": "Labor cost",
+    "is_lazy": true
+  },
+  "Total cost": {
+    "gettext": "Total cost",
+    "lazy_repr": "'Total cost'",
+    "lazy_str": "Total cost",
+    "is_lazy": true
+  },
+  "Completed notes": {
+    "gettext": "Completed notes",
+    "lazy_repr": "'Completed notes'",
+    "lazy_str": "Completed notes",
+    "is_lazy": true
+  }
+}

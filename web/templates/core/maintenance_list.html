@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Maintenance" %}{% endblock %}
+{% block page_title %}{% trans "Maintenance" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Maintenance" %}</div>
+    <div class="slx-hero-sub">{% trans "Log issues, track progress, and costs." %}</div>
+  </div>
+
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Maintenance Tickets" %}</div>
+      <a class="slx-action" style="padding:10px 12px;" href="{% url 'maintenance_create' %}">
+        <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Ticket" %}</span>
+      </a>
+    </div>
+
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12 col-md-3">
+        <input class="form-control" type="text" name="unit" placeholder="{% trans "Room/Unit" %}" value="{{ filters.unit|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-3">
+        <input class="form-control" type="text" name="assigned" placeholder="{% trans "Assigned To" %}" value="{{ filters.assigned|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-3">
+        <select class="form-select" name="status">
+          <option value="">{% trans "Status" %}</option>
+          <option value="open" {% if filters.status == "open" %}selected{% endif %}>{% trans "Open" %}</option>
+          <option value="in_progress" {% if filters.status == "in_progress" %}selected{% endif %}>{% trans "In Progress" %}</option>
+          <option value="resolved" {% if filters.status == "resolved" %}selected{% endif %}>{% trans "Resolved" %}</option>
+          <option value="cancelled" {% if filters.status == "cancelled" %}selected{% endif %}>{% trans "Cancelled" %}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-3" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Filter" %}</button>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "Unit" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Priority" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Costs" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tickets %}
+            <tr>
+              <td><strong>{{ t.unit.code }}</strong></td>
+              <td>{{ t.title }}</td>
+              <td>{{ t.get_maintenance_type_display|default:"—" }}</td>
+              <td><span class="slx-status">{{ t.priority }}</span></td>
+              <td><span class="slx-status">{{ t.status }}</span></td>
+              <td>{{ t.total_cost }}</td>
+              <td class="text-end">
+                {% if t.status == "resolved" %}
+                  <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'maintenance_complete' t.id %}">{% trans "View" %}</a>
+                {% else %}
+                  <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'maintenance_edit' t.id %}">{% trans "Edit Draft" %}</a>
+                  <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(219,234,254,0.9); background:rgba(219,234,254,0.8); color:#1d4ed8;" href="{% url 'maintenance_complete' t.id %}">{% trans "Complete" %}</a>
+                {% endif %}
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'maintenance_delete' t.id %}">{% trans "Delete" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="text-muted py-4">{% trans "No tickets yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

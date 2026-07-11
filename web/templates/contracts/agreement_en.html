@@ -1,0 +1,84 @@
+{% load currency %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Agreement {{ contract.contract_no|default:contract.id }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --paper:#ffffff; }
+    body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; margin: 0; background:#f8fafc; color:var(--ink); }
+    .page { max-width: 900px; margin: 24px auto; background: var(--paper); border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 30px rgba(15,23,42,.08); padding:24px; }
+    .card { border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:12px; background:#fff; }
+    .muted { color:var(--muted); font-size:12px; }
+    h1,h2,h3 { margin: 0 0 8px 0; }
+    .no-print button { border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    @media print { .no-print{display:none;} body{margin:0;background:#fff;} .page{margin:0;border:none;box-shadow:none;border-radius:0;} }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="no-print" style="display:flex; gap:12px; align-items:center;">
+      <button onclick="window.print()">Print</button>
+      <a href="?lang=ar">Arabic</a>
+    </div>
+
+    <h1>Tenancy Agreement (Monthly)</h1>
+    <div class="muted">
+      Property: <b>{{ property.name_en|default:"StayLux" }}</b><br>
+      Contract No: <b>{{ contract.contract_no|default:contract.id }}</b>
+    </div>
+
+    <div class="card">
+    <h3>Parties</h3>
+    <div><b>Landlord/Operator:</b> {{ property.name_en|default:"StayLux" }}</div>
+    <div><b>Tenant:</b> {{ guest.full_name }} {% if guest.phone %} ({{ guest.phone }}){% endif %}</div>
+  </div>
+
+    <div class="card">
+    <h3>Unit</h3>
+    <div><b>Unit Code:</b> {{ unit.code }}</div>
+    <div><b>Start Date:</b> {{ contract.start_date }}</div>
+    <div><b>End Date:</b> {{ contract.end_date|default:"Open-ended" }}</div>
+  </div>
+
+    <div class="card">
+    <h3>Rent & Billing</h3>
+    <div><b>Monthly Rent:</b> {{ contract.monthly_rent|currency3 }} {{ contract.currency }}</div>
+    <div><b>Billing Day:</b> {{ contract.billing_day }}</div>
+  </div>
+
+    <div class="card">
+    <h3>Security Deposit</h3>
+    <div><b>Deposit:</b> {{ contract.security_deposit|currency3 }} {{ contract.currency }}</div>
+    <div><b>Received:</b> {{ contract.deposit_received|currency3 }} {{ contract.currency }}</div>
+    <div><b>Refunded:</b> {{ contract.deposit_refunded|currency3 }} {{ contract.currency }}</div>
+    <div><b>Status:</b> {{ contract.deposit_status }}</div>
+  </div>
+
+    <div class="card">
+    <h3>Terms (Phase A template)</h3>
+    <ol>
+      <li>Tenant shall keep the unit in good condition and comply with property rules.</li>
+      <li>Monthly rent is payable on the billing day. Late payments may incur actions per policy.</li>
+      <li>Deposit may be refunded after move-out inspection minus deductions for damages/unpaid amounts.</li>
+      <li>Operator may terminate for non-payment or breach of rules (subject to local law).</li>
+    </ol>
+  </div>
+
+    <div class="card">
+    <h3>Signatures</h3>
+    <div style="display:flex; justify-content:space-between; gap:24px;">
+      <div>
+        <b>Operator Signature</b><br><br>
+        ______________________
+      </div>
+      <div>
+        <b>Tenant Signature</b><br><br>
+        ______________________
+      </div>
+    </div>
+    </div>
+  </div>
+</body>
+</html>

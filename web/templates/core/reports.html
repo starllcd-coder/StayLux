@@ -1,0 +1,224 @@
+﻿{% extends "base.html" %}
+{% load currency i18n %}
+
+{% block title %}{% trans "StayLux - Reports" %}{% endblock %}
+{% block page_title %}{% trans "Reports" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Reports" %}</div>
+    <div class="slx-hero-sub">{% trans "Revenue, occupancy, and maintenance performance." %}</div>
+  </div>
+
+  <div class="slx-card mt-2">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Filters" %}</div>
+      <div class="slx-pill">{% trans "Reports" %}</div>
+    </div>
+
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:2px;">
+        <button type="button" class="btn btn-sm" style="border-radius:12px; font-weight:900; border:1px solid {% if selected_report_type == 'revenue' %}#0b2340{% else %}rgba(229,231,235,0.9){% endif %}; background:{% if selected_report_type == 'revenue' %}#0b2340{% else %}rgba(255,255,255,0.9){% endif %}; color:{% if selected_report_type == 'revenue' %}#fff{% else %}#0b2340{% endif %};" onclick="document.getElementById('report-type-input').value='revenue'; this.form.submit();">{% trans "Revenue" %}</button>
+        <button type="button" class="btn btn-sm" style="border-radius:12px; font-weight:900; border:1px solid {% if selected_report_type == 'occupancy' %}#0b2340{% else %}rgba(229,231,235,0.9){% endif %}; background:{% if selected_report_type == 'occupancy' %}#0b2340{% else %}rgba(255,255,255,0.9){% endif %}; color:{% if selected_report_type == 'occupancy' %}#fff{% else %}#0b2340{% endif %};" onclick="document.getElementById('report-type-input').value='occupancy'; this.form.submit();">{% trans "Occupancy" %}</button>
+        <button type="button" class="btn btn-sm" style="border-radius:12px; font-weight:900; border:1px solid {% if selected_report_type == 'maintenance' %}#0b2340{% else %}rgba(229,231,235,0.9){% endif %}; background:{% if selected_report_type == 'maintenance' %}#0b2340{% else %}rgba(255,255,255,0.9){% endif %}; color:{% if selected_report_type == 'maintenance' %}#fff{% else %}#0b2340{% endif %};" onclick="document.getElementById('report-type-input').value='maintenance'; this.form.submit();">{% trans "Maintenance" %}</button>
+        <button type="button" class="btn btn-sm" style="border-radius:12px; font-weight:900; border:1px solid {% if selected_report_type == 'payments' %}#0b2340{% else %}rgba(229,231,235,0.9){% endif %}; background:{% if selected_report_type == 'payments' %}#0b2340{% else %}rgba(255,255,255,0.9){% endif %}; color:{% if selected_report_type == 'payments' %}#fff{% else %}#0b2340{% endif %};" onclick="document.getElementById('report-type-input').value='payments'; this.form.submit();">{% trans "Payments" %}</button>
+      </div>
+      <div class="col-12 col-md-2">
+        <label class="slx-label">{% trans "Period" %}</label>
+        {{ form.period }}
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="slx-label">{% trans "Unit" %}</label>
+        {{ form.unit }}
+      </div>
+      <div class="col-12 col-md-2">
+        <label class="slx-label">{% trans "From" %}</label>
+        {{ form.date_from }}
+      </div>
+      <div class="col-12 col-md-2">
+        <label class="slx-label">{% trans "To" %}</label>
+        {{ form.date_to }}
+      </div>
+      <div class="col-12 col-md-1" style="display:flex; align-items:end;">
+        <input id="report-type-input" type="hidden" name="report_type" value="{{ selected_report_type|default:'revenue' }}">
+        <button class="slx-btn" style="max-width:120px;" type="submit">{% trans "Run" %}</button>
+      </div>
+      <div class="col-12">
+        <label class="slx-check" style="margin:0;">
+          {{ form.include_archived }}
+          <span>{% trans "Include archived bookings" %}</span>
+        </label>
+      </div>
+    </form>
+  </div>
+
+  {% if summary %}
+    <div class="row g-3 mt-2">
+      <div class="col-12 col-xl-4">
+        <div class="slx-card">
+          <div class="slx-card-head">
+            <div class="slx-card-title">
+              {% if selected_report_type == "maintenance" %}{% trans "Maintenance" %}
+              {% elif selected_report_type == "occupancy" %}{% trans "Occupancy" %}
+              {% elif selected_report_type == "payments" %}{% trans "Payments" %}
+              {% else %}{% trans "Revenue" %}
+              {% endif %}
+            </div>
+            <div class="slx-pill">{{ summary.date_from }} to {{ summary.date_to }}</div>
+          </div>
+          <div class="p-3">
+            {% if selected_report_type == "maintenance" %}
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Maintenance Costs" %}</span><strong>{{ summary.maintenance_total|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Maintenance Tickets" %}</span><strong>{{ summary.maintenance_count }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Net Income" %}</span><strong>{{ summary.net_income|currency3 }}</strong></div>
+            {% elif selected_report_type == "occupancy" %}
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Occupancy" %}</span><strong>{{ summary.occupancy_pct }}%</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Booked Nights" %}</span><strong>{{ summary.booked_nights }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Total Nights" %}</span><strong>{{ summary.total_unit_nights }}</strong></div>
+            {% elif selected_report_type == "payments" %}
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Collections" %}</span><strong>{{ summary.collections_total|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Payment Records" %}</span><strong>{{ summary.payments_count }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Outstanding" %}</span><strong>{{ summary.outstanding_total|currency3 }}</strong></div>
+            {% else %}
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Total Revenue" %}</span><strong>{{ summary.revenue_total|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Maintenance Costs" %}</span><strong>{{ summary.maintenance_total|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Net Income" %}</span><strong>{{ summary.net_income|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Collections" %}</span><strong>{{ summary.collections_total|currency3 }}</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>{% trans "Outstanding" %}</span><strong>{{ summary.outstanding_total|currency3 }}</strong></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-4">
+        <div class="slx-card">
+          <div class="slx-card-head">
+            <div class="slx-card-title">{% trans "Occupancy" %}</div>
+            <div class="slx-pill">{% trans "Units" %}</div>
+          </div>
+          <div class="p-3">
+            <div style="display:flex; justify-content:space-between;"><span>{% trans "Occupancy" %}</span><strong>{{ summary.occupancy_pct }}%</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>{% trans "Booked Nights" %}</span><strong>{{ summary.booked_nights }}</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>{% trans "Total Nights" %}</span><strong>{{ summary.total_unit_nights }}</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>{% trans "Available" %}</span><strong>{{ summary.units.available|default:0 }}</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>{% trans "Occupied" %}</span><strong>{{ summary.units.occupied|default:0 }}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-4">
+        <div class="slx-card">
+          <div class="slx-card-head">
+            <div class="slx-card-title">{% trans "Exports" %}</div>
+            <div class="slx-pill">{% trans "PDF / Excel" %}</div>
+          </div>
+          {% if exports %}
+            <div class="p-3" style="display:flex; gap:10px; flex-wrap:wrap;">
+              {% if exports.print %}
+              <a class="slx-action" id="reports-export-print" href="{{ exports.print }}" target="_blank">
+                  <span class="slx-action-text">{% trans "Print" %}</span>
+              </a>
+              {% endif %}
+              {% if exports.xlsx %}
+              <a class="slx-action" id="reports-export-excel" href="{{ exports.xlsx }}">
+                  <span class="slx-action-text">{% trans "Excel" %}</span>
+              </a>
+              {% endif %}
+              {% if exports.pdf %}
+              <a class="slx-action" id="reports-export-pdf" href="{{ exports.pdf }}">
+                  <span class="slx-action-text">{% trans "PDF" %}</span>
+              </a>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="slx-empty">{% trans "Run a report to enable exports." %}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+      <div class="col-12 col-xl-7">
+        <div class="slx-card">
+          <div class="slx-card-head">
+            <div class="slx-card-title">
+              {% if selected_report_type == "maintenance" %}{% trans "Maintenance Mix" %}
+              {% elif selected_report_type == "occupancy" %}{% trans "Occupancy Mix" %}
+              {% elif selected_report_type == "payments" %}{% trans "Payments Mix" %}
+              {% else %}{% trans "Revenue Mix" %}
+              {% endif %}
+            </div>
+            <div class="slx-pill">{% trans "Bar" %}</div>
+          </div>
+          <div class="p-3">
+            {% for b in charts.revenue %}
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <div style="min-width:120px;">{{ b.label }}</div>
+                <div style="flex:1; background:rgba(15,23,42,0.06); border-radius:999px; height:10px;">
+                  <div style="height:10px; border-radius:999px; background:#0b2340; width:{{ b.pct }}%;"></div>
+                </div>
+                <div style="min-width:120px; text-align:right;">{{ b.value|currency3 }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-5">
+        <div class="slx-card">
+          <div class="slx-card-head">
+            <div class="slx-card-title">{% trans "Occupancy" %}</div>
+            <div class="slx-pill">{% trans "Percent" %}</div>
+          </div>
+          <div class="p-3">
+            <div style="height:12px; border-radius:999px; background:rgba(15,23,42,0.06);">
+              <div style="height:12px; border-radius:999px; background:#0b2340; width:{{ summary.occupancy_pct }}%;"></div>
+            </div>
+            <div class="text-muted small" style="margin-top:8px;">{% blocktrans with pct=summary.occupancy_pct %}Occupancy {{ pct }}%{% endblocktrans %}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if occupancy %}
+      <div class="slx-card mt-3">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "API Links" %}</div>
+          <div class="slx-pill">{% trans "Owner Portal" %}</div>
+        </div>
+        <div class="p-3">
+          <div class="text-muted">{% trans "Occupancy API URL:" %}</div>
+          <div style="font-weight:900; color:#0b2340;">{{ occupancy.api_url }}</div>
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="slx-empty mt-3">{% trans "Select filters and run a report to see charts and summaries." %}</div>
+  {% endif %}
+
+  <script>
+    (function () {
+      const isQtDesktop = /QtWebEngine|QtWebEngineCore/i.test((window.navigator && window.navigator.userAgent) || "");
+      const backValue = window.location.pathname + window.location.search;
+
+      // Desktop shell blocks popup tabs often; keep report actions in same tab.
+      const printLink = document.getElementById("reports-export-print");
+      const excelLink = document.getElementById("reports-export-excel");
+      const pdfLink = document.getElementById("reports-export-pdf");
+
+      [printLink, excelLink, pdfLink].forEach((lnk) => {
+        if (!lnk) return;
+        try {
+          const u = new URL(lnk.href, window.location.origin);
+          u.searchParams.set("back", backValue);
+          lnk.href = u.toString();
+        } catch (_) {}
+      });
+
+      if (!isQtDesktop) return;
+      if (printLink) printLink.setAttribute("target", "_self");
+      if (excelLink) excelLink.setAttribute("target", "_self");
+      if (pdfLink) pdfLink.setAttribute("target", "_self");
+    })();
+  </script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Invoices" %}{% endblock %}
+{% block page_title %}{% trans "Invoices" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Invoices" %}</div>
+    <div class="slx-hero-sub">{% trans "Create, issue, and track guest invoices." %}</div>
+  </div>
+
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Invoice Register" %}</div>
+      <a class="slx-action" style="padding:10px 12px;" href="{% url 'invoice_create' %}">
+        <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Invoice" %}</span>
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "Invoice #" %}</th>
+            <th>{% trans "Guest" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Total" %}</th>
+            <th>{% trans "Balance" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in invoices %}
+            <tr>
+              <td><strong>{{ inv.invoice_no|default:inv.id }}</strong></td>
+              <td>{{ inv.guest.full_name }}</td>
+              <td><span class="slx-status">{{ inv.status }}</span></td>
+              <td>{{ inv.total }}</td>
+              <td>{{ inv.balance_due }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'invoice_edit' inv.id %}">{% trans "Edit" %}</a>
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'invoice_delete' inv.id %}">{% trans "Delete" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="text-muted py-4">{% trans "No invoices yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% trans "Room Types" as room_types_label %}
+{% block title %}StayLux — {% if mode_label %}{% trans mode_label %}{% else %}{{ room_types_label }}{% endif %}{% endblock %}
+{% block page_title %}{% if mode_label %}{% trans mode_label %}{% else %}{{ room_types_label }}{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% if mode_label %}{% trans mode_label %}{% else %}{{ room_types_label }}{% endif %}</div>
+      <a class="slx-action" style="padding:10px 12px;" href="{% url 'unit_type_create' %}">
+        <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "Add Type" %}</span>
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "Name (EN)" %}</th>
+            <th>{% trans "Name (AR)" %}</th>
+            <th>{% trans "Base Rate" %}</th>
+            <th>{% trans "Active" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in items %}
+            <tr>
+              <td><strong>{{ t.name_en }}</strong></td>
+              <td>{{ t.name_ar|default:"—" }}</td>
+              <td>{{ t.base_rate }}</td>
+              <td>{% if t.is_active %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
+              <td class="text-end">
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'unit_type_edit' t.id %}">{% trans "Edit" %}</a>
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'unit_type_delete' t.id %}">{% trans "Delete" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted py-4">{% trans "No types yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3">
+      <a class="slx-mini-link" href="{% url 'units_list' %}">{% trans "Back" %} →</a>
+    </div>
+  </div>
+{% endblock %}

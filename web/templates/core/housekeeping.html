@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Housekeeping" %}{% endblock %}
+{% block page_title %}{% trans "Housekeeping" %}{% endblock %}
+
+{% block content %}
+  {% trans "Unit" as unit_label %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Housekeeping" %}</div>
+    <div class="slx-hero-sub">{% trans "Tasks and room readiness workflow." %}</div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Tasks" %}</div>
+      <div class="slx-pill">{% trans "Workflow" %}</div>
+    </div>
+    
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12 col-md-4">
+        <input class="form-control" type="text" name="unit" placeholder="{% trans "Room/Unit" %}" value="{{ filters.unit|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-4">
+        <select class="form-select" name="status">
+          <option value="">{% trans "Status" %}</option>
+          <option value="pending" {% if filters.status == "pending" %}selected{% endif %}>{% trans "Pending" %}</option>
+          <option value="in_progress" {% if filters.status == "in_progress" %}selected{% endif %}>{% trans "In Progress" %}</option>
+          <option value="done" {% if filters.status == "done" %}selected{% endif %}>{% trans "Done" %}</option>
+          <option value="cancelled" {% if filters.status == "cancelled" %}selected{% endif %}>{% trans "Cancelled" %}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-4" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Filter" %}</button>
+      </div>
+    </form>
+
+    {% if tasks %}
+      <div class="table-responsive">
+        <table class="table align-middle slx-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>{% trans "Unit" %}</th>
+              <th>{% trans "Task" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th>{% trans "Assigned To" %}</th>
+              <th class="text-end">{% trans "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in tasks %}
+              <tr>
+                <td class="text-muted">#{{ t.id }}</td>
+                <td>{% if t.unit %}{{ t.unit.code|default:unit_label }}{% else %}—{% endif %}</td>
+                <td>{{ t.title|default:"—" }}</td>
+                <td><span class="slx-status">{{ t.status|default:"—" }}</span></td>
+                <td>
+                  {% if t.assigned_to %}{{ t.assigned_to.user.get_full_name|default:t.assigned_to.user.username }}{% else %}—{% endif %}
+                </td>
+                <td class="text-end">
+                  <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
+                    <form method="post" action="{% url 'housekeeping_action' t.id %}" style="margin:0; display:flex; gap:6px; align-items:center;">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="assign">
+                      <select class="form-select form-select-sm" name="assigned_to" style="min-width:150px;">
+                        <option value="">{% trans "Assign worker" %}</option>
+                        {% for s in housekeeping_staff %}
+                          <option value="{{ s.id }}" {% if t.assigned_to and t.assigned_to.id == s.id %}selected{% endif %}>
+                            {{ s.user.get_full_name|default:s.user.username }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                      <button class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Assign" %}</button>
+                    </form>
+                    <form method="post" action="{% url 'housekeeping_action' t.id %}" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="start">
+                      <input type="hidden" name="assigned_to" value="{{ t.assigned_to.id|default:'' }}">
+                      <button class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Start" %}</button>
+                    </form>
+                    <form method="post" action="{% url 'housekeeping_action' t.id %}" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="done">
+                      <button class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(15,23,42,0.05);" type="submit">{% trans "Done" %}</button>
+                    </form>
+                    <form method="post" action="{% url 'housekeeping_action' t.id %}" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="maintenance">
+                      <button class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" type="submit">{% trans "Maintenance" %}</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="slx-empty">{% trans "No housekeeping tasks found (or housekeeping models not enabled)." %}</div>
+    {% endif %}
+  </div>
+{% endblock %}

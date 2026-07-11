@@ -1,0 +1,112 @@
+StayLux Setup and Build Commands
+================================
+
+1) Create Python .venv (repo root)
+----------------------------------
+PowerShell (Windows):
+
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+  python -m pip install --upgrade pip
+
+If `py` is not available, use your installed Python path instead.
+
+
+2) Install Web + Desktop requirements
+-------------------------------------
+From repo root:
+
+  python -m pip install -r web/requirements.txt -r desktop/requirements.txt
+
+
+3) Run Web App (Django)
+-----------------------
+From repo root:
+
+  cd web
+  ..\.venv\Scripts\python.exe manage.py migrate
+  ..\.venv\Scripts\python.exe manage.py createsuperuser
+  ..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+
+4) Run Desktop App
+------------------
+Open a new terminal at repo root:
+
+  .\.venv\Scripts\python.exe desktop\main.py
+
+
+5) Flutter Mobile App (customer app: mobile/)
+----------------------------------------------
+From repo root:
+
+  cd mobile
+  flutter pub get
+
+Run on device/emulator:
+
+  flutter run --dart-define=STAYLUX_API_BASE_URL=http://127.0.0.1:8000/api/mobile
+
+If running from a physical Android phone, replace `127.0.0.1` with your PC LAN IP.
+
+
+6) Build Android APK (testing)
+------------------------------
+From `mobile/`:
+
+  flutter clean
+  flutter pub get
+  flutter build apk --release --dart-define=STAYLUX_API_BASE_URL=https://api.yourdomain.com/api/mobile
+
+Output:
+  build\app\outputs\flutter-apk\app-release.apk
+
+
+7) Build Android App Bundle (Play Store)
+----------------------------------------
+From `mobile/`:
+
+  flutter clean
+  flutter pub get
+  flutter build appbundle --release --dart-define=STAYLUX_API_BASE_URL=https://api.yourdomain.com/api/mobile
+
+Output:
+  build\app\outputs\bundle\release\app-release.aab
+
+Play Store upload format is `.aab` (recommended), not APK.
+
+
+8) Build iOS App (App Store)
+----------------------------
+Important: iOS build requires macOS + Xcode.
+
+From `mobile/` on Mac:
+
+  flutter clean
+  flutter pub get
+  flutter build ios --release --dart-define=STAYLUX_API_BASE_URL=https://api.yourdomain.com/api/mobile
+
+Then archive and upload:
+
+  1. Open `ios/Runner.xcworkspace` in Xcode.
+  2. Set Team, Bundle Identifier, and Signing.
+  3. Product -> Archive.
+  4. Distribute App -> App Store Connect -> Upload.
+
+
+9) Optional: Owner/Admin Flutter app (owner_admin_app/)
+-------------------------------------------------------
+From repo root:
+
+  cd owner_admin_app
+  flutter pub get
+  flutter run
+
+Android bundle:
+
+  flutter build appbundle --release
+
+iOS (macOS only):
+
+  flutter build ios --release
+

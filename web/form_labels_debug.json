@@ -1,0 +1,76 @@
+{
+  "draft": {
+    "unit": {
+      "label": "الوحدة",
+      "repr": "'الوحدة'",
+      "is_lazy": true
+    },
+    "reported_by": {
+      "label": "Reported by",
+      "repr": "'Reported by'",
+      "is_lazy": true
+    },
+    "assigned_to": {
+      "label": "Assigned to",
+      "repr": "'Assigned to'",
+      "is_lazy": true
+    },
+    "priority": {
+      "label": "الأولوية",
+      "repr": "'الأولوية'",
+      "is_lazy": true
+    },
+    "maintenance_type": {
+      "label": "Maintenance type",
+      "repr": "'Maintenance type'",
+      "is_lazy": true
+    },
+    "title": {
+      "label": "العنوان",
+      "repr": "'العنوان'",
+      "is_lazy": true
+    },
+    "description": {
+      "label": "Description",
+      "repr": "'Description'",
+      "is_lazy": true
+    },
+    "before_photo": {
+      "label": "Before photo",
+      "repr": "'Before photo'",
+      "is_lazy": true
+    }
+  },
+  "complete": {
+    "status": {
+      "label": "الحالة",
+      "repr": "'الحالة'",
+      "is_lazy": true
+    },
+    "after_photo": {
+      "label": "After photo",
+      "repr": "'After photo'",
+      "is_lazy": true
+    },
+    "material_cost": {
+      "label": "Material cost",
+      "repr": "'Material cost'",
+      "is_lazy": true
+    },
+    "labor_cost": {
+      "label": "Labor cost",
+      "repr": "'Labor cost'",
+      "is_lazy": true
+    },
+    "total_cost": {
+      "label": "Total cost",
+      "repr": "'Total cost'",
+      "is_lazy": true
+    },
+    "completed_notes": {
+      "label": "Completed notes",
+      "repr": "'Completed notes'",
+      "is_lazy": true
+    }
+  }
+}

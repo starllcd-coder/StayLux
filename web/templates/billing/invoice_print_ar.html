@@ -1,0 +1,179 @@
+﻿{% load currency %}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>فاتورة {{ invoice.invoice_no|default:invoice.id }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #0f3d5f;
+      --paper: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Cairo", "Segoe UI", Tahoma, Arial, sans-serif; color: var(--ink); background: #f8fafc; direction: rtl; }
+    .page { max-width: 900px; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); }
+    .header { padding: 24px 28px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; position: relative; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 56px; height: 56px; border-radius: 12px; object-fit: contain; border: 1px solid var(--line); background: #fff; }
+    .brand h2 { margin: 0; font-size: 20px; letter-spacing: 0.2px; }
+    .brand .meta { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .doc { text-align: right; }
+    .doc h1 { margin: 0; font-size: 28px; letter-spacing: 0.5px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 12px; color: var(--accent); }
+    .doc .meta { color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 6px; }
+    .content { padding: 24px 28px 16px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: #fff; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    h3 { margin: 0 0 10px 0; font-size: 14px; text-transform: none; letter-spacing: 0.2px; color: var(--muted); }
+    .value { font-weight: 600; }
+    .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .table th { text-align: right; font-size: 12px; color: var(--muted); text-transform: none; letter-spacing: 0.2px; border-bottom: 1px solid var(--line); padding: 10px 6px; }
+    .table td { border-bottom: 1px solid var(--line); padding: 10px 6px; font-size: 13px; text-align: right; }
+    .left { text-align: left; }
+    .totals { margin-top: 12px; margin-right: auto; width: 300px; }
+    .totals td { padding: 4px 0; font-size: 13px; }
+    .totals .label { color: var(--muted); }
+    .totals .grand { font-size: 15px; font-weight: 700; }
+    .footer { padding: 16px 28px 22px; border-top: 1px solid var(--line); display: grid; gap: 8px; color: var(--muted); font-size: 12px; }
+    .footer .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .footer .note { font-size: 11px; }
+    .no-print { margin-top: 10px; display: flex; justify-content: flex-start; gap: 8px; flex-wrap: wrap; position: relative; z-index: 20; pointer-events: auto; }
+    .no-print a { border: 1px solid var(--line); background: #fff; padding: 8px 12px; border-radius: 10px; cursor: pointer; text-decoration: none; color: var(--ink); font-size: 13px; display: inline-flex; align-items: center; pointer-events: auto; }
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; border: none; border-radius: 0; box-shadow: none; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="doc">
+        <h1>فاتورة</h1>
+        <span class="badge">
+          {% if invoice.status == "draft" %}مسودة
+          {% elif invoice.status == "issued" %}صادرة
+          {% elif invoice.status == "paid" %}مدفوعة
+          {% elif invoice.status == "partially_paid" %}مدفوعة جزئياً
+          {% elif invoice.status == "overdue" %}متأخرة
+          {% elif invoice.status == "cancelled" %}ملغاة
+          {% else %}{{ invoice.status }}{% endif %}
+        </span>
+        <div class="meta">
+          رقم الفاتورة: <span class="value">{{ invoice.invoice_no|default:invoice.id }}</span><br>
+          تاريخ الإنشاء: {{ invoice.created_at|date:"Y-m-d H:i" }}<br>
+          {% if invoice.issue_date %}تاريخ الإصدار: {{ invoice.issue_date }}<br>{% endif %}
+          {% if invoice.due_date %}تاريخ الاستحقاق: {{ invoice.due_date }}{% endif %}
+        </div>
+        <div class="no-print">
+          {% if request.GET.back %}
+            <a href="{{ request.GET.back }}">رجوع</a>
+          {% endif %}
+          {% if is_desktop_qt %}
+            <a href="?desktop_print=1&lang=ar{% if request.GET.doc %}&doc={{ request.GET.doc|urlencode }}{% endif %}{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">طباعة</a>
+            <a href="?desktop_save=1&lang=ar{% if request.GET.doc %}&doc={{ request.GET.doc|urlencode }}{% endif %}{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">حفظ كملف PDF</a>
+          {% else %}
+            <a href="#" onclick="window.print(); return false;">طباعة</a>
+            <a href="?download=1&inline=1&lang=ar{% if request.GET.doc %}&doc={{ request.GET.doc|urlencode }}{% endif %}{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">حفظ كملف PDF</a>
+          {% endif %}
+          <a href="?lang=en{% if request.GET.doc %}&doc={{ request.GET.doc|urlencode }}{% endif %}{% if request.GET.back %}&back={{ request.GET.back|urlencode }}{% endif %}">English</a>
+        </div>
+      </div>
+      <div class="brand">
+        {% if property.logo %}
+          <img class="logo" src="{{ property.logo.url }}" alt="Logo">
+        {% else %}
+          <div class="logo"></div>
+        {% endif %}
+        <div>
+          <h2>{{ property.name_ar|default:property.name_en|default:"StayLux" }}</h2>
+          <div class="meta">
+            {% if property.address_ar %}{{ property.address_ar }}{% elif property.address_en %}{{ property.address_en }}{% endif %}
+            {% if property.property_number %}<br>رقم المنشأة: {{ property.property_number }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card">
+        <div class="row">
+          <div>
+            <h3>بيانات العميل</h3>
+            <div class="value">{{ invoice.guest.full_name }}</div>
+            <div class="meta">
+              {% if invoice.guest.phone %}الهاتف: {{ invoice.guest.phone }}<br>{% endif %}
+              {% if invoice.guest.whatsapp %}واتساب: {{ invoice.guest.whatsapp }}<br>{% endif %}
+              {% if invoice.guest.email %}البريد الإلكتروني: {{ invoice.guest.email }}{% endif %}
+            </div>
+          </div>
+          <div class="left">
+            <h3>الملخص</h3>
+            <div>الإجمالي: <span class="value">{{ invoice.total|currency3 }} {{ invoice.currency }}</span></div>
+            <div>المدفوع: <span class="value">{{ invoice.amount_paid|currency3 }} {{ invoice.currency }}</span></div>
+            <div>المتبقي: <span class="value">{{ invoice.balance_due|currency3 }} {{ invoice.currency }}</span></div>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>الوصف</th>
+              <th>الكمية</th>
+              <th>سعر الوحدة</th>
+              <th>الخصم</th>
+              <th>الضريبة</th>
+              <th>إجمالي البند</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for line in invoice.lines.all %}
+            <tr>
+              <td class="left">{{ line.description }}</td>
+              <td>{{ line.quantity }}</td>
+              <td>{{ line.unit_price|currency3 }}</td>
+              <td>{{ line.discount_amount|currency3 }}</td>
+              <td>{{ line.tax_amount|currency3 }}</td>
+              <td>{{ line.line_total|currency3 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="meta">لا توجد بنود.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <table class="totals">
+          <tr><td class="label">الإجمالي قبل الخصم</td><td>{{ invoice.subtotal|currency3 }} {{ invoice.currency }}</td></tr>
+          <tr><td class="label">الخصم</td><td>{{ invoice.discount_total|currency3 }} {{ invoice.currency }}</td></tr>
+          <tr><td class="label">الضريبة</td><td>{{ invoice.tax_total|currency3 }} {{ invoice.currency }}</td></tr>
+          <tr><td class="grand">الإجمالي</td><td class="grand">{{ invoice.total|currency3 }} {{ invoice.currency }}</td></tr>
+          <tr><td class="label">المدفوع</td><td>{{ invoice.amount_paid|currency3 }} {{ invoice.currency }}</td></tr>
+          <tr><td class="grand">الرصيد المستحق</td><td class="grand">{{ invoice.balance_due|currency3 }} {{ invoice.currency }}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="grid">
+        <div>{% if property.phone %}الهاتف: {{ property.phone }}{% endif %}</div>
+        <div>{% if property.address_ar %}العنوان: {{ property.address_ar }}{% elif property.address_en %}العنوان: {{ property.address_en }}{% endif %}</div>
+        <div>{% if property.cr_no %}السجل التجاري: {{ property.cr_no }}{% endif %}</div>
+      </div>
+      {% if property.receipt_footer_ar %}
+        <div class="note">{{ property.receipt_footer_ar }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if auto %}
+  <script>
+    window.addEventListener("load", () => window.print());
+  </script>
+  {% endif %}
+</body>
+</html>

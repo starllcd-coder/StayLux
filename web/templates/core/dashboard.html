@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}StayLux — Dashboard{% endblock %}
+{% block page_title %}{% trans "Dashboard" %}{% endblock %}
+
+{% block content %}
+  {% trans "Guest" as guest_label %}
+  {% trans "Unit" as unit_label %}
+  {% get_current_language as LANGUAGE_CODE %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">
+      {% blocktrans with user_name=request.user.first_name|default:request.user.username|default:"User" %}Welcome Back, {{ user_name }}!{% endblocktrans %}
+    </div>
+    <div class="slx-hero-sub">
+        {% if prop %}
+          {% get_current_language as LANGUAGE_CODE %}
+          {% if LANGUAGE_CODE|slice:":2" == "ar" and prop.name_ar %}
+            {% blocktrans with prop_name=prop.name_ar %}Here is what's happening at <strong>{{ prop_name }}</strong>.{% endblocktrans %}
+          {% else %}
+            {% blocktrans with prop_name=prop.name_en|default:_("your property") %}Here is what's happening at <strong>{{ prop_name }}</strong>.{% endblocktrans %}
+          {% endif %}
+        {% else %}
+          {% trans "Here is what's happening today." %}
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-md-6 col-xl-3">
+      <a class="slx-kpi-card slx-kpi-link" href="{% url 'bookings_list' %}">
+        <div class="slx-kpi-ico">🏨</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">{% trans "Occupancy" %}</div>
+          <div class="slx-kpi-value">{{ occupancy_pct }}%</div>
+          <div class="slx-kpi-sub">
+            <span class="slx-kpi-sub-pill">{% blocktrans with active=stats.bookings_active %}Active: {{ active }}{% endblocktrans %}</span>
+            <span class="slx-kpi-sub-pill">{% blocktrans with units=stats.units %}Units: {{ units }}{% endblocktrans %}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <a class="slx-kpi-card slx-kpi-link" href="{% url 'guests_list' %}">
+        <div class="slx-kpi-ico">🧑‍🤝‍🧑</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">{% trans "Total Guests" %}</div>
+          <div class="slx-kpi-value">{{ stats.guests }}</div>
+          <div class="slx-kpi-sub"><span class="slx-kpi-sub-pill">{% trans "Profiles" %}</span></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <a class="slx-kpi-card slx-kpi-link" href="{% url 'maintenance_list' %}">
+        <div class="slx-kpi-ico">🛠️</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">{% trans "Maintenance" %}</div>
+          <div class="slx-kpi-value">{{ stats.maintenance_open }}</div>
+          <div class="slx-kpi-sub"><span class="slx-kpi-sub-pill">{% trans "Open" %}</span></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <a class="slx-kpi-card slx-kpi-link" href="{% url 'housekeeping_list' %}">
+        <div class="slx-kpi-ico">🧹</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">{% trans "Housekeeping" %}</div>
+          <div class="slx-kpi-value">{{ stats.housekeeping_open }}</div>
+          <div class="slx-kpi-sub"><span class="slx-kpi-sub-pill">{% trans "Pending" %}</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="slx-kpi-card">
+        <div class="slx-kpi-ico">💰</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">
+            {% if LANGUAGE_CODE|slice:":2" == "ar" %}الإيرادات (الشهر الحالي){% else %}{% trans "Revenue (MTD)" %}{% endif %}
+          </div>
+          <div class="slx-kpi-value">{{ analytics.month_revenue }}</div>
+          <div class="slx-kpi-sub">
+            <span class="slx-kpi-sub-pill">
+              {% if LANGUAGE_CODE|slice:":2" == "ar" %}الفواتير الصادرة هذا الشهر{% else %}{% trans "Invoices issued this month" %}{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="slx-kpi-card">
+        <div class="slx-kpi-ico">🏦</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">
+            {% if LANGUAGE_CODE|slice:":2" == "ar" %}التحصيلات (الشهر الحالي){% else %}{% trans "Collections (MTD)" %}{% endif %}
+          </div>
+          <div class="slx-kpi-value">{{ analytics.month_collections }}</div>
+          <div class="slx-kpi-sub">
+            <span class="slx-kpi-sub-pill">
+              {% if LANGUAGE_CODE|slice:":2" == "ar" %}
+                المرتجعات: {{ analytics.month_refunds }}
+              {% else %}
+                {% blocktrans with refunds=analytics.month_refunds %}Refunds: {{ refunds }}{% endblocktrans %}
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="slx-kpi-card">
+        <div class="slx-kpi-ico">🛠️</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">
+            {% if LANGUAGE_CODE|slice:":2" == "ar" %}تكلفة الصيانة (الشهر الحالي){% else %}{% trans "Maintenance Cost (MTD)" %}{% endif %}
+          </div>
+          <div class="slx-kpi-value">{{ analytics.month_maintenance_cost }}</div>
+          <div class="slx-kpi-sub">
+            <span class="slx-kpi-sub-pill">
+              {% if LANGUAGE_CODE|slice:":2" == "ar" %}تأثير المهام المكتملة والمفتوحة{% else %}{% trans "Completed + open tasks impact" %}{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="slx-kpi-card">
+        <div class="slx-kpi-ico">📈</div>
+        <div class="slx-kpi-meta">
+          <div class="slx-kpi-label">
+            {% if LANGUAGE_CODE|slice:":2" == "ar" %}صافي الدخل (الشهر الحالي){% else %}{% trans "Net Income (MTD)" %}{% endif %}
+          </div>
+          <div class="slx-kpi-value">{{ analytics.net_income_month }}</div>
+          <div class="slx-kpi-sub">
+            <span class="slx-kpi-sub-pill">
+              {% if LANGUAGE_CODE|slice:":2" == "ar" %}
+                حجوزات آخر 7 أيام: {{ analytics.last_7_bookings }} (السابق {{ analytics.prev_7_bookings }})
+              {% else %}
+                {% blocktrans with b7=analytics.last_7_bookings p7=analytics.prev_7_bookings %}Bookings 7d: {{ b7 }} (prev {{ p7 }}){% endblocktrans %}
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-xl-7">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "Quick Actions" %}</div>
+          <a class="slx-mini-link" href="{% url 'bookings_list' %}">{% trans "View all" %} →</a>
+        </div>
+
+        <div class="slx-actions">
+          <a class="slx-action" href="{% url 'booking_create' %}">
+            <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Booking" %}</span>
+          </a>
+          <a class="slx-action" href="{% url 'guests_list' %}">
+            <span class="slx-action-ico">🧑</span><span class="slx-action-text">{% trans "Guests" %}</span>
+          </a>
+          <a class="slx-action" href="{% url 'billing_overview' %}">
+            <span class="slx-action-ico">🧾</span><span class="slx-action-text">{% trans "Billing" %}</span>
+          </a>
+          <a class="slx-action" href="{% url 'reports_home' %}">
+            <span class="slx-action-ico">📊</span><span class="slx-action-text">{% trans "Reports" %}</span>
+          </a>
+        </div>
+
+        <div class="slx-card mt-3 slx-card-inner">
+          <div class="slx-card-head">
+            <div class="slx-card-title">{% trans "Occupancy" %}</div>
+            <div class="slx-card-sub">{% trans "Last 7 days (visual)" %}</div>
+          </div>
+
+          <div class="slx-bars">
+            {% for b in occupancy_bars %}
+              <div class="slx-bar">
+                <div class="slx-bar-col" style="height: {{ b.height }}%"></div>
+                <div class="slx-bar-lbl">{{ b.day }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-5">
+      <div class="slx-card">
+        <div class="slx-card-head">
+          <div class="slx-card-title">{% trans "Today's Activity" %}</div>
+          <div class="slx-pill">{% trans "Latest" %}</div>
+        </div>
+
+        <div class="slx-activity">
+          {% if recent_bookings %}
+            {% for b in recent_bookings %}
+              <div class="slx-activity-item">
+                <div class="slx-activity-avatar">👤</div>
+                <div class="slx-activity-text">
+                  <div class="slx-activity-line">
+                    <strong>{{ b.guest.full_name|default:"Guest" }}</strong>
+                    <span class="slx-activity-muted">· {{ b.unit.name|default:unit_label }}</span>
+                  </div>
+                  <div class="slx-activity-sub">{% blocktrans with booking_id=b.id status=b.status|default:"" %}Booking #{{ booking_id }} · {{ status }}{% endblocktrans %}</div>
+                </div>
+                <div class="slx-activity-time">{{ b.created_at|date:"g:i A" }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="slx-empty">{% trans "No activity yet today." %}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Recent Bookings" %}</div>
+      <a class="slx-mini-link" href="{% url 'bookings_list' %}">{% trans "View all" %} →</a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "ID" %}</th><th>{% trans "Guest" %}</th><th>{% trans "Unit" %}</th><th>{% trans "Check-In" %}</th><th>{% trans "Status" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in recent_bookings %}
+            <tr>
+              <td class="text-muted">#{{ b.id }}</td>
+              <td>{{ b.guest.full_name|default:guest_label }}</td>
+              <td>{{ b.unit.name|default:unit_label }}</td>
+              <td>{{ b.start_date|date:"M d, Y" }}</td>
+              <td><span class="slx-status">{{ b.status|default:"—" }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted py-4">{% trans "No bookings yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

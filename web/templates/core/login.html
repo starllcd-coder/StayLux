@@ -1,0 +1,126 @@
+{% load static i18n %}
+<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% trans "StayLux — Login" %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'app.css' %}?v=20260227-sidebar-min">
+</head>
+<body class="slx-auth-body">
+
+  <div class="slx-auth-shell">
+    <!-- Left branding panel -->
+    <aside class="slx-auth-left">
+      <div class="slx-brand">
+        <img class="slx-brand-logo" src="{% static 'brand/StayLux.png' %}?v=20260223" alt="StayLux" />
+        <div class="slx-tagline">
+          {% if LANGUAGE_CODE == 'ar' %}إعادة تعريف الضيافة الحديثة{% else %}{% trans "Redefining Modern Hospitality" %}{% endif %}
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right login panel -->
+    <main class="slx-auth-right">
+      <div class="slx-auth-top">
+        <form method="post" class="slx-lang-form" action="{% url 'set_language' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <input type="hidden" name="language" id="slx-lang-hidden" value="{{ LANGUAGE_CODE }}">
+
+          <div class="slx-lang-pill" role="radiogroup" aria-label="{% trans "Change language" %}">
+            <button type="button" class="pill-option" role="radio" aria-checked="{% if LANGUAGE_CODE == 'en' %}true{% else %}false{% endif %}" data-lang="en">{% trans "English" %}</button>
+            <button type="button" class="pill-option" role="radio" aria-checked="{% if LANGUAGE_CODE == 'ar' %}true{% else %}false{% endif %}" data-lang="ar">العربية</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="slx-auth-card">
+        <h1 class="slx-auth-title">
+          {% if LANGUAGE_CODE == 'ar' %}مرحبا بعودتك!{% else %}{% trans "Welcome Back!" %}{% endif %}
+        </h1>
+        <p class="slx-auth-subtitle">
+          {% if LANGUAGE_CODE == 'ar' %}يرجى تسجيل الدخول إلى حسابك{% else %}{% trans "Please sign in to your account" %}{% endif %}
+        </p>
+
+        {% if messages %}
+          <div class="slx-messages">
+            {% for message in messages %}
+              <div class="slx-message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" class="slx-auth-form" novalidate>
+          {% csrf_token %}
+          <div class="slx-field">
+            <label class="slx-label" for="id_username">
+              {% if LANGUAGE_CODE == 'ar' %}اسم المستخدم أو البريد الإلكتروني{% else %}{% trans "Username or Email" %}{% endif %}
+            </label>
+            <div class="slx-input-wrap slx-input-user">
+              {{ form.username }}
+            </div>
+            {% if form.username.errors %}
+              <div class="slx-error">{{ form.username.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="slx-field">
+            <label class="slx-label" for="id_password">
+              {% if LANGUAGE_CODE == 'ar' %}كلمة المرور{% else %}{% trans "Password" %}{% endif %}
+            </label>
+            <div class="slx-input-wrap slx-input-lock">
+              {{ form.password }}
+              <button type="button" class="slx-eye" onclick="togglePassword()">👁</button>
+            </div>
+            {% if form.password.errors %}
+              <div class="slx-error">{{ form.password.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="slx-row">
+            <label class="slx-check">
+              <input type="checkbox" name="remember" {% if form.remember.value %}checked{% endif %}>
+              <span>{% if LANGUAGE_CODE == 'ar' %}تذكرني{% else %}{% trans "Remember Me" %}{% endif %}</span>
+            </label>
+            <a class="slx-link" href="#">{% if LANGUAGE_CODE == 'ar' %}نسيت كلمة المرور؟{% else %}{% trans "Forgot Password?" %}{% endif %}</a>
+          </div>
+
+          <button class="slx-btn" type="submit">{% if LANGUAGE_CODE == 'ar' %}تسجيل الدخول{% else %}{% trans "Sign In" %}{% endif %}</button>
+
+          <div class="slx-help">
+            {% if LANGUAGE_CODE == 'ar' %}هل تواجه مشكلة؟{% else %}{% trans "Having trouble?" %}{% endif %}
+            <a class="slx-link" href="#">{% if LANGUAGE_CODE == 'ar' %}تواصل مع الدعم{% else %}{% trans "Contact Support" %}{% endif %}</a>
+          </div>
+        </form>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const el = document.getElementById("id_password");
+      if (!el) return;
+      el.type = (el.type === "password") ? "text" : "password";
+    }
+    ;(function(){
+      var pillButtons = document.querySelectorAll('.pill-option');
+      var hidden = document.getElementById('slx-lang-hidden');
+      if(!pillButtons || !hidden) return;
+      pillButtons.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          pillButtons.forEach(function(b){ b.setAttribute('aria-checked','false'); });
+          btn.setAttribute('aria-checked','true');
+          hidden.value = btn.dataset.lang;
+          // submit parent form
+          btn.closest('form').submit();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

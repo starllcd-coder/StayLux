@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "StayLux — New Booking Wizard" %}{% endblock %}
+{% block page_title %}{% trans "New Booking" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "New Booking Wizard" %}</div>
+    <div class="slx-hero-sub">{% blocktrans with step_num=step %}Step {{ step_num }} of 4 — Guest Details{% endblocktrans %}{% if prop %} • <strong>{% trans "Property:" %}</strong> {{ prop.name|default:"—" }}{% endif %}</div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Step 3 — Guest Details" %}</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn btn-sm" href="{% url 'booking_wizard_step2' %}" style="border-radius:12px;">← {% trans "Back" %}</a>
+        <a class="btn btn-sm" href="{% url 'booking_wizard_cancel' %}" style="border-radius:12px;">{% trans "Cancel" %}</a>
+      </div>
+    </div>
+
+    <div class="p-3">
+      <div class="progress" style="height:10px; border-radius:999px;">
+        <div class="progress-bar" role="progressbar" style="width:75%"></div>
+      </div>
+
+      <form method="post" class="mt-3">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">{% trans "Select Existing Guest (optional)" %}</label>
+            <div class="row g-2">
+              <div class="col-12 col-md-5">
+                <input
+                  id="existing_guest_search"
+                  type="text"
+                  class="form-control"
+                  placeholder="{% trans 'Search guest by name, phone, or ID number' %}"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="col-12 col-md-7">
+                <select name="existing_guest" id="id_existing_guest" class="form-select">
+                  <option value="">{% trans "Select" %}</option>
+                  {% for g in existing_guests %}
+                    <option
+                      value="{{ g.id }}"
+                      {% if form.data.existing_guest == g.id|stringformat:"s" or form.initial.existing_guest == g.id %}selected{% endif %}
+                      data-full-name="{{ g.full_name|default:''|escape }}"
+                      data-phone="{{ g.phone|default:''|escape }}"
+                      data-whatsapp="{{ g.whatsapp|default:''|escape }}"
+                      data-email="{{ g.email|default:''|escape }}"
+                      data-nationality="{{ g.nationality|default:''|escape }}"
+                      data-id-type="{{ g.id_type|default:''|escape }}"
+                      data-id-number="{{ g.id_number|default:''|escape }}"
+                      data-address="{{ g.address|default:''|escape }}"
+                      data-notes="{{ g.notes|default:''|escape }}"
+                    >
+                      {{ g.full_name }}{% if g.phone %} - {{ g.phone }}{% endif %}{% if g.id_number %} - {{ g.id_number }}{% endif %}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="text-danger small">{{ form.existing_guest.errors }}</div>
+            <div class="form-text">{% trans "If selected, the fields below are optional." %}</div>
+          </div>
+        </div>
+
+        <hr class="my-3" />
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Full Name" %}</label>
+            {{ form.full_name }}
+            <div class="text-danger small">{{ form.full_name.errors }}</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Phone" %}</label>
+            {{ form.phone }}
+            <div class="text-danger small">{{ form.phone.errors }}</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "WhatsApp" %}</label>
+            {{ form.whatsapp }}
+            <div class="text-danger small">{{ form.whatsapp.errors }}</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Email" %}</label>
+            {{ form.email }}
+            <div class="text-danger small">{{ form.email.errors }}</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "Nationality" %}</label>
+            {{ form.nationality }}
+            <div class="text-danger small">{{ form.nationality.errors }}</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{% trans "ID Type" %}</label>
+            <select class="form-select" name="id_type" id="id_id_type">
+              <option value="">{% trans "Select" %}</option>
+              <option value="national_id" {% if form.data.id_type == "national_id" %}selected{% endif %}>{% trans "National ID" %}</option>
+              <option value="passport" {% if form.data.id_type == "passport" %}selected{% endif %}>{% trans "Passport" %}</option>
+              <option value="driving_license" {% if form.data.id_type == "driving_license" %}selected{% endif %}>{% trans "License" %}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "ID Number" %}</label>
+            {{ form.id_number }}
+            <div class="text-danger small">{{ form.id_number.errors }}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Address" %}</label>
+            {{ form.address }}
+            <div class="text-danger small">{{ form.address.errors }}</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">{% trans "Notes" %}</label>
+            {{ form.notes }}
+            <div class="text-danger small">{{ form.notes.errors }}</div>
+          </div>
+        </div>
+
+        <div class="mt-4" style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn btn-primary" type="submit" style="border-radius:12px; font-weight:900;">{% trans "Next" %} →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+    (function () {
+      var guestSelect = document.getElementById("id_existing_guest");
+      var guestSearch = document.getElementById("existing_guest_search");
+      if (!guestSelect || !guestSearch) return;
+
+      function setField(id, value) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.value = value || "";
+      }
+
+      function applySelectedGuestData() {
+        var opt = guestSelect.options[guestSelect.selectedIndex];
+        if (!opt || !opt.value) return;
+        setField("id_full_name", opt.getAttribute("data-full-name"));
+        setField("id_phone", opt.getAttribute("data-phone"));
+        setField("id_whatsapp", opt.getAttribute("data-whatsapp"));
+        setField("id_email", opt.getAttribute("data-email"));
+        setField("id_nationality", opt.getAttribute("data-nationality"));
+        setField("id_id_type", opt.getAttribute("data-id-type"));
+        setField("id_id_number", opt.getAttribute("data-id-number"));
+        setField("id_address", opt.getAttribute("data-address"));
+        setField("id_notes", opt.getAttribute("data-notes"));
+      }
+
+      function filterGuests() {
+        var term = (guestSearch.value || "").toLowerCase().trim();
+        for (var i = 0; i < guestSelect.options.length; i++) {
+          var opt = guestSelect.options[i];
+          if (!opt.value) {
+            opt.hidden = false;
+            continue;
+          }
+          var text = (opt.text || "").toLowerCase();
+          var phone = (opt.getAttribute("data-phone") || "").toLowerCase();
+          var idNum = (opt.getAttribute("data-id-number") || "").toLowerCase();
+          opt.hidden = !!term && text.indexOf(term) === -1 && phone.indexOf(term) === -1 && idNum.indexOf(term) === -1;
+        }
+      }
+
+      guestSelect.addEventListener("change", applySelectedGuestData);
+      guestSearch.addEventListener("input", filterGuests);
+      applySelectedGuestData();
+    })();
+  </script>
+{% endblock %}

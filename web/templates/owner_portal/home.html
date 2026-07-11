@@ -1,0 +1,101 @@
+{% load i18n %}
+<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <title>{% trans "Owner Dashboard" %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: "Cairo", Arial, sans-serif; margin: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 16px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; }
+    .muted { color: #666; font-size: 12px; }
+    .big { font-size: 28px; font-weight: 700; margin-top: 6px; }
+    a { text-decoration: none; }
+    .period-form { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .period-btn { border: 1px solid #ddd; background: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+    .period-btn.active { background: #f2f7ff; border-color: #9cc1ff; font-weight: 700; }
+    html[dir="rtl"] body { direction: rtl; }
+  </style>
+</head>
+<body>
+  <h2>{% trans "Owner Dashboard" %}</h2>
+  <div class="muted">{% blocktrans with pid=property_profile_id %}Property Profile ID: <b>{{ pid }}</b>{% endblocktrans %}</div>
+
+  <form method="get" class="period-form">
+    <button class="period-btn {% if selected_period == 'daily' %}active{% endif %}" type="submit" name="period" value="daily">{% trans "Daily" %}</button>
+    <button class="period-btn {% if selected_period == 'weekly' %}active{% endif %}" type="submit" name="period" value="weekly">{% trans "Weekly" %}</button>
+    <button class="period-btn {% if selected_period == 'monthly' %}active{% endif %}" type="submit" name="period" value="monthly">{% trans "Monthly" %}</button>
+  </form>
+  <div class="muted" style="margin-top:8px;">{% blocktrans with period=selected_period %}Selected period: {{ period }}{% endblocktrans %}</div>
+
+  {% if dashboard %}
+    <div class="grid">
+      <div class="card">
+        <div class="muted">{% blocktrans with start=dashboard.range.start_date end=dashboard.range.end_date %}Occupancy ({{ start }} -> {{ end }}){% endblocktrans %}</div>
+        <div class="big">{{ dashboard.occupancy.occupancy_percent }}%</div>
+        <div class="muted">{% blocktrans with booked=dashboard.occupancy.booked_nights total=dashboard.occupancy.total_unit_nights %}Booked nights: {{ booked }} / {{ total }}{% endblocktrans %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Revenue" %}</div>
+        <div class="big">{{ dashboard.billing.revenue_total }}</div>
+        <div class="muted">{% blocktrans with collections=dashboard.billing.collections_total %}Collections: {{ collections }}{% endblocktrans %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Outstanding" %}</div>
+        <div class="big">{{ dashboard.billing.outstanding_total }}</div>
+        <div class="muted">{% trans "Invoices & balances" %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Maintenance Costs" %}</div>
+        <div class="big">{{ dashboard.maintenance.total_cost }}</div>
+        <div class="muted">{% trans "Total maintenance spend" %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Net Income" %}</div>
+        <div class="big">{{ dashboard.billing.net_income_total }}</div>
+        <div class="muted">{% trans "Revenue minus maintenance" %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Units" %}</div>
+        <div class="big">{{ dashboard.units.total_units }}</div>
+        <div class="muted">
+          {% trans "Available" %}: {{ dashboard.units.available }} |
+          {% trans "Occupied" %}: {{ dashboard.units.occupied }} |
+          {% trans "HK" %}: {{ dashboard.units.housekeeping }} |
+          {% trans "Maint" %}: {{ dashboard.units.maintenance }}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Housekeeping" %}</div>
+        <div class="big">{{ dashboard.housekeeping.pending }}</div>
+        <div class="muted">{% trans "Pending tasks" %}</div>
+      </div>
+
+      <div class="card">
+        <div class="muted">{% trans "Maintenance" %}</div>
+        <div class="big">{{ dashboard.maintenance.open }}</div>
+        <div class="muted">{% trans "Open requests" %}</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <a href="/api/reports/owner-dashboard/?{{ dashboard_querystring }}">{% trans "View dashboard JSON" %}</a>
+    </div>
+  {% else %}
+    <div class="card" style="margin-top:16px;">
+      <div class="muted">{% trans "Dashboard not available." %}</div>
+      <div>{% trans "No owner-scoped data found for this account." %}</div>
+    </div>
+  {% endif %}
+</body>
+</html>

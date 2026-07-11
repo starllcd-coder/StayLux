@@ -1,0 +1,411 @@
+{% load static i18n text_helpers %}
+<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{% block title %}StayLux{% endblock %}</title>
+
+  <link rel="icon" type="image/x-icon" href="{% static 'brand/StayLux_multi.ico' %}">
+  <link rel="icon" type="image/png" sizes="76x76" href="{% static 'brand/AppIcon_76x76.png' %}">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'brand/AppIcon_76x76.png' %}">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="{% static 'app.css' %}?v=20260325-rtl-main-scrollbar" rel="stylesheet">
+</head>
+
+<body class="slx-app-body">
+  <div class="slx-app-shell">
+
+    <aside class="slx-sidebar">
+      <div class="slx-sidebar-brand">
+        <img class="slx-sidebar-logo" src="{% static 'brand/StayLux.png' %}?v=20260223" alt="StayLux" />
+        <div class="slx-sidebar-tagline">
+          {% if LANGUAGE_CODE == 'ar' %}إعادة تعريف الضيافة الحديثة{% else %}{% trans "Redefining Modern Hospitality" %}{% endif %}
+        </div>
+      </div>
+
+      {# sidebar user/profile card removed as requested #}
+
+      <nav class="slx-nav">
+        {% with staff_role=request.user.staff_profile.role %}
+        <a class="slx-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+          <span class="slx-nav-ico">🏠</span>
+          <span>{% if LANGUAGE_CODE == 'ar' %}لوحة التحكم{% else %}{% trans "Dashboard" %}{% endif %}</span>
+        </a>
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'reception' or staff_role == 'housekeeping' or staff_role == 'maintenance' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'units_list' or request.resolver_match.url_name == 'unit_create' or request.resolver_match.url_name == 'unit_edit' %}active{% endif %}" href="{% url 'units_list' %}">
+            <span class="slx-nav-ico">🛏️</span>
+            <span>
+              {% if prop and prop.business_type == "apartments" %}
+                {% if LANGUAGE_CODE == 'ar' %}الوحدات{% else %}{% trans "Units" %}{% endif %}
+              {% else %}
+                {% if LANGUAGE_CODE == 'ar' %}الغرف{% else %}{% trans "Rooms" %}{% endif %}
+              {% endif %}
+            </span>
+          </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'reception' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'bookings_list' or request.resolver_match.url_name == 'booking_create' or request.resolver_match.url_name == 'booking_edit' %}active{% endif %}" href="{% url 'bookings_list' %}">
+            <span class="slx-nav-ico">📅</span><span>{% if LANGUAGE_CODE == 'ar' %}الحجوزات{% else %}{% trans "Bookings" %}{% endif %}</span>
+          </a>
+
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'guests_list' or request.resolver_match.url_name == 'guest_create' or request.resolver_match.url_name == 'guest_edit' %}active{% endif %}" href="{% url 'guests_list' %}">
+            <span class="slx-nav-ico">🧑‍🤝‍🧑</span><span>{% if LANGUAGE_CODE == 'ar' %}النزلاء{% else %}{% trans "Guests" %}{% endif %}</span>
+          </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'maintenance' or staff_role == 'reception' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'maintenance_list' or request.resolver_match.url_name == 'maintenance_create' or request.resolver_match.url_name == 'maintenance_edit' %}active{% endif %}" href="{% url 'maintenance_list' %}">
+            <span class="slx-nav-ico">🛠️</span><span>{% if LANGUAGE_CODE == 'ar' %}الصيانة{% else %}{% trans "Maintenance" %}{% endif %}</span>
+          </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'housekeeping' or staff_role == 'reception' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'housekeeping_list' %}active{% endif %}" href="{% url 'housekeeping_list' %}">
+            <span class="slx-nav-ico">🧹</span><span>{% if LANGUAGE_CODE == 'ar' %}التدبير المنزلي{% else %}{% trans "Housekeeping" %}{% endif %}</span>
+          </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'reception' %}
+          {% if prop and prop.business_type == "apartments" %}
+            <a class="slx-nav-item {% if request.resolver_match.url_name == 'invoices_list' or request.resolver_match.url_name == 'invoice_create' or request.resolver_match.url_name == 'invoice_edit' %}active{% endif %}" href="{% url 'invoices_list' %}">
+              <span class="slx-nav-ico">🧾</span><span>{% if LANGUAGE_CODE == 'ar' %}الفواتير{% else %}{% trans "Invoices" %}{% endif %}</span>
+            </a>
+          {% endif %}
+
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'payments_list' or request.resolver_match.url_name == 'payment_create' or request.resolver_match.url_name == 'payment_edit' %}active{% endif %}" href="{% url 'payments_list' %}">
+            <span class="slx-nav-ico">💳</span><span>{% if LANGUAGE_CODE == 'ar' %}المدفوعات{% else %}{% trans "Payments" %}{% endif %}</span>
+          </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'reports_home' %}active{% endif %}" href="{% url 'reports_home' %}">
+            <span class="slx-nav-ico">📊</span><span>{% if LANGUAGE_CODE == 'ar' %}التقارير{% else %}{% trans "Reports" %}{% endif %}</span>
+          </a>
+
+          <div class="slx-nav-sep"></div>
+
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'settings_page' %}active{% endif %}" href="{% url 'settings_page' %}">
+            <span class="slx-nav-ico">⚙️</span><span>{% if LANGUAGE_CODE == 'ar' %}الإعدادات{% else %}{% trans "Settings" %}{% endif %}</span>
+          </a>
+        {% endif %}
+
+        <a class="slx-nav-item slx-nav-logout" href="{% url 'logout' %}">
+          <span class="slx-nav-ico">↩️</span><span>{% if LANGUAGE_CODE == 'ar' %}تسجيل الخروج{% else %}{% trans "Logout" %}{% endif %}</span>
+        </a>
+        {% endwith %}
+      </nav>
+    </aside>
+
+    <main class="slx-main">
+
+      <header class="slx-topbar">
+        <div class="slx-topbar-left">
+          <div class="slx-page-title">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</div>
+        </div>
+
+        <div class="slx-topbar-right">
+          {% if can_switch_properties and property_switcher_items %}
+            <form method="post" action="{% url 'switch_active_property' %}" class="d-flex align-items-center" style="gap:8px; margin:0;">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <label for="topbar-property-switch" class="small text-muted mb-0">{% trans "Property" %}</label>
+              <select
+                id="topbar-property-switch"
+                name="property_id"
+                class="form-select form-select-sm"
+                style="min-width:220px;"
+                onchange="this.form.submit()"
+              >
+                {% for p_item in property_switcher_items %}
+                  <option value="{{ p_item.id }}" {% if active_property and active_property.id == p_item.id %}selected{% endif %}>
+                    {{ p_item.name_en }}{% if p_item.name_ar %} / {{ p_item.name_ar }}{% endif %}
+                  </option>
+                {% endfor %}
+              </select>
+            </form>
+          {% endif %}
+
+          <form class="slx-lang-form" method="post" action="{% url 'set_language' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <input type="hidden" name="language" id="slx-lang-hidden-top" value="{{ LANGUAGE_CODE }}">
+            <div class="slx-lang-pill small" role="radiogroup" aria-label="{% trans "Change language" %}">
+              <button type="button" class="pill-option" role="radio" aria-checked="{% if LANGUAGE_CODE == 'en' %}true{% else %}false{% endif %}" data-lang="en">EN</button>
+              <button type="button" class="pill-option" role="radio" aria-checked="{% if LANGUAGE_CODE == 'ar' %}true{% else %}false{% endif %}" data-lang="ar">ع</button>
+            </div>
+          </form>
+
+          {% if LANGUAGE_BIDI %}
+            <div class="slx-avatar-wrap">
+              <button id="slx-avatar-btn" class="slx-topbar-avatar" aria-haspopup="true" aria-expanded="false" title="{% trans "Account" %}">👤</button>
+              <div id="slx-avatar-menu" class="slx-avatar-menu" role="menu" aria-hidden="true">
+                <div class="slx-avatar-menu-head">
+                  <div class="slx-avatar-menu-name">{% if request.user.get_full_name %}{{ request.user.get_full_name }}{% else %}{{ request.user.username }}{% endif %}</div>
+                  <div class="slx-avatar-menu-role">
+                    {% if request.user.staff_profile %}
+                      {{ request.user.staff_profile.get_role_display }}
+                    {% elif request.user.owner_profile %}
+                      {% trans "Owner" %}
+                    {% else %}
+                      {% trans "User" %}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="slx-avatar-menu-links">
+                  <a href="{% url 'settings_page' %}">{% trans "Account settings" %}</a>
+                  <a href="{% url 'logout' %}">{% trans "Logout" %}</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="slx-notify-wrap">
+              <button id="slx-notify-btn" class="slx-icon-btn" type="button" title="{% trans "Notifications" %}" aria-haspopup="true" aria-expanded="false">
+                🔔
+                {% if unread_count and unread_count > 0 %}
+                  <span class="slx-badge">{% if unread_count > 99 %}99+{% else %}{{ unread_count }}{% endif %}</span>
+                {% endif %}
+              </button>
+              <div id="slx-notify-menu" class="slx-notify-menu" role="menu" aria-hidden="true">
+                <div class="slx-notify-head">
+                  <div class="slx-notify-title">{% trans "Notifications" %}</div>
+                  {% if unread_count and unread_count > 0 %}
+                    <form method="post" action="{% url 'settings_page' %}" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="form_kind" value="notifications_mark_read">
+                      <input type="hidden" name="action" value="mark_all">
+                      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                      <button type="submit" class="slx-notify-mark">{% trans "Mark all as read" %}</button>
+                    </form>
+                  {% else %}
+                    <button type="button" class="slx-notify-mark" disabled title="{% trans "No notifications yet" %}">{% trans "Mark all as read" %}</button>
+                  {% endif %}
+                </div>
+                <div class="slx-notify-list">
+                  {% if latest_notifications %}
+                    {% for n in latest_notifications %}
+                      <div class="slx-notify-item" style="padding:10px 12px; border-bottom:1px solid rgba(229,231,235,0.7);">
+                        <div style="font-weight:700; font-size:12px; color:#0f172a;">{{ n.event_key|human_event_key }}</div>
+                        <div style="font-size:12px; color:#475569; margin-top:2px; white-space:normal;">{{ n.content|truncatechars:100 }}</div>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <div class="slx-notify-empty">{% trans "No notifications yet" %}</div>
+                  {% endif %}
+                </div>
+                <div class="slx-notify-footer">
+                  <a href="{% url 'settings_page' %}?panel=notifications">{% trans "View all" %}</a>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="slx-notify-wrap">
+              <button id="slx-notify-btn" class="slx-icon-btn" type="button" title="{% trans "Notifications" %}" aria-haspopup="true" aria-expanded="false">
+                🔔
+                {% if unread_count and unread_count > 0 %}
+                  <span class="slx-badge">{% if unread_count > 99 %}99+{% else %}{{ unread_count }}{% endif %}</span>
+                {% endif %}
+              </button>
+              <div id="slx-notify-menu" class="slx-notify-menu" role="menu" aria-hidden="true">
+                <div class="slx-notify-head">
+                  <div class="slx-notify-title">{% trans "Notifications" %}</div>
+                  {% if unread_count and unread_count > 0 %}
+                    <form method="post" action="{% url 'settings_page' %}" style="margin:0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="form_kind" value="notifications_mark_read">
+                      <input type="hidden" name="action" value="mark_all">
+                      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                      <button type="submit" class="slx-notify-mark">{% trans "Mark all as read" %}</button>
+                    </form>
+                  {% else %}
+                    <button type="button" class="slx-notify-mark" disabled title="{% trans "No notifications yet" %}">{% trans "Mark all as read" %}</button>
+                  {% endif %}
+                </div>
+                <div class="slx-notify-list">
+                  {% if latest_notifications %}
+                    {% for n in latest_notifications %}
+                      <div class="slx-notify-item" style="padding:10px 12px; border-bottom:1px solid rgba(229,231,235,0.7);">
+                        <div style="font-weight:700; font-size:12px; color:#0f172a;">{{ n.event_key|human_event_key }}</div>
+                        <div style="font-size:12px; color:#475569; margin-top:2px; white-space:normal;">{{ n.content|truncatechars:100 }}</div>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <div class="slx-notify-empty">{% trans "No notifications yet" %}</div>
+                  {% endif %}
+                </div>
+                <div class="slx-notify-footer">
+                  <a href="{% url 'settings_page' %}?panel=notifications">{% trans "View all" %}</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="slx-avatar-wrap">
+              <button id="slx-avatar-btn" class="slx-topbar-avatar" aria-haspopup="true" aria-expanded="false" title="{% trans "Account" %}">👤</button>
+              <div id="slx-avatar-menu" class="slx-avatar-menu" role="menu" aria-hidden="true">
+                <div class="slx-avatar-menu-head">
+                  <div class="slx-avatar-menu-name">{% if request.user.get_full_name %}{{ request.user.get_full_name }}{% else %}{{ request.user.username }}{% endif %}</div>
+                  <div class="slx-avatar-menu-role">
+                    {% if request.user.staff_profile %}
+                      {{ request.user.staff_profile.get_role_display }}
+                    {% elif request.user.owner_profile %}
+                      {% trans "Owner" %}
+                    {% else %}
+                      {% trans "User" %}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="slx-avatar-menu-links">
+                  <a href="{% url 'settings_page' %}">{% trans "Account settings" %}</a>
+                  <a href="{% url 'logout' %}">{% trans "Logout" %}</a>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </header>
+
+      <section class="slx-content">
+        {% if messages %}
+          <div class="slx-toast-wrap">
+            {% for message in messages %}
+              <div class="slx-toast {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+
+  </div>
+  <script>
+    (function () {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      function isRtl() {
+        return document.documentElement.dir === 'rtl' || document.dir === 'rtl';
+      }
+      function closeMenu(trigger, menu) {
+        if (!trigger || !menu) {
+          return;
+        }
+        trigger.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.style.position = '';
+        menu.style.top = '';
+        menu.style.left = '';
+        menu.style.right = '';
+        menu.style.maxWidth = '';
+      }
+      function openMenu(trigger, menu, align) {
+        if (!trigger || !menu) {
+          return;
+        }
+        var rect = trigger.getBoundingClientRect();
+        menu.style.position = 'fixed';
+        menu.style.top = (rect.bottom + 10) + 'px';
+        menu.style.maxWidth = Math.min(360, window.innerWidth - 24) + 'px';
+
+        // measure menu width even if it's hidden
+        var prevDisplay = menu.style.display;
+        var prevVisibility = menu.style.visibility;
+        menu.style.visibility = 'hidden';
+        menu.style.display = 'block';
+        var menuWidth = menu.offsetWidth || 220;
+        menu.style.display = prevDisplay;
+        menu.style.visibility = prevVisibility;
+
+        var left = rect.left;
+        if (align === 'right') {
+          left = rect.right - menuWidth;
+        } else if (align === 'left') {
+          left = rect.left;
+        }
+        if (isRtl()) {
+          left = align === 'right' ? rect.left : rect.right - menuWidth;
+        }
+
+        var minLeft = 8;
+        var maxLeft = Math.max(8, window.innerWidth - menuWidth - 8);
+        left = Math.min(maxLeft, Math.max(minLeft, left));
+
+        menu.style.left = left + 'px';
+        menu.style.right = 'auto';
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.setAttribute('aria-hidden', 'false');
+      }
+
+      // Avatar dropdown toggle
+      var avatarBtn = document.getElementById('slx-avatar-btn');
+      var avatarMenu = document.getElementById('slx-avatar-menu');
+      if (avatarBtn && avatarMenu) {
+        avatarBtn.addEventListener('click', function () {
+          var expanded = avatarBtn.getAttribute('aria-expanded') === 'true';
+          closeMenu(notifyBtn, notifyMenu);
+          if (expanded) {
+            closeMenu(avatarBtn, avatarMenu);
+          } else {
+            openMenu(avatarBtn, avatarMenu, 'left');
+          }
+        });
+      }
+
+      // Notifications dropdown toggle
+      var notifyBtn = document.getElementById('slx-notify-btn');
+      var notifyMenu = document.getElementById('slx-notify-menu');
+      if (notifyBtn && notifyMenu) {
+        notifyBtn.addEventListener('click', function () {
+          var expanded = notifyBtn.getAttribute('aria-expanded') === 'true';
+          closeMenu(avatarBtn, avatarMenu);
+          if (expanded) {
+            closeMenu(notifyBtn, notifyMenu);
+          } else {
+            openMenu(notifyBtn, notifyMenu, 'right');
+          }
+        });
+      }
+
+      document.addEventListener('click', function (ev) {
+        if (avatarBtn && avatarMenu && !avatarBtn.contains(ev.target) && !avatarMenu.contains(ev.target)) {
+          closeMenu(avatarBtn, avatarMenu);
+        }
+        if (notifyBtn && notifyMenu && !notifyBtn.contains(ev.target) && !notifyMenu.contains(ev.target)) {
+          closeMenu(notifyBtn, notifyMenu);
+        }
+      });
+      function resetScroll() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+      window.addEventListener('DOMContentLoaded', resetScroll, { once: true });
+      window.addEventListener('load', resetScroll);
+      window.addEventListener('pageshow', resetScroll);
+      setTimeout(resetScroll, 0);
+      setTimeout(resetScroll, 50);
+    })();
+  </script>
+  {% block extra_js %}{% endblock %}
+  <script>
+    (function(){
+      var topButtons = document.querySelectorAll('.slx-topbar .pill-option');
+      var hiddenTop = document.getElementById('slx-lang-hidden-top');
+      if(!topButtons || !hiddenTop) return;
+      topButtons.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          topButtons.forEach(function(b){ b.setAttribute('aria-checked','false'); });
+          btn.setAttribute('aria-checked','true');
+          hiddenTop.value = btn.dataset.lang;
+          btn.closest('form').submit();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

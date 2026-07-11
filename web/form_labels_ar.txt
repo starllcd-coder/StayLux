@@ -1,0 +1,20 @@
+{
+  "draft": {
+    "unit": "الوحدة",
+    "reported_by": "Reported by",
+    "assigned_to": "Assigned to",
+    "priority": "الأولوية",
+    "maintenance_type": "Maintenance type",
+    "title": "العنوان",
+    "description": "Description",
+    "before_photo": "Before photo"
+  },
+  "complete": {
+    "status": "الحالة",
+    "after_photo": "After photo",
+    "material_cost": "Material cost",
+    "labor_cost": "Labor cost",
+    "total_cost": "Total cost",
+    "completed_notes": "Completed notes"
+  }
+}

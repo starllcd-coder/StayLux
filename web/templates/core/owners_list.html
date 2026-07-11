@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Owners" %}{% endblock %}
+{% block page_title %}{% trans "Owners" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Owners" %}</div>
+      <div style="display:flex; gap:10px;">
+        <a class="slx-action" style="padding:10px 12px;" href="{% url 'settings_page' %}">
+          <span class="slx-action-ico">←</span><span class="slx-action-text">{% trans "Back" %}</span>
+        </a>
+        <a class="slx-action" style="padding:10px 12px;" href="{% url 'owner_create' %}">
+          <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "Add Owner" %}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>{% trans "Username" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Email" %}</th>
+            <th>{% trans "Units" %}</th>
+            <th>{% trans "Active" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in owners %}
+            <tr>
+              <td><strong>{{ o.user.username }}</strong></td>
+              <td>{{ o.user.get_full_name|default:"—" }}</td>
+              <td>{{ o.user.email|default:"—" }}</td>
+              <td>{{ o.units.count }}</td>
+              <td>{% if o.is_active %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
+              <td class="text-end">
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'owner_edit' o.id %}">{% trans "Edit" %}</a>
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'owner_delete' o.id %}">{% trans "Deactivate" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="text-muted py-4">{% trans "No owners yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

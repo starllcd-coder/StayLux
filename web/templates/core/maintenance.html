@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Maintenance" %}{% endblock %}
+{% block page_title %}{% trans "Maintenance" %}{% endblock %}
+
+{% block content %}
+  {% trans "Unit" as unit_label %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Maintenance" %}</div>
+    <div class="slx-hero-sub">{% trans "Track issues, assign technicians, and monitor status." %}</div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Tickets" %}</div>
+      <div class="slx-pill">{% trans "Requests" %}</div>
+    </div>
+
+    {% if tickets %}
+      <div class="table-responsive">
+        <table class="table align-middle slx-table">
+          <thead>
+            <tr>
+              <th>{% trans "ID" %}</th>
+              <th>{% trans "Unit" %}</th>
+              <th>{% trans "Title" %}</th>
+              <th>{% trans "Priority" %}</th>
+              <th>{% trans "Status" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in tickets %}
+              <tr>
+                <td class="text-muted">#{{ m.id }}</td>
+                <td>{% if m.unit %}{{ m.unit.name|default:unit_label }}{% else %}—{% endif %}</td>
+                <td>{{ m.title|default:"—" }}</td>
+                <td><span class="slx-status">{{ m.priority|default:"—" }}</span></td>
+                <td><span class="slx-status">{{ m.status|default:"—" }}</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="slx-empty">{% trans "No maintenance tickets found (or maintenance models not enabled)." %}</div>
+    {% endif %}
+  </div>
+{% endblock %}

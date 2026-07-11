@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "StayLux — New Booking" %}{% endblock %}
+{% block page_title %}{% trans "New Booking" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Create Booking" %}</div>
+    <div class="slx-hero-sub">{% trans "Fill in the details to create a new reservation." %}</div>
+  </div>
+
+  <div class="slx-card mt-3">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Booking Details" %}</div>
+      <a class="slx-mini-link" href="{% url 'bookings_list' %}">{% trans "Back to list" %} →</a>
+    </div>
+
+    <form method="post" class="row g-3">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="col-12 col-md-6">
+          <label class="slx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <div>
+            {{ field }}
+          </div>
+          {% if field.errors %}
+            <div class="slx-error">{{ field.errors|striptags }}</div>
+          {% endif %}
+          {% if field.help_text %}
+            <div class="text-muted small">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="col-12 mt-2">
+        <button type="submit" class="slx-btn" style="max-width:340px;">
+          {% trans "Create Booking" %}
+        </button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

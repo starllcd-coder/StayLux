@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "StayLux — Payments" %}{% endblock %}
+{% block page_title %}{% trans "Payments" %}{% endblock %}
+
+{% block content %}
+  <div class="slx-hero">
+    <div class="slx-hero-title">{% trans "Payments" %}</div>
+    <div class="slx-hero-sub">{% trans "Record payments and track cashflow." %}</div>
+  </div>
+
+  <div class="slx-card">
+    <div class="slx-card-head">
+      <div class="slx-card-title">{% trans "Payment Records" %}</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="slx-action" style="padding:10px 12px;" href="{% url 'payment_create' %}">
+          <span class="slx-action-ico">➕</span><span class="slx-action-text">{% trans "New Payment" %}</span>
+        </a>
+        <a class="slx-action" id="btn-payments-print" style="padding:10px 12px;" href="{% url 'payments_report_print' %}?{{ query }}{% if query %}&{% endif %}lang={{ LANGUAGE_CODE|slice:':2' }}&back={{ request.get_full_path|urlencode }}" target="_blank">
+          <span class="slx-action-ico">🖨️</span><span class="slx-action-text">{% trans "Print Report" %}</span>
+        </a>
+        <a class="slx-action" id="btn-payments-pdf" style="padding:10px 12px;" href="{% url 'payments_report_pdf' %}?{{ query }}{% if query %}&{% endif %}lang={{ LANGUAGE_CODE|slice:':2' }}">
+          <span class="slx-action-ico">📄</span><span class="slx-action-text">{% trans "Export Report PDF" %}</span>
+        </a>
+      </div>
+    </div>
+
+    <form method="get" class="row g-2 p-3" style="padding-top:0;">
+      <div class="col-12 col-md-2">
+        <select class="form-select" name="method">
+          <option value="">{% trans "Method" %}</option>
+          <option value="cash" {% if filters.method == "cash" %}selected{% endif %}>{% trans "Cash" %}</option>
+          <option value="card" {% if filters.method == "card" %}selected{% endif %}>{% trans "Card" %}</option>
+          <option value="bank" {% if filters.method == "bank" %}selected{% endif %}>{% trans "Bank Transfer" %}</option>
+          <option value="wallet" {% if filters.method == "wallet" %}selected{% endif %}>{% trans "Wallet" %}</option>
+          <option value="other" {% if filters.method == "other" %}selected{% endif %}>{% trans "Other" %}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <select class="form-select" name="direction">
+          <option value="">{% trans "Direction" %}</option>
+          <option value="in" {% if filters.direction == "in" %}selected{% endif %}>{% trans "Money In" %}</option>
+          <option value="out" {% if filters.direction == "out" %}selected{% endif %}>{% trans "Money Out (Refund)" %}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="text" name="invoice" placeholder="{% trans "Invoice #" %}" value="{{ filters.invoice|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="text" name="guest" placeholder="{% trans "Guest" %}" value="{{ filters.guest|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="date" name="start_date" value="{{ filters.start_date|default:"" }}" />
+      </div>
+      <div class="col-12 col-md-2">
+        <input class="form-control" type="date" name="end_date" value="{{ filters.end_date|default:"" }}" />
+      </div>
+      <div class="col-12" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Filter" %}</button>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table align-middle slx-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Invoice" %}</th>
+            <th>{% trans "Guest" %}</th>
+            <th>{% trans "Method" %}</th>
+            <th>{% trans "Direction" %}</th>
+            <th>{% trans "Amount" %}</th>
+            <th>{% trans "Reference" %}</th>
+            <th>{% trans "Void" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in payments %}
+            <tr>
+              <td class="text-muted">#{{ p.id }}</td>
+              <td>{% if p.paid_at %}{{ p.paid_at|date:"M d, Y" }}{% else %}{{ p.created_at|date:"M d, Y" }}{% endif %}</td>
+              <td><strong>#{{ p.invoice.id }}</strong></td>
+              <td>{{ p.invoice.guest.full_name|default:"—" }}</td>
+              <td><span class="slx-status">{{ p.method }}</span></td>
+              <td><span class="slx-status">{{ p.direction }}</span></td>
+              <td>{{ p.amount }}</td>
+              <td>{{ p.reference|default:"—" }}</td>
+              <td>{% if p.is_void %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
+              <td class="text-end">
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'payment_edit' p.id %}">{% trans "Edit" %}</a>
+                <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'payment_delete' p.id %}">{% trans "Delete" %}</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="10" class="text-muted py-4">{% trans "No payments yet." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const isQtDesktop = /QtWebEngine|QtWebEngineCore/i.test((window.navigator && window.navigator.userAgent) || "");
+      if (!isQtDesktop) return;
+
+      const printLink = document.getElementById("btn-payments-print");
+      const pdfLink = document.getElementById("btn-payments-pdf");
+      if (printLink) printLink.setAttribute("target", "_self");
+      if (pdfLink) pdfLink.setAttribute("target", "_self");
+    })();
+  </script>
+{% endblock %}
