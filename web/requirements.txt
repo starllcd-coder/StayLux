@@ -5,6 +5,10 @@ django-filter>=23.0
 python-dateutil>=2.8
 whitenoise>=6.6
 
+# Production server and PostgreSQL driver
+gunicorn>=22.0,<24.0
+psycopg[binary]>=3.2,<4.0
+
 # Optional but commonly used
 Pillow>=10.0
 reportlab>=4.0

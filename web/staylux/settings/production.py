@@ -4,37 +4,67 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 def get_env(name: str, required: bool = True):
-    v = os.environ.get(name)
-    if required and not v:
-        raise ImproperlyConfigured(f"Missing required environment variable: {name}")
-    return v
+    value = os.environ.get(name)
+    if required and not value:
+        raise ImproperlyConfigured(
+            f"Missing required environment variable: {name}"
+        )
+    return value
 
 
-# Production must explicitly set SECRET_KEY and ALLOWED_HOSTS
-SECRET_KEY = get_env("DJANGO_SECRET_KEY", required=True)
+# Production secrets must be provided by the hosting platform.
+SECRET_KEY = get_env("DJANGO_SECRET_KEY")
 DEBUG = False
-ALLOWED_HOSTS = get_env("DJANGO_ALLOWED_HOSTS", required=True).split(",")
 
-# Database configuration must be provided via environment in production
-DB_ENGINE = os.environ.get("DB_ENGINE")
-if not DB_ENGINE:
-    raise ImproperlyConfigured("Missing DB_ENGINE for production")
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in get_env("DJANGO_ALLOWED_HOSTS").split(",")
+    if host.strip()
+]
+
+if not ALLOWED_HOSTS:
+    raise ImproperlyConfigured(
+        "DJANGO_ALLOWED_HOSTS must contain at least one hostname"
+    )
+
+# Railway PostgreSQL connection settings.
+DB_ENGINE = get_env("DB_ENGINE")
+if DB_ENGINE != "django.db.backends.postgresql":
+    raise ImproperlyConfigured(
+        "Production DB_ENGINE must be django.db.backends.postgresql"
+    )
 
 DATABASES = {
     "default": {
         "ENGINE": DB_ENGINE,
         "NAME": get_env("DB_NAME"),
-        "USER": os.environ.get("DB_USER", ""),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", ""),
-        "PORT": os.environ.get("DB_PORT", ""),
+        "USER": get_env("DB_USER"),
+        "PASSWORD": get_env("DB_PASSWORD"),
+        "HOST": get_env("DB_HOST"),
+        "PORT": get_env("DB_PORT"),
+        "CONN_MAX_AGE": 60,
     }
 }
 
-# Security hardening defaults for production
+# Railway terminates HTTPS at its proxy.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = (
+    os.environ.get("SECURE_SSL_REDIRECT", "1") == "1"
+)
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "3600"))
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip().rstrip("/")
+    for origin in os.environ.get(
+        "CSRF_TRUSTED_ORIGINS", ""
+    ).split(",")
+    if origin.strip()
+]
+
+SECURE_HSTS_SECONDS = int(
+    os.environ.get("SECURE_HSTS_SECONDS", "3600")
+)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "1") == "1"
