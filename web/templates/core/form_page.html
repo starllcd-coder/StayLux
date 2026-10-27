@@ -64,7 +64,19 @@
             {% elif field.name == 'completed_notes' %}{% trans "Completed notes" %}
             {% else %}{{ field.label }}{% endif %}
           </label>
-          {{ field }}
+          {% if field.name == 'amenities' %}
+            <div class="slx-amenity-options">
+              {% for checkbox in field %}
+                <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                  {{ checkbox.tag }} <span>{{ checkbox.choice_label }}</span>
+                </label>
+              {% empty %}
+                <div class="text-muted">{% trans "No active amenities available. Add amenities in Settings first." %}</div>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ field }}
+          {% endif %}
           {% if field.errors %}
             <div class="slx-error">{{ field.errors|striptags }}</div>
           {% endif %}
@@ -110,12 +122,15 @@
         return amenityInputs.some((input) => input.checked);
       }
 
+      let requestVersion = 0;
+      amenityInputs.forEach((input) => input.addEventListener("change", () => { requestVersion++; }));
       function loadAmenitiesForType(unitTypeId, forceApply) {
+        const version = ++requestVersion;
         if (!unitTypeId) return;
-        fetch(`/room-types/${unitTypeId}/amenities/`)
+        fetch("{% url 'unit_type_amenities' 0 %}".replace("/0/", `/${unitTypeId}/`))
           .then((res) => res.json())
           .then((data) => {
-            if (forceApply || !anyAmenityChecked()) {
+            if (version === requestVersion && (forceApply || !anyAmenityChecked())) {
               setAmenitySelection(data.amenity_ids || []);
             }
           })
@@ -126,9 +141,11 @@
         loadAmenitiesForType(unitTypeSelect.value, true);
       });
 
+      {% if not form.is_bound and not form.instance.pk %}
       if (unitTypeSelect.value) {
         loadAmenitiesForType(unitTypeSelect.value, false);
       }
+      {% endif %}
     })();
 
     (function () {

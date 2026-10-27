@@ -22,8 +22,12 @@ from settings_app.models import PropertyProfile
 
 
 def _get_date_range(request, default_days: int = 30):
+    return _date_range_from_params(request.query_params, default_days)
+
+
+def _date_range_from_params(params, default_days: int = 30):
     today = timezone.localdate()
-    period = (request.query_params.get("period") or "").strip().lower()
+    period = (params.get("period") or "").strip().lower()
 
     if period == "daily":
         return today, today
@@ -32,8 +36,8 @@ def _get_date_range(request, default_days: int = 30):
     if period == "monthly":
         return today - timedelta(days=29), today
 
-    sd = parse_date(request.query_params.get("start_date") or "")
-    ed = parse_date(request.query_params.get("end_date") or "")
+    sd = parse_date(params.get("start_date") or "")
+    ed = parse_date(params.get("end_date") or "")
 
     if not ed:
         ed = today
@@ -402,124 +406,126 @@ class OwnerUnitsDashboardView(APIView):
         if not owner:
             return Response({"detail": "owner_profile not found"}, status=drf_status.HTTP_404_NOT_FOUND)
 
-        sd, ed = _get_date_range(request, default_days=30)
-        ed_excl = ed + timedelta(days=1)
-        selected_period = (request.query_params.get("period") or "").strip().lower() or "custom"
+        return Response(build_owner_units_dashboard(owner, request.query_params))
 
-        unit_ids = list(
-            owner.units.filter(
-                is_active=True,
-                property_profile_id=owner.property_id,
-                unit_type__business_type=owner.property.business_type,
-            ).values_list("id", flat=True)
-        )
-        total_units = len(unit_ids)
-        units_by_status = (
-            Unit.objects.filter(id__in=unit_ids, is_active=True)
-            .values("status")
-            .annotate(count=Count("id"))
-        )
-        units_by_status_map = {row["status"]: row["count"] for row in units_by_status}
 
-        total_unit_nights = total_units * max((ed - sd).days, 1)
-        booked_nights = 0
+def build_owner_units_dashboard(owner, params):
+    """Build metrics for this owner's assigned units for both HTML and API views."""
+    sd, ed = _date_range_from_params(params, default_days=30)
+    ed_excl = ed + timedelta(days=1)
+    selected_period = (params.get("period") or "").strip().lower() or "custom"
 
-        booking_type = _current_booking_type(owner.property)
-        bookings = Booking.objects.filter(unit_id__in=unit_ids, booking_type=booking_type).exclude(
-            status__in=[BookingStatus.CANCELLED, BookingStatus.NO_SHOW]
-        ).filter(start_date__lt=ed_excl, end_date__gt=sd)
-
-        for b in bookings.only("start_date", "end_date"):
-            overlap_start = max(b.start_date, sd)
-            overlap_end = min(b.end_date, ed_excl)
-            nights = max((overlap_end - overlap_start).days, 0)
-            booked_nights += nights
-
-        occupancy_pct = 0.0
-        if total_unit_nights > 0:
-            occupancy_pct = round((booked_nights / total_unit_nights) * 100.0, 2)
-
-        inv_qs = Invoice.objects.filter(
+    unit_ids = list(
+        owner.units.filter(
+            is_active=True,
             property_profile_id=owner.property_id,
-            booking__unit_id__in=unit_ids,
-            created_at__date__gte=sd,
-            created_at__date__lte=ed,
-        )
-        inv_qs = _filter_invoices_for_mode(inv_qs, owner.property)
-        revenue_total = inv_qs.aggregate(s=Sum("total"))["s"] or Decimal("0.000")
-        outstanding_total = inv_qs.aggregate(s=Sum("balance_due"))["s"] or Decimal("0.000")
+            unit_type__business_type=owner.property.business_type,
+        ).values_list("id", flat=True)
+    )
+    total_units = len(unit_ids)
+    units_by_status = (
+        Unit.objects.filter(id__in=unit_ids, is_active=True)
+        .values("status")
+        .annotate(count=Count("id"))
+    )
+    units_by_status_map = {row["status"]: row["count"] for row in units_by_status}
 
-        pay_qs = Payment.objects.filter(
-            property_profile_id=owner.property_id,
-            invoice__booking__unit_id__in=unit_ids,
-            is_void=False,
-            created_at__date__gte=sd,
-            created_at__date__lte=ed,
-        )
-        pay_qs = _filter_payments_for_mode(pay_qs, owner.property)
-        collections_total = pay_qs.aggregate(s=Sum("amount"))["s"] or Decimal("0.000")
+    total_unit_nights = total_units * max((ed_excl - sd).days, 1)
+    booked_nights = 0
 
-        hk_qs = HousekeepingTask.objects.filter(
-            property_profile_id=owner.property_id,
-            unit_id__in=unit_ids,
-            created_at__date__gte=sd,
-            created_at__date__lte=ed,
-        )
-        hk_by_status = hk_qs.values("status").annotate(count=Count("id"))
-        hk_by_status_map = {row["status"]: row["count"] for row in hk_by_status}
+    booking_type = _current_booking_type(owner.property)
+    bookings = Booking.objects.filter(unit_id__in=unit_ids, booking_type=booking_type).exclude(
+        status__in=[BookingStatus.CANCELLED, BookingStatus.NO_SHOW]
+    ).filter(start_date__lt=ed_excl, end_date__gt=sd)
 
-        m_qs = MaintenanceRequest.objects.filter(
-            property_profile_id=owner.property_id,
-            unit_id__in=unit_ids,
-            created_at__date__gte=sd,
-            created_at__date__lte=ed,
-        )
-        m_by_status = m_qs.values("status").annotate(count=Count("id"))
-        m_by_status_map = {row["status"]: row["count"] for row in m_by_status}
-        maintenance_total_cost = m_qs.aggregate(s=Sum("total_cost"))["s"] or Decimal("0.000")
-        net_income_total = revenue_total - maintenance_total_cost
+    for b in bookings.only("start_date", "end_date"):
+        overlap_start = max(b.start_date, sd)
+        overlap_end = min(b.end_date, ed_excl)
+        nights = max((overlap_end - overlap_start).days, 0)
+        booked_nights += nights
 
-        return Response(
-            {
-                "owner_profile": owner.id,
-                "property_profile": owner.property_id,
-                "range": {"start_date": str(sd), "end_date": str(ed)},
-                "period": selected_period,
-                "units": {
-                    "total_units": total_units,
-                    "by_status": units_by_status_map,
-                    "available": units_by_status_map.get(UnitStatus.AVAILABLE, 0),
-                    "occupied": units_by_status_map.get(UnitStatus.OCCUPIED, 0),
-                    "housekeeping": units_by_status_map.get(UnitStatus.HOUSEKEEPING, 0),
-                    "maintenance": units_by_status_map.get(UnitStatus.MAINTENANCE, 0),
-                },
-                "occupancy": {
-                    "total_unit_nights": total_unit_nights,
-                    "booked_nights": booked_nights,
-                    "occupancy_percent": occupancy_pct,
-                },
-                "billing": {
-                    "revenue_total": str(revenue_total),
-                    "collections_total": str(collections_total),
-                    "outstanding_total": str(outstanding_total),
-                    "total_income": str(net_income_total),
-                    "net_income_total": str(net_income_total),
-                },
-                "housekeeping": {
-                    "total_tasks": hk_qs.count(),
-                    "by_status": hk_by_status_map,
-                    "pending": hk_by_status_map.get(HousekeepingStatus.PENDING, 0),
-                    "in_progress": hk_by_status_map.get(HousekeepingStatus.IN_PROGRESS, 0),
-                    "done": hk_by_status_map.get(HousekeepingStatus.DONE, 0),
-                },
-                "maintenance": {
-                    "total_requests": m_qs.count(),
-                    "total_cost": str(maintenance_total_cost),
-                    "by_status": m_by_status_map,
-                    "open": m_by_status_map.get(MaintenanceStatus.OPEN, 0),
-                    "in_progress": m_by_status_map.get(MaintenanceStatus.IN_PROGRESS, 0),
-                    "resolved": m_by_status_map.get(MaintenanceStatus.RESOLVED, 0),
-                },
-            },
-            status=drf_status.HTTP_200_OK,
-        )
+    occupancy_pct = 0.0
+    if total_unit_nights > 0:
+        occupancy_pct = round((booked_nights / total_unit_nights) * 100.0, 2)
+
+    inv_qs = Invoice.objects.filter(
+        property_profile_id=owner.property_id,
+        booking__unit_id__in=unit_ids,
+        created_at__date__gte=sd,
+        created_at__date__lte=ed,
+    )
+    inv_qs = _filter_invoices_for_mode(inv_qs, owner.property)
+    revenue_total = inv_qs.aggregate(s=Sum("total"))["s"] or Decimal("0.000")
+    outstanding_total = inv_qs.aggregate(s=Sum("balance_due"))["s"] or Decimal("0.000")
+
+    pay_qs = Payment.objects.filter(
+        property_profile_id=owner.property_id,
+        invoice__booking__unit_id__in=unit_ids,
+        is_void=False,
+        created_at__date__gte=sd,
+        created_at__date__lte=ed,
+    )
+    pay_qs = _filter_payments_for_mode(pay_qs, owner.property)
+    collections_total = pay_qs.aggregate(s=Sum("amount"))["s"] or Decimal("0.000")
+
+    hk_qs = HousekeepingTask.objects.filter(
+        property_profile_id=owner.property_id,
+        unit_id__in=unit_ids,
+        created_at__date__gte=sd,
+        created_at__date__lte=ed,
+    )
+    hk_by_status = hk_qs.values("status").annotate(count=Count("id"))
+    hk_by_status_map = {row["status"]: row["count"] for row in hk_by_status}
+
+    m_qs = MaintenanceRequest.objects.filter(
+        property_profile_id=owner.property_id,
+        unit_id__in=unit_ids,
+        created_at__date__gte=sd,
+        created_at__date__lte=ed,
+    )
+    m_by_status = m_qs.values("status").annotate(count=Count("id"))
+    m_by_status_map = {row["status"]: row["count"] for row in m_by_status}
+    maintenance_total_cost = m_qs.aggregate(s=Sum("total_cost"))["s"] or Decimal("0.000")
+    net_income_total = revenue_total - maintenance_total_cost
+
+    return {
+        "owner_profile": owner.id,
+        "property_profile": owner.property_id,
+        "range": {"start_date": str(sd), "end_date": str(ed)},
+        "period": selected_period,
+        "units": {
+            "total_units": total_units,
+            "by_status": units_by_status_map,
+            "available": units_by_status_map.get(UnitStatus.AVAILABLE, 0),
+            "occupied": units_by_status_map.get(UnitStatus.OCCUPIED, 0),
+            "housekeeping": units_by_status_map.get(UnitStatus.HOUSEKEEPING, 0),
+            "maintenance": units_by_status_map.get(UnitStatus.MAINTENANCE, 0),
+        },
+        "occupancy": {
+            "total_unit_nights": total_unit_nights,
+            "booked_nights": booked_nights,
+            "occupancy_percent": occupancy_pct,
+        },
+        "billing": {
+            "revenue_total": format(revenue_total, ".3f"),
+            "collections_total": format(collections_total, ".3f"),
+            "outstanding_total": format(outstanding_total, ".3f"),
+            "total_income": format(net_income_total, ".3f"),
+            "net_income_total": format(net_income_total, ".3f"),
+        },
+        "housekeeping": {
+            "total_tasks": hk_qs.count(),
+            "by_status": hk_by_status_map,
+            "pending": hk_by_status_map.get(HousekeepingStatus.PENDING, 0),
+            "in_progress": hk_by_status_map.get(HousekeepingStatus.IN_PROGRESS, 0),
+            "done": hk_by_status_map.get(HousekeepingStatus.DONE, 0),
+        },
+        "maintenance": {
+            "total_requests": m_qs.count(),
+            "total_cost": format(maintenance_total_cost, ".3f"),
+            "by_status": m_by_status_map,
+            "open": m_by_status_map.get(MaintenanceStatus.OPEN, 0),
+            "in_progress": m_by_status_map.get(MaintenanceStatus.IN_PROGRESS, 0),
+            "resolved": m_by_status_map.get(MaintenanceStatus.RESOLVED, 0),
+        },
+    }

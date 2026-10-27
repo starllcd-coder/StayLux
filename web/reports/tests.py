@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import Client
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from accounts.models import OwnerProfile
@@ -85,6 +85,50 @@ class ReportServiceTests(TestCase):
 
 
 class OwnerDashboardScopeTests(TestCase):
+    def test_owner_report_controls_periods_and_scoped_unit_labels(self):
+        self.client.force_login(self.owner_user)
+        for period, label in [("daily", "Daily Report"), ("weekly", "Weekly Report"), ("monthly", "Monthly Report")]:
+            response = self.client.get("/owner/", {"period": period})
+            self.assertContains(response, label)
+            self.assertContains(response, "Print Report")
+            self.assertContains(response, "window.print()")
+            self.assertContains(response, self.unit_1.code)
+            self.assertNotContains(response, self.unit_2.code)
+            self.assertNotContains(response, "View dashboard JSON")
+            self.assertEqual(response.context["selected_period"], period)
+        response = self.client.post("/logout/")
+        self.assertRedirects(response, "/login/")
+        self.assertNotIn("_auth_user_id", self.client.session)
+        response = self.client.get("/owner/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("/login/"))
+
+    @override_settings(ALLOWED_HOSTS=["localhost", "127.0.0.1"])
+    def test_owner_html_dashboard_works_with_production_host_checks(self):
+        self.client.force_login(self.owner_user)
+        response = self.client.get("/owner/", HTTP_HOST="localhost")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["dashboard"]["units"]["total_units"], 1)
+        self.assertNotContains(response, "Dashboard not available")
+
+    def test_owner_html_dashboard_includes_checked_out_bookings(self):
+        today = timezone.localdate()
+        self.booking_a.start_date = today - timedelta(days=1)
+        self.booking_a.end_date = today
+        self.booking_a.status = "checked_out"
+        self.booking_a.save()
+        Invoice.objects.create(
+            property_profile=self.property, booking=self.booking_a, guest=self.guest_a,
+            total=Decimal("100.000"), balance_due=Decimal("20.000"),
+        )
+        self.client.force_login(self.owner_user)
+        response = self.client.get("/owner/?period=weekly")
+        self.assertEqual(response.status_code, 200)
+        dashboard = response.context["dashboard"]
+        self.assertEqual(dashboard["occupancy"]["booked_nights"], 1)
+        self.assertEqual(dashboard["occupancy"]["total_unit_nights"], 7)
+        self.assertEqual(dashboard["billing"]["revenue_total"], "100.000")
+
     def setUp(self) -> None:
         self.client = Client()
         User = get_user_model()

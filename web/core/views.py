@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import date, timedelta
 from decimal import Decimal
@@ -31,6 +31,7 @@ from guests.models import Guest
 from accounts.models import StaffProfile, StaffRole
 from accounts.models import OwnerProfile
 from inventory.models import Unit, UnitType, Amenity
+from inventory.amenity_names import AMENITY_AR_NAMES
 from maintenance.models import MaintenanceRequest, MaintenanceStatus, MaintenanceType
 from housekeeping.models import HousekeepingTask, HousekeepingStatus
 from billing.models import Invoice, Payment, InvoiceLine, InvoiceStatus, PaymentMethod, PaymentDirection
@@ -457,7 +458,13 @@ def dashboard(request):
 def units_list(request):
     prop = _get_active_property(request)
     _ensure_default_amenity_tiers(prop)
-    qs = Unit.objects.select_related("unit_type").order_by("code")
+    qs = Unit.objects.select_related("unit_type").prefetch_related(
+        models.Prefetch(
+            "unit_type__amenities",
+            queryset=Amenity.objects.filter(property_profile=prop, is_active=True),
+            to_attr="display_amenities",
+        )
+    ).order_by("code")
     if prop:
         qs = qs.filter(property_profile=prop, unit_type__business_type=prop.business_type)
     is_hotel = getattr(prop, "business_type", "hotel") == "hotel"
@@ -472,10 +479,14 @@ def unit_create(request):
     prop = _get_active_property(request)
     _ensure_default_amenity_tiers(prop)
     form = UnitForm(request.POST or None, property_obj=prop)
+    # Amenities are configured on the selected tier, not on the add form.
+    form.fields.pop("amenities", None)
     if request.method == "POST" and form.is_valid():
         obj = form.save(commit=False)
         obj.property_profile = prop
         obj.save()
+        form.save_m2m()
+        obj.amenities.set(obj.unit_type.amenities.filter(property_profile=prop, is_active=True))
         messages.success(request, _("Room/Unit created."))
         return redirect("units_list")
     label = _("Room") if getattr(prop, "business_type", "hotel") == "hotel" else _("Unit")
@@ -4524,85 +4535,13 @@ def settings_page(request):
 
     form = PropertyProfileForm(request.POST or None, request.FILES or None, instance=prop)
     amenity_form_prefix = "amenity"
-    amenity_form = AmenityForm(request.POST or None, prefix=amenity_form_prefix)
+    amenity_form = AmenityForm(
+        request.POST if request.method == "POST" and request.POST.get("form_kind") == "amenity_add" else None,
+        prefix=amenity_form_prefix, property_obj=prop,
+    )
     amenities = Amenity.objects.filter(property_profile=prop).order_by("name_en") if prop else Amenity.objects.none()
     # Provide Arabic fallback values for amenities with empty `name_ar` so the form inputs show Arabic.
-    amenity_translations_fallback = {
-        "Living area (basic seating)": "Ù…Ø³Ø§Ø­Ø© Ø¬Ù„ÙˆØ³",
-        "TV": "ØªÙ„ÙØ§Ø²",
-        "Compact kitchenette": "Ù…Ø·Ø¨Ø® ØµØºÙŠØ±",
-        "Basic cookware and utensils": "Ø£Ø¯ÙˆØ§Øª Ø·Ù‡ÙŠ Ø£Ø³Ø§Ø³ÙŠØ©",
-        "Basic toiletries": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… Ø£Ø³Ø§Ø³ÙŠØ©",
-        "Furnished bedroom": "ØºØ±ÙØ© Ù†ÙˆÙ… Ù…ÙØ±ÙˆØ´Ø©",
-        "Air conditioning": "ØªÙƒÙŠÙŠÙ",
-        "Free Wi-Fi": "ÙˆØ§ÙŠ ÙØ§ÙŠ Ù…Ø¬Ø§Ù†ÙŠ",
-        "Refrigerator": "Ø«Ù„Ø§Ø¬Ø©",
-        "Shower bathroom": "Ø¯Ø´",
-        "Weekly housekeeping": "ØªÙ†Ø¸ÙŠÙ Ø£Ø³Ø¨ÙˆØ¹ÙŠ",
-        "Smart TV": "ØªÙ„ÙØ§Ø² Ø°ÙƒÙŠ",
-        "Fully equipped kitchen": "Ù…Ø·Ø¨Ø® Ù…Ø¬Ù‡Ø² Ø¨Ø§Ù„ÙƒØ§Ù…Ù„",
-        "Washing machine": "ØºØ³Ø§Ù„Ø©",
-        "Hair dryer": "Ù…Ø¬ÙÙ Ø´Ø¹Ø±",
-        "Housekeeping 2-3 times per week": "ØªÙ†Ø¸ÙŠÙ 2-3 Ù…Ø±Ø§Øª ÙÙŠ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹",
-        "Spacious living area": "Ù…Ø³Ø§Ø­Ø© Ù…Ø¹ÙŠØ´Ø© ÙˆØ§Ø³Ø¹Ø©",
-        "Dedicated dining space": "Ù…Ù†Ø·Ù‚Ø© Ø·Ø¹Ø§Ù… Ù…Ø®ØµØµØ©",
-        "Microwave and electric stove": "Ù…ÙŠÙƒØ±ÙˆÙˆÙŠÙ ÙˆÙ…ÙˆÙ‚Ø¯ ÙƒÙ‡Ø±Ø¨Ø§Ø¦ÙŠ",
-        "Iron and ironing board": "Ù…ÙƒÙˆØ§Ø© ÙˆÙ„ÙˆØ­ ÙƒÙŠ",
-        "Faster Wi-Fi": "ÙˆØ§ÙŠ ÙØ§ÙŠ Ø£Ø³Ø±Ø¹",
-        "Designer interiors": "ØªØµØ§Ù…ÙŠÙ… Ø¯Ø§Ø®Ù„ÙŠØ©",
-        "Luxury or penthouse apartment": "Ø´Ù‚Ø© ÙØ§Ø®Ø±Ø©",
-        "Private terrace": "Ø´Ø±ÙØ© Ø®Ø§ØµØ©",
-        "Jacuzzi or spa bath": "Ø¬Ø§ÙƒÙˆØ²ÙŠ Ø£Ùˆ Ø­ÙˆØ¶ Ø³Ø¨Ø§",
-        "Complimentary minibar": "Ù…ÙŠÙ†ÙŠ Ø¨Ø§Ø± Ù…Ø¬Ø§Ù†ÙŠ",
-        "Airport transfers": "Ù†Ù‚Ù„ Ù…Ù† Ø§Ù„Ù…Ø·Ø§Ø±",
-        "Access to gym, pool and spa": "Ø¥Ù…ÙƒØ§Ù†ÙŠØ© Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ ØµØ§Ù„Ø© Ø±ÙŠØ§Ø¶ÙŠØ© ÙˆØ­Ù…Ø§Ù… Ø³Ø¨Ø§Ø­Ø© ÙˆØ³Ø¨Ø§",
-        "Balcony": "Ø´Ø±ÙØ©",
-        "Full kitchen with oven": "Ù…Ø·Ø¨Ø® ÙƒØ§Ù…Ù„ Ù…Ø¹ ÙØ±Ù†",
-        "Washing machine and dryer": "ØºØ³Ø§Ù„Ø© ÙˆÙ…Ø¬ÙÙ",
-        "Premium toiletries": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… ÙØ§Ø®Ø±Ø©",
-        "Dedicated guest support": "Ø¯Ø¹Ù… Ø¶ÙŠÙˆÙ Ù…Ø®ØµØµ",
-        "Large living and dining area": "Ù…Ø³Ø§Ø­Ø© Ù…Ø¹ÙŠØ´Ø© ÙˆØ·Ø¹Ø§Ù… ÙƒØ¨ÙŠØ±Ø©",
-        "Premium furniture": "Ø£Ø«Ø§Ø« ÙØ§Ø®Ø±",
-        "Dishwasher": "ØºØ³Ø§Ù„Ø© ØµØ­ÙˆÙ†",
-        "Bathtub or rain shower": "Ø­ÙˆØ¶ Ø§Ø³ØªØ­Ù…Ø§Ù… Ø£Ùˆ Ø¯Ø´ Ù…Ø·Ø±ÙŠ",
-        "Weekly deep cleaning": "ØªÙ†Ø¸ÙŠÙ Ø¹Ù…ÙŠÙ‚ Ø£Ø³Ø¨ÙˆØ¹ÙŠ",
-        "Personal concierge": "ÙƒÙˆÙ†Ø³ÙŠØ±Ø¬ Ø®Ø§Øµ",
-        "Daily housekeeping": "ØªÙ†Ø¸ÙŠÙ ÙŠÙˆÙ…ÙŠ",
-        "Panoramic views": "Ø¥Ø·Ù„Ø§Ù„Ø§Øª Ø¨Ø§Ù†ÙˆØ±Ø§Ù…ÙŠØ©",
-        "Smart home automation": "Ø£ØªÙ…ØªØ© Ø§Ù„Ù…Ù†Ø²Ù„ Ø§Ù„Ø°ÙƒÙŠ",
-        "High-end kitchen appliances": "Ø£Ø¬Ù‡Ø²Ø© Ù…Ø·Ø¨Ø® Ø¹Ø§Ù„ÙŠØ© Ø§Ù„Ø¬ÙˆØ¯Ø©",
-        "Jacuzzi / spa bathtub": "Ø¬Ø§ÙƒÙˆØ²ÙŠ / Ø­ÙˆØ¶ Ø³Ø¨Ø§",
-        "Larger room or improved layout": "ØºØ±ÙØ© Ø£ÙƒØ¨Ø± Ø£Ùˆ ØªØµÙ…ÙŠÙ… Ù…Ø­Ø³Ù‘Ù†",
-        "Limited room service": "Ø®Ø¯Ù…Ø© ØºØ±Ù Ù…Ø­Ø¯ÙˆØ¯Ø©",
-        "Luxury bath products": "Ù…Ø³ØªØ­Ø¶Ø±Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… ÙØ§Ø®Ø±Ø©",
-        "Premium mattress and bedding": "Ù…Ø±ØªØ¨Ø© ÙˆØ¨ÙŠØ§Ø¶Ø§Øª ÙØ§Ø®Ø±Ø©",
-        "Basic toiletries (soap, shampoo)": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… (ØµØ§Ø¨ÙˆÙ†ØŒ Ø´Ø§Ù…Ø¨Ùˆ)",
-        "Bathrobes and slippers": "Ø±ÙˆØ¨ ÙˆÙ†Ø¹Ø§Ù„",
-        "Better-quality toiletries": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… Ø¨Ø¬ÙˆØ¯Ø© Ø£Ø¹Ù„Ù‰",
-        "Coffee and tea maker": "ØµØ§Ù†Ø¹Ø© Ø§Ù„Ù‚Ù‡ÙˆØ© ÙˆØ§Ù„Ø´Ø§ÙŠ",
-        "Comfortable bed and basic linens": "Ø³Ø±ÙŠØ± Ù…Ø±ÙŠØ­ ÙˆØ¨ÙŠØ§Ø¶Ø§Øª Ø£Ø³Ø§Ø³ÙŠØ©",
-        "Concierge assistance": "Ù…Ø³Ø§Ø¹Ø¯Ø© Ø§Ù„ÙƒÙˆÙ†Ø³ÙŠØ±Ø¬",
-        "Daily or alternate-day housekeeping": "ØªÙ†Ø¸ÙŠÙ ÙŠÙˆÙ…ÙŠ Ø£Ùˆ ÙŠÙˆÙ… Ø¨Ø¹Ø¯ ÙŠÙˆÙ…",
-        "Daily turndown service": "Ø®Ø¯Ù…Ø© ØªØ±ØªÙŠØ¨ Ø§Ù„Ø³Ø±ÙŠØ± Ø§Ù„ÙŠÙˆÙ…ÙŠØ©",
-        "Designer furniture": "Ø£Ø«Ø§Ø« Ù…ØµÙ…Ù…",
-        "Extended room service": "Ø®Ø¯Ù…Ø© ØºØ±Ù Ù…ÙˆØ³Ø¹Ø©",
-        "Front desk / reception support": "Ø¯Ø¹Ù… Ù…ÙƒØªØ¨ Ø§Ù„Ø§Ø³ØªÙ‚Ø¨Ø§Ù„",
-        "Mini fridge": "Ø«Ù„Ø§Ø¬Ø© ØµØºÙŠØ±Ø©",
-        "Priority check-in / late check-out (subject to availability)": "Ø£ÙˆÙ„ÙˆÙŠØ© ØªØ³Ø¬ÙŠÙ„ Ø§Ù„ÙˆØµÙˆÙ„/ØªØ£Ø®ÙŠØ± Ø§Ù„Ù…ØºØ§Ø¯Ø±Ø© (Ø­Ø³Ø¨ Ø§Ù„ØªÙˆØ§ÙØ±)",
-        "Private balcony or terrace": "Ø´Ø±ÙØ© Ø£Ùˆ ØªØ±Ø§Ø³ Ø®Ø§Øµ",
-        "Seating area / sofa": "Ù…Ù†Ø·Ù‚Ø© Ø¬Ù„ÙˆØ³ / Ø£Ø±ÙŠÙƒØ©",
-        "Smart TV / international channels": "ØªÙ„ÙØ§Ø² Ø°ÙƒÙŠ / Ù‚Ù†ÙˆØ§Øª Ø¯ÙˆÙ„ÙŠØ©",
-        "Smart room controls (lights, AC, curtains)": "ØªØ­ÙƒÙ… Ø°ÙƒÙŠ Ø¨Ø§Ù„ØºØ±ÙØ© (Ø¥Ø¶Ø§Ø¡Ø©ØŒ ØªÙƒÙŠÙŠÙØŒ Ø³ØªØ§Ø¦Ø±)",
-        "Suite or luxury room layout": "Ø¬Ù†Ø§Ø­ Ø£Ùˆ ØªØµÙ…ÙŠÙ… ØºØ±ÙØ© ÙØ§Ø®Ø±Ø©",
-        "TV (local channels)": "ØªÙ„ÙØ§Ø² (Ù‚Ù†ÙˆØ§Øª Ù…Ø­Ù„ÙŠØ©)",
-        "Towels": "Ù…Ù†Ø§Ø´Ù",
-        "Wardrobe / closet": "Ø¯ÙˆÙ„Ø§Ø¨ / Ø®Ø²Ø§Ù†Ø©",
-        "Work desk or side table": "Ù…ÙƒØªØ¨ Ø¹Ù…Ù„ Ø£Ùˆ Ø·Ø§ÙˆÙ„Ø© Ø¬Ø§Ù†Ø¨ÙŠØ©",
-        "Work desk with ergonomic chair": "Ù…ÙƒØªØ¨ Ø¹Ù…Ù„ Ù…Ø¹ ÙƒØ±Ø³ÙŠ Ù…Ø±ÙŠØ­",
-        "Access to spa, gym, pool and lounge": "Ø¥Ù…ÙƒØ§Ù†ÙŠØ© Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø§Ù„Ø³Ø¨Ø§ ÙˆØµØ§Ù„Ø© ÙˆØ§Ù„Ø³Ø¨Ø§ ÙˆØ­Ù…Ø§Ù… Ø§Ù„Ø³Ø¨Ø§Ø­Ø©",
-        "Access to gym, pool and spa": "Ø¥Ù…ÙƒØ§Ù†ÙŠØ© Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ ØµØ§Ù„Ø© Ø±ÙŠØ§Ø¶ÙŠØ© ÙˆØ­Ù…Ø§Ù… Ø³Ø¨Ø§Ø­Ø© ÙˆØ³Ø¨Ø§",
-        "Airport pickup and drop-off": "Ø§Ù„ØªÙ‚Ø§Ø· ÙˆØªØ³Ù„ÙŠÙ… Ø§Ù„Ù…Ø·Ø§Ø±",
-    }
+    amenity_translations_fallback = AMENITY_AR_NAMES
     if amenities:
         for a in amenities:
             if not a.name_ar:
@@ -4678,7 +4617,8 @@ def settings_page(request):
         for mode_key, tiers in tier_presets.items():
             for tier_name in tier_names:
                 all_names.update(tiers.get(tier_name, []))
-        for name in sorted(all_names):
+        seed_amenities = not amenities.exists() and not UnitType.objects.filter(property_profile=prop).exists()
+        for name in sorted(all_names) if seed_amenities else []:
             Amenity.objects.get_or_create(
                 property_profile=prop,
                 name_en=name,
@@ -4728,13 +4668,16 @@ def settings_page(request):
             return redirect("settings_page")
 
         if form_kind == "amenity_add":
-            amenity_form = AmenityForm(request.POST or None, prefix=amenity_form_prefix)
-            if amenity_form.is_valid() and prop:
+            amenity_form = AmenityForm(request.POST or None, prefix=amenity_form_prefix, property_obj=prop)
+            valid_amenity = amenity_form.is_valid()
+            if not prop:
+                amenity_form.add_error(None, _("Create a property in the Property tab before adding amenities."))
+            if valid_amenity and prop:
                 obj = amenity_form.save(commit=False)
                 obj.property_profile = prop
                 obj.save()
                 messages.success(request, "Amenity added.")
-                return redirect("settings_page")
+                return redirect(f"{reverse('settings_page')}?panel=amenities")
 
         elif form_kind == "backup_restore":
             action = (request.POST.get("action") or "").strip()
@@ -5044,25 +4987,55 @@ def settings_page(request):
 
         elif form_kind == "amenity_update":
             amenity_id = (request.POST.get("amenity_id") or "").strip()
+            if not amenity_id.isdecimal():
+                return HttpResponse(status=400)
             obj = get_object_or_404(Amenity, id=amenity_id, property_profile=prop)
             edit_form = AmenityForm(request.POST or None, instance=obj)
             if edit_form.is_valid():
                 edit_form.save()
                 messages.success(request, _("Amenity updated."))
-                return redirect("settings_page")
+                return redirect(f"{reverse('settings_page')}?panel=amenities")
+            for errors in edit_form.errors.values():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect(f"{reverse('settings_page')}?panel=amenities")
 
         elif form_kind == "amenity_delete":
             amenity_id = (request.POST.get("amenity_id") or "").strip()
+            if not amenity_id.isdecimal():
+                return HttpResponse(status=400)
             obj = get_object_or_404(Amenity, id=amenity_id, property_profile=prop)
             obj.delete()
             messages.success(request, _("Amenity deleted."))
-            return redirect("settings_page")
+            return redirect(f"{reverse('settings_page')}?panel=amenities")
+
+        elif form_kind in {"tier_amenity_add", "tier_amenity_remove"}:
+            tier_name = (request.POST.get("tier_name") or "").strip()
+            mode_key = (request.POST.get("mode_key") or "").strip()
+            amenity_id = (request.POST.get("amenity_id") or "").strip()
+            if not prop or tier_name not in tier_names or mode_key != prop.business_type or not amenity_id.isdecimal():
+                return HttpResponse(status=400)
+            unit_type = get_object_or_404(
+                UnitType, property_profile=prop, business_type=mode_key, name_en=tier_name,
+            )
+            amenity = get_object_or_404(Amenity, property_profile=prop, pk=amenity_id)
+            if form_kind == "tier_amenity_add":
+                if not amenity.is_active:
+                    return HttpResponse(status=400)
+                unit_type.amenities.add(amenity)
+                messages.success(request, _("Amenity added to tier."))
+            else:
+                unit_type.amenities.remove(amenity)
+                messages.success(request, _("Amenity removed from tier."))
+            return redirect(f"{reverse('settings_page')}?panel=amenities&tier={tier_name.lower()}")
 
         elif form_kind == "tier_amenities":
             tier_name = (request.POST.get("tier_name") or "").strip()
             mode_key = (request.POST.get("mode_key") or "").strip()
             amenity_ids = request.POST.getlist("amenity_ids")
 
+            if not prop or tier_name not in tier_names or mode_key != prop.business_type:
+                return HttpResponse(status=400)
             if tier_name in tier_names and mode_key in {"hotel", "apartments"}:
                 business_type = BusinessType.HOTEL if mode_key == "hotel" else BusinessType.APARTMENTS
                 unit_type = UnitType.objects.filter(
@@ -5071,11 +5044,11 @@ def settings_page(request):
                     name_en=tier_name,
                 ).first()
                 if unit_type:
-                    allowed_ids = Amenity.objects.filter(property_profile=prop).values_list("id", flat=True)
+                    allowed_ids = set(Amenity.objects.filter(property_profile=prop, is_active=True).values_list("id", flat=True))
                     selected_ids = [int(i) for i in amenity_ids if i.isdigit() and int(i) in allowed_ids]
                     unit_type.amenities.set(selected_ids)
                     messages.success(request, _("%s amenities updated") % tier_name)
-                    return redirect("settings_page")
+                    return redirect(f"{reverse('settings_page')}?panel=amenities&tier={tier_name.lower()}")
 
         elif form_kind == "business_type_switch":
             selected_mode = (request.POST.get("business_type") or "").strip()
@@ -5158,7 +5131,10 @@ def settings_page(request):
             messages.success(request, "Reset completed for the active business mode.")
             return redirect("settings_page")
 
-    amenity_by_name = {a.name_en: a for a in amenities}
+    for amenity in amenities:
+        if not amenity.name_ar:
+            amenity.name_ar = amenity_translations_fallback.get(amenity.name_en, "")
+    amenity_by_name = {a.name_en: a for a in amenities if a.is_active}
     tier_tabs = []
     for tier_name in tier_names:
         hotel_unit_type = None
@@ -5180,53 +5156,9 @@ def settings_page(request):
 
         lang = get_language() or ""
         # Fallback translations for common amenity names when `name_ar` is empty
-        amenity_translations = {
-            "Living area (basic seating)": "Ù…Ø³Ø§Ø­Ø© Ø¬Ù„ÙˆØ³",
-            "TV": "ØªÙ„ÙØ§Ø²",
-            "Compact kitchenette": "Ù…Ø·Ø¨Ø® ØµØºÙŠØ±",
-            "Basic cookware and utensils": "Ø£Ø¯ÙˆØ§Øª Ø·Ù‡ÙŠ Ø£Ø³Ø§Ø³ÙŠØ©",
-            "Basic toiletries": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… Ø£Ø³Ø§Ø³ÙŠØ©",
-            "Furnished bedroom": "ØºØ±ÙØ© Ù†ÙˆÙ… Ù…ÙØ±ÙˆØ´Ø©",
-            "Air conditioning": "ØªÙƒÙŠÙŠÙ",
-            "Free Wi-Fi": "ÙˆØ§ÙŠ ÙØ§ÙŠ Ù…Ø¬Ø§Ù†ÙŠ",
-            "Refrigerator": "Ø«Ù„Ø§Ø¬Ø©",
-            "Shower bathroom": "Ø¯Ø´",
-            "Weekly housekeeping": "ØªÙ†Ø¸ÙŠÙ Ø£Ø³Ø¨ÙˆØ¹ÙŠ",
-            "Smart TV": "ØªÙ„ÙØ§Ø² Ø°ÙƒÙŠ",
-            "Fully equipped kitchen": "Ù…Ø·Ø¨Ø® Ù…Ø¬Ù‡Ø² Ø¨Ø§Ù„ÙƒØ§Ù…Ù„",
-            "Washing machine": "ØºØ³Ø§Ù„Ø©",
-            "Hair dryer": "Ù…Ø¬ÙÙ Ø´Ø¹Ø±",
-            "Housekeeping 2-3 times per week": "ØªÙ†Ø¸ÙŠÙ 2-3 Ù…Ø±Ø§Øª ÙÙŠ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹",
-            "Spacious living area": "Ù…Ø³Ø§Ø­Ø© Ù…Ø¹ÙŠØ´Ø© ÙˆØ§Ø³Ø¹Ø©",
-            "Dedicated dining space": "Ù…Ù†Ø·Ù‚Ø© Ø·Ø¹Ø§Ù… Ù…Ø®ØµØµØ©",
-            "Microwave and electric stove": "Ù…ÙŠÙƒØ±ÙˆÙˆÙŠÙ ÙˆÙ…ÙˆÙ‚Ø¯ ÙƒÙ‡Ø±Ø¨Ø§Ø¦ÙŠ",
-            "Iron and ironing board": "Ù…ÙƒÙˆØ§Ø© ÙˆÙ„ÙˆØ­ ÙƒÙŠ",
-            "Faster Wi-Fi": "ÙˆØ§ÙŠ ÙØ§ÙŠ Ø£Ø³Ø±Ø¹",
-            "Designer interiors": "ØªØµØ§Ù…ÙŠÙ… Ø¯Ø§Ø®Ù„ÙŠØ©",
-            "Luxury or penthouse apartment": "Ø´Ù‚Ø© ÙØ§Ø®Ø±Ø©",
-            "Panoramic views": "Ø¥Ø·Ù„Ø§Ù„Ø§Øª Ø¨Ø§Ù†ÙˆØ±Ø§Ù…ÙŠØ©",
-            "Smart home automation": "Ø£ØªÙ…ØªØ© Ø§Ù„Ù…Ù†Ø²Ù„ Ø§Ù„Ø°ÙƒÙŠ",
-            "High-end kitchen appliances": "Ø£Ø¬Ù‡Ø²Ø© Ù…Ø·Ø¨Ø® Ø¹Ø§Ù„ÙŠØ© Ø§Ù„Ø¬ÙˆØ¯Ø©",
-            "Private terrace": "Ø´Ø±ÙØ© Ø®Ø§ØµØ©",
-            "Jacuzzi or spa bath": "Ø¬Ø§ÙƒÙˆØ²ÙŠ Ø£Ùˆ Ø­ÙˆØ¶ Ø³Ø¨Ø§",
-            "Complimentary minibar": "Ù…ÙŠÙ†ÙŠ Ø¨Ø§Ø± Ù…Ø¬Ø§Ù†ÙŠ",
-            "Airport transfers": "Ù†Ù‚Ù„ Ù…Ù† Ø§Ù„Ù…Ø·Ø§Ø±",
-            "Access to gym, pool and spa": "Ø¥Ù…ÙƒØ§Ù†ÙŠØ© Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ ØµØ§Ù„Ø© Ø±ÙŠØ§Ø¶ÙŠØ© ÙˆØ­Ù…Ø§Ù… Ø³Ø¨Ø§Ø­Ø© ÙˆØ³Ø¨Ø§",
-            "Balcony": "Ø´Ø±ÙØ©",
-            "Full kitchen with oven": "Ù…Ø·Ø¨Ø® ÙƒØ§Ù…Ù„ Ù…Ø¹ ÙØ±Ù†",
-            "Washing machine and dryer": "ØºØ³Ø§Ù„Ø© ÙˆÙ…Ø¬ÙÙ",
-            "Premium toiletries": "Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª Ø§Ø³ØªØ­Ù…Ø§Ù… ÙØ§Ø®Ø±Ø©",
-            "Dedicated guest support": "Ø¯Ø¹Ù… Ø¶ÙŠÙˆÙ Ù…Ø®ØµØµ",
-            "Large living and dining area": "Ù…Ø³Ø§Ø­Ø© Ù…Ø¹ÙŠØ´Ø© ÙˆØ·Ø¹Ø§Ù… ÙƒØ¨ÙŠØ±Ø©",
-            "Premium furniture": "Ø£Ø«Ø§Ø« ÙØ§Ø®Ø±",
-            "Dishwasher": "ØºØ³Ø§Ù„Ø© ØµØ­ÙˆÙ†",
-            "Bathtub or rain shower": "Ø­ÙˆØ¶ Ø§Ø³ØªØ­Ù…Ø§Ù… Ø£Ùˆ Ø¯Ø´ Ù…Ø·Ø±ÙŠ",
-            "Weekly deep cleaning": "ØªÙ†Ø¸ÙŠÙ Ø¹Ù…ÙŠÙ‚ Ø£Ø³Ø¨ÙˆØ¹ÙŠ",
-            "Personal concierge": "ÙƒÙˆÙ†Ø³ÙŠØ±Ø¬ Ø®Ø§Øµ",
-            "Daily housekeeping": "ØªÙ†Ø¸ÙŠÙ ÙŠÙˆÙ…ÙŠ",
-        }
+        amenity_translations = AMENITY_AR_NAMES
         hotel_items = []
-        for name in tier_presets["hotel"].get(tier_name, []):
+        for name in dict.fromkeys(tier_presets["hotel"].get(tier_name, []) + list(amenity_by_name)):
             amenity = amenity_by_name.get(name)
             if amenity:
                 if lang.startswith("ar"):
@@ -5236,7 +5168,7 @@ def settings_page(request):
                 hotel_items.append({"id": amenity.id, "name": display_name, "checked": amenity.id in hotel_selected})
 
         apartments_items = []
-        for name in tier_presets["apartments"].get(tier_name, []):
+        for name in dict.fromkeys(tier_presets["apartments"].get(tier_name, []) + list(amenity_by_name)):
             amenity = amenity_by_name.get(name)
             if amenity:
                 if lang.startswith("ar"):
@@ -5245,21 +5177,25 @@ def settings_page(request):
                     display_name = amenity.name_en
                 apartments_items.append({"id": amenity.id, "name": display_name, "checked": amenity.id in apartments_selected})
 
+        active_unit_type = apartments_unit_type if prop and prop.business_type == BusinessType.APARTMENTS else hotel_unit_type
+        active_selected = apartments_selected if prop and prop.business_type == BusinessType.APARTMENTS else hotel_selected
         tier_tabs.append(
             {
                 "name": tier_name,
                 "display_name": (
                     {
-                        "Standard": "Ø§Ù„Ù‚ÙŠØ§Ø³ÙŠ",
-                        "Deluxe": "Ø¯ÙŠÙ„ÙˆÙƒØ³",
-                        "Premium": "Ø¨Ø±ÙŠÙ…ÙŠÙˆÙ…",
-                        "Luxury": "ÙØ§Ø®Ø±",
+                        "Standard": 'القياسي',
+                        "Deluxe": 'ديلوكس',
+                        "Premium": 'بريميوم',
+                        "Luxury": 'فاخر',
                     }.get(tier_name, tier_name)
                     if lang.startswith("ar")
                     else tier_name
                 ),
                 "hotel_items": hotel_items,
                 "apartments_items": apartments_items,
+                "selected_amenities": list(active_unit_type.amenities.filter(property_profile=prop).order_by("name_en")) if active_unit_type else [],
+                "available_amenities": [a for a in amenity_by_name.values() if a.id not in active_selected],
             }
         )
 
@@ -5272,6 +5208,7 @@ def settings_page(request):
             "can_manage_properties": can_manage_properties,
             "form": form,
             "amenity_form": amenity_form,
+            "active_panel": "amenities" if request.method == "POST" and request.POST.get("form_kind", "").startswith(("amenity_", "tier_amenit")) else request.GET.get("panel", "property"),
             "amenities": amenities,
             "tier_tabs": tier_tabs,
             "db_form": db_form,

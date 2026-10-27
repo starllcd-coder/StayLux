@@ -245,14 +245,24 @@ class DatabaseConnectionForm(forms.ModelForm):
 
 
 class AmenityForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, property_obj=None, **kwargs):
         super().__init__(*args, **kwargs)
+        if property_obj is not None:
+            self.instance.property_profile = property_obj
         for f in self.fields:
             w = self.fields[f].widget
             if isinstance(w, forms.TextInput):
                 w.attrs.setdefault("class", "form-control")
             if isinstance(w, forms.CheckboxInput):
                 w.attrs.setdefault("class", "form-check-input")
+
+    def clean_name_en(self):
+        name = self.cleaned_data["name_en"]
+        if self.instance.property_profile_id and Amenity.objects.filter(
+            property_profile_id=self.instance.property_profile_id, name_en=name
+        ).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(_("An amenity with this English name already exists."))
+        return name
 
     class Meta:
         model = Amenity
@@ -267,11 +277,11 @@ class UnitTypeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if property_obj is not None and "amenities" in self.fields:
+            self.fields["amenities"].widget = forms.CheckboxSelectMultiple()
             self.fields["amenities"].queryset = Amenity.objects.filter(
                 property_profile=property_obj,
                 is_active=True,
             ).order_by("name_en")
-            self.fields["amenities"].widget = forms.CheckboxSelectMultiple()
 
         if "name_en" in self.fields:
             self.fields["name_en"].widget = forms.Select(choices=[
@@ -291,7 +301,7 @@ class UnitTypeForm(forms.ModelForm):
             if isinstance(w, forms.Select):
                 w.attrs.setdefault("class", "form-select")
             if isinstance(w, forms.CheckboxSelectMultiple):
-                w.attrs.setdefault("class", "form-check-input")
+                w.attrs.setdefault("class", "slx-amenity-options")
 
     class Meta:
         model = UnitType
@@ -364,8 +374,8 @@ class UnitForm(forms.ModelForm):
                 self.fields[field_name].label = label
 
         if "amenities" in self.fields and property_obj is not None:
-            self.fields["amenities"].queryset = Amenity.objects.filter(property_profile=property_obj, is_active=True)
             self.fields["amenities"].widget = forms.CheckboxSelectMultiple()
+            self.fields["amenities"].queryset = Amenity.objects.filter(property_profile=property_obj, is_active=True).order_by("name_en")
 
         for f in self.fields:
             w = self.fields[f].widget
@@ -376,7 +386,7 @@ class UnitForm(forms.ModelForm):
             if isinstance(w, forms.Select):
                 w.attrs.setdefault("class", "form-select")
             if isinstance(w, forms.CheckboxSelectMultiple):
-                w.attrs.setdefault("class", "form-check-input")
+                w.attrs.setdefault("class", "slx-amenity-options")
 
     class Meta:
         model = Unit

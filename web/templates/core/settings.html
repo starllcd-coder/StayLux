@@ -15,10 +15,10 @@
       <div class="slx-card">
         <div class="p-3" style="border-bottom:1px solid rgba(229,231,235,0.7);">
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="btn btn-sm slx-tab-btn active" data-tab="tab-property">{% trans "Property" %}</button>
+            <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "property" %}active{% endif %}" data-tab="tab-property">{% trans "Property" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-employees">{% trans "Employees" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-owners">{% trans "Owners" %}</button>
-            <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-amenities">{% trans "Amenities" %}</button>
+            <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "amenities" %}active{% endif %}" data-tab="tab-amenities">{% trans "Amenities" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-system">{% trans "System" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-notifications">{% trans "Notifications" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-sync">{% if LANGUAGE_CODE|slice:":2" == "ar" %}المزامنة{% else %}{% trans "Sync" %}{% endif %}</button>
@@ -31,7 +31,7 @@
           {% csrf_token %}
           <input type="hidden" name="form_kind" value="settings_save">
 
-          <div id="tab-property" class="slx-tab-pane active">
+          <div id="tab-property" class="slx-tab-pane {% if active_panel == "property" %}active{% endif %}">
             <div class="row g-3 mb-2">
               <div class="col-12">
                 <div class="slx-card" style="border:1px solid rgba(229,231,235,0.7); box-shadow:none;">
@@ -403,7 +403,7 @@
           </div>
         </div>
 
-        <div id="tab-amenities" class="slx-tab-pane">
+        <div id="tab-amenities" class="slx-tab-pane {% if active_panel == "amenities" %}active{% endif %}">
           <div class="slx-card" style="border:1px solid rgba(229,231,235,0.7); box-shadow:none; margin-bottom:16px;">
             <div class="p-3" style="border-bottom:1px solid rgba(229,231,235,0.7);">
               <div class="slx-card-title">{% trans "Amenity Tier Presets" %}</div>
@@ -411,76 +411,52 @@
             </div>
 
             <div class="p-3">
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                {% for t in tier_tabs %}
-                  <button type="button" class="btn btn-sm slx-tier-tab-btn {% if forloop.first %}active{% endif %}" data-tab="tier-{{ t.name|lower }}">{{ t.display_name }}</button>
-                {% endfor %}
-              </div>
-
               {% for t in tier_tabs %}
-                <div id="tier-{{ t.name|lower }}" class="slx-tier-pane {% if forloop.first %}active{% endif %}">
-                  <div class="row g-3 mt-2">
-                    {% if prop and prop.business_type == "hotel" %}
-                    <div class="col-12">
-                      <div class="slx-card" style="border:1px solid rgba(229,231,235,0.7); box-shadow:none;">
-                        <div class="p-3" style="border-bottom:1px solid rgba(229,231,235,0.7);">
-                          <div class="slx-card-title">{% trans "Hotel" %}</div>
-                        </div>
-                        <form method="post" class="p-3">
-                          {% csrf_token %}
-                          <input type="hidden" name="form_kind" value="tier_amenities">
-                          <input type="hidden" name="mode_key" value="hotel">
-                          <input type="hidden" name="tier_name" value="{{ t.name }}">
-                          <div class="row g-2">
-                            {% for a in t.hotel_items %}
-                              <div class="col-12 col-md-6">
-                                <label style="display:flex; gap:8px; align-items:center;">
-                                  <input class="form-check-input" type="checkbox" name="amenity_ids" value="{{ a.id }}" {% if a.checked %}checked{% endif %}>
-                                  <span>{{ a.name }}</span>
-                                </label>
-                              </div>
-                            {% empty %}
-                              <div class="text-muted">{% trans "No hotel amenities loaded." %}</div>
+                <details id="tier-{{ t.name|lower }}" class="slx-tier-dropdown" {% if request.GET.tier == t.name|lower %}open{% endif %}>
+                  <summary>{{ t.display_name }}</summary>
+                  <div class="p-3">
+                    <div class="slx-card-title mb-3">{% trans "Amenity List" %}</div>
+                    <ul class="list-group mb-3">
+                      {% for a in t.selected_amenities %}
+                        <li class="list-group-item d-flex align-items-center justify-content-between gap-3">
+                          <span>{{ a }}{% if not a.is_active %} <span class="text-muted">({% trans "Inactive" %})</span>{% endif %}</span>
+                          <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_kind" value="tier_amenity_remove">
+                            <input type="hidden" name="mode_key" value="{{ prop.business_type }}">
+                            <input type="hidden" name="tier_name" value="{{ t.name }}">
+                            <input type="hidden" name="amenity_id" value="{{ a.id }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">{% trans "Remove" %}</button>
+                          </form>
+                        </li>
+                      {% empty %}
+                        <li class="list-group-item text-muted">{% trans "No amenities saved for this tier yet." %}</li>
+                      {% endfor %}
+                    </ul>
+                    {% if t.available_amenities %}
+                      <form method="post" class="row g-2 align-items-end">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_kind" value="tier_amenity_add">
+                        <input type="hidden" name="mode_key" value="{{ prop.business_type }}">
+                        <input type="hidden" name="tier_name" value="{{ t.name }}">
+                        <div class="col-12 col-md-9">
+                          <label class="slx-label" for="tier-amenity-{{ t.name|lower }}">{% trans "Add Amenity" %}</label>
+                          <select class="form-select" name="amenity_id" id="tier-amenity-{{ t.name|lower }}" required>
+                            <option value="">{% trans "Select an amenity" %}</option>
+                            {% for a in t.available_amenities %}
+                              <option value="{{ a.id }}">{{ a }}</option>
                             {% endfor %}
-                          </div>
-                          <div class="mt-3">
-                            <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Save Hotel Tier" %}</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <button type="submit" class="slx-btn">{% trans "Save to Tier" %}</button>
+                        </div>
+                      </form>
                     {% else %}
-                    <div class="col-12">
-                      <div class="slx-card" style="border:1px solid rgba(229,231,235,0.7); box-shadow:none;">
-                        <div class="p-3" style="border-bottom:1px solid rgba(229,231,235,0.7);">
-                          <div class="slx-card-title">{% trans "Serviced Apartments" %}</div>
-                        </div>
-                        <form method="post" class="p-3">
-                          {% csrf_token %}
-                          <input type="hidden" name="form_kind" value="tier_amenities">
-                          <input type="hidden" name="mode_key" value="apartments">
-                          <input type="hidden" name="tier_name" value="{{ t.name }}">
-                          <div class="row g-2">
-                            {% for a in t.apartments_items %}
-                              <div class="col-12 col-md-6">
-                                <label style="display:flex; gap:8px; align-items:center;">
-                                  <input class="form-check-input" type="checkbox" name="amenity_ids" value="{{ a.id }}" {% if a.checked %}checked{% endif %}>
-                                  <span>{{ a.name }}</span>
-                                </label>
-                              </div>
-                            {% empty %}
-                              <div class="text-muted">{% trans "No apartment amenities loaded." %}</div>
-                            {% endfor %}
-                          </div>
-                          <div class="mt-3">
-                            <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit">{% trans "Save Apartment Tier" %}</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
+                      <p class="text-muted mb-0">{% trans "No more active amenities available. Add new amenities in the list below." %}</p>
                     {% endif %}
                   </div>
-                </div>
+                </details>
               {% endfor %}
             </div>
           </div>
@@ -491,9 +467,13 @@
             </div>
 
             <div class="p-3">
-              <form method="post" class="row g-2" id="amenity-add-form">
+              {% if not prop %}
+                <div class="alert alert-warning" role="alert">{% trans "Create a property in the Property tab before adding amenities." %}</div>
+              {% endif %}
+              <form method="post" action="{% url 'settings_page' %}?panel=amenities" class="row g-2" id="amenity-add-form">
                 {% csrf_token %}
                 <input type="hidden" name="form_kind" value="amenity_add">
+                {{ amenity_form.errors }}
                 <div class="col-12 col-md-4">
                   <label class="slx-label" for="{{ amenity_form.name_en.id_for_label }}">{% trans "Amenity (EN)" %}</label>
                   {{ amenity_form.name_en }}
@@ -524,17 +504,17 @@
                 </thead>
                 <tbody>
                   {% for a in amenities %}
-                    <form method="post" id="amenity-form-{{ a.id }}">
-                      {% csrf_token %}
-                      <input type="hidden" name="form_kind" value="amenity_update">
-                      <input type="hidden" name="amenity_id" value="{{ a.id }}">
-                    </form>
                     <tr>
                       <td>
+                        <form method="post" id="amenity-form-{{ a.id }}">
+                          {% csrf_token %}
+                          <input type="hidden" name="form_kind" value="amenity_update">
+                          <input type="hidden" name="amenity_id" value="{{ a.id }}">
+                        </form>
                         <input class="form-control" type="text" name="name_en" value="{{ a.name_en }}" form="amenity-form-{{ a.id }}" />
                       </td>
                       <td>
-                        <input class="form-control" type="text" name="name_ar" value="{{ a.name_ar }}" form="amenity-form-{{ a.id }}" />
+                        <input class="form-control" type="text" name="name_ar" value="{{ a.name_ar }}" lang="ar" dir="rtl" form="amenity-form-{{ a.id }}" />
                       </td>
                       <td>
                         <input class="form-check-input" type="checkbox" name="is_active" value="true" form="amenity-form-{{ a.id }}" {% if a.is_active %}checked{% endif %}>
@@ -557,7 +537,6 @@
             </div>
           </div>
           <div class="mt-3" style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="slx-btn" style="max-width:320px;" type="button" id="amenities-save-tier">{% trans "Save" %}</button>
             <button class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" type="submit" form="amenity-add-form">{% trans "Add Amenity" %}</button>
           </div>
         </div>
@@ -824,11 +803,16 @@
       }
       buttons.forEach(function (b) {
         b.addEventListener("click", function () {
-          activate(b.getAttribute("data-tab"));
+          var tabId = b.getAttribute("data-tab");
+          activate(tabId);
+          var url = new URL(window.location.href);
+          url.searchParams.set("panel", tabId.replace("tab-", ""));
+          window.history.replaceState(null, "", url);
         });
       });
       var params = new URLSearchParams(window.location.search);
-      var panel = (params.get("panel") || "").trim();
+      var panel = ("{{ active_panel|escapejs }}" || params.get("panel") || "property").trim();
+      {% if amenity_form.errors %}panel = "amenities";{% endif %}
       var initialTab = panel ? "tab-" + panel : "tab-property";
       if (!document.getElementById(initialTab)) {
         initialTab = "tab-property";
@@ -886,52 +870,17 @@
       });
     })();
 
-    (function () {
-      var tierButtons = document.querySelectorAll(".slx-tier-tab-btn");
-      var tierPanes = document.querySelectorAll(".slx-tier-pane");
-      function activateTier(tabId) {
-        tierButtons.forEach(function (b) {
-          b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
-        });
-        tierPanes.forEach(function (p) {
-          p.classList.toggle("active", p.id === tabId);
-        });
-      }
-      tierButtons.forEach(function (b) {
-        b.addEventListener("click", function () {
-          activateTier(b.getAttribute("data-tab"));
-        });
-      });
-      if (tierButtons.length) {
-        activateTier(tierButtons[0].getAttribute("data-tab"));
-      }
-    })();
-
-    (function () {
-      var saveBtn = document.getElementById("amenities-save-tier");
-      if (!saveBtn) {
-        return;
-      }
-      saveBtn.addEventListener("click", function () {
-        var activePane = document.querySelector(".slx-tier-pane.active");
-        if (!activePane) {
-          return;
-        }
-        var form = activePane.querySelector("form");
-        if (form) {
-          form.submit();
-        }
-      });
-    })();
   </script>
 
   <style>
     .slx-tab-btn.active { background:#0b2340; color:#fff; }
     .slx-tab-pane { display:none; }
     .slx-tab-pane.active { display:block; }
-    .slx-tier-tab-btn.active { background:#0b2340; color:#fff; }
-    .slx-tier-pane { display:none; }
-    .slx-tier-pane.active { display:block; }
+    .slx-tier-dropdown { border:1px solid #e5e7eb; border-radius:12px; margin-bottom:12px; overflow:hidden; }
+    .slx-tier-dropdown > summary { padding:14px 18px; cursor:pointer; font-weight:700; background:#f8fafc; }
+    .slx-tier-dropdown > summary:focus-visible { outline:2px solid #0b2340; outline-offset:-3px; }
+    .slx-tier-dropdown[open] > summary { background:#0b2340; color:#fff; }
+    .slx-tier-dropdown > .row { margin:0; padding:0 12px 12px; }
     #id_receipt_footer_en, #id_receipt_footer_ar { min-height:120px; }
     #id_address_en, #id_address_ar { min-height:140px; }
   </style>

@@ -1,8 +1,7 @@
-import json
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from django.test import Client
+from reports.views import build_owner_units_dashboard
 from urllib.parse import urlencode
 
 
@@ -26,13 +25,8 @@ def owner_home(request):
         if end_date:
             params["end_date"] = end_date
 
-    data = None
-    c = Client()
-    c.force_login(request.user)
     qs = urlencode(params)
-    res = c.get(f"/api/reports/owner-dashboard/?{qs}")
-    if res.status_code == 200:
-        data = json.loads(res.content.decode("utf-8"))
+    data = build_owner_units_dashboard(owner_profile, params)
 
     return render(
         request,
@@ -41,6 +35,10 @@ def owner_home(request):
             "property_profile_id": prop_id,
             "dashboard": data,
             "owner_profile": owner_profile,
+            "report_units": owner_profile.units.filter(
+                property_profile_id=prop_id, is_active=True,
+                unit_type__business_type=owner_profile.property.business_type,
+            ).order_by("code"),
             "selected_period": period,
             "dashboard_querystring": qs,
         },

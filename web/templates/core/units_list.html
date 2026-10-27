@@ -52,10 +52,10 @@
                 <div>{% trans "Seasonal" %}: {{ u.seasonal_price|currency3 }}</div>
               </td>
               <td>
-                {% for a in u.amenities.all %}
-                  <span class="slx-pill" style="margin:2px 4px 2px 0;">{{ a.name_en }}</span>
+                {% for a in u.unit_type.display_amenities %}
+                  <span class="slx-pill" style="margin:2px 4px 2px 0;">{{ a }}</span>
                 {% empty %}
-                  —
+                  <span class="text-muted">{% trans "No amenities configured for this tier." %}</span>
                 {% endfor %}
               </td>
               <td><span class="slx-status">{{ u.status }}</span></td>
