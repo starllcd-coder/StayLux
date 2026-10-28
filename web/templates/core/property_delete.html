@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Delete Property" %}{% endblock %}
+{% block page_title %}{% trans "Delete Property" %}{% endblock %}
+{% block content %}
+<div class="slx-card">
+  <div class="slx-card-head">
+    <div class="slx-card-title">{% trans "Delete Property" %}: {{ property_to_delete.name_en }}</div>
+    <a class="slx-mini-link" href="{% url 'settings_page' %}?panel=property">{% trans "Back" %}</a>
+  </div>
+  <p>{% trans "Deletion is permanent. Linked records and staff/owner assignments listed below will also be removed. User login accounts are retained." %}</p>
+  <ul>{% for label, count in deletion_counts %}<li>{{ label }}: {{ count }}</li>{% endfor %}</ul>
+  {% if deletion_error %}<div class="slx-error" role="alert">{{ deletion_error }}</div>{% endif %}
+  {% if deletion_blocked %}
+    <p role="alert">{% trans "This property has protected records and cannot be deleted. Edit the property and turn off Active to preserve its history." %}</p>
+    <a class="slx-btn" href="{% url 'property_edit' property_to_delete.id %}">{% trans "Edit Property" %}</a>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      <label class="slx-label" for="confirm-property-name">{% trans "Type the exact property name to confirm deletion" %}</label>
+      <input id="confirm-property-name" class="form-control mb-3" name="confirm_name" required autocomplete="off">
+      <button type="submit" class="btn btn-danger">{% trans "Permanently Delete Property" %}</button>
+      <a class="btn" href="{% url 'settings_page' %}?panel=property">{% trans "Cancel" %}</a>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

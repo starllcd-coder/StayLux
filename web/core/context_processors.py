@@ -17,12 +17,18 @@ def notification_badge(request):
         }
 
     prop = None
+    staff = getattr(request.user, "staff_profile", None)
+    if staff and staff.is_active and not request.user.is_superuser and staff.role != ROLE_OWNER_ADMIN:
+        prop = staff.property
     prop_id = request.session.get("active_property_id")
-    if prop_id:
+    if prop_id and prop is None:
         try:
             prop = PropertyProfile.objects.get(id=prop_id)
         except PropertyProfile.DoesNotExist:
             prop = None
+    staff = getattr(request.user, "staff_profile", None)
+    if staff and staff.is_active and not request.user.is_superuser and staff.role != ROLE_OWNER_ADMIN:
+        prop = staff.property
     if prop is None:
         prop = PropertyProfile.objects.first()
 

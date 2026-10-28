@@ -15,7 +15,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from core.viewsets import PropertyScopedModelViewSet
-from core.permissions import IsReceptionOrHigher
+from core.permissions import IsBillingStaff
+from django.shortcuts import get_object_or_404
 
 from bookings.models import Booking, BookingType
 from notifications.services import queue_event_message
@@ -31,7 +32,7 @@ class InvoiceViewSet(PropertyScopedModelViewSet):
         .all()
     )
     serializer_class = InvoiceSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly & IsReceptionOrHigher]
+    permission_classes = [IsBillingStaff]
     property_field_name = "property_profile"
 
     def get_queryset(self):
@@ -115,7 +116,10 @@ class InvoiceViewSet(PropertyScopedModelViewSet):
         issue = bool(request.data.get("issue", True))
         tax_rate = Decimal(str(request.data.get("tax_rate", "0.000")))
 
-        booking = Booking.objects.select_related("property_profile", "guest", "unit").get(id=booking_id)
+        bookings = Booking.objects.select_related("property_profile", "guest", "unit")
+        if not request.user.is_superuser:
+            bookings = bookings.filter(property_profile_id=self._user_prop_id())
+        booking = get_object_or_404(bookings, id=booking_id)
 
         inv = Invoice.objects.create(
             property_profile=booking.property_profile,
@@ -278,7 +282,7 @@ class InvoiceViewSet(PropertyScopedModelViewSet):
 class PaymentViewSet(PropertyScopedModelViewSet):
     queryset = Payment.objects.select_related("invoice", "property_profile").all()
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly & IsReceptionOrHigher]
+    permission_classes = [IsBillingStaff]
     property_field_name = "property_profile"
 
     def get_queryset(self):
@@ -296,7 +300,7 @@ class PaymentViewSet(PropertyScopedModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        payment: Payment = serializer.save()
+        payment: Payment = super().perform_create(serializer)
         payment.invoice.recalc_and_save()
 
         inv = payment.invoice

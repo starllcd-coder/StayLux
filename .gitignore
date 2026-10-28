@@ -42,3 +42,16 @@ coverage/
 __pycache__/
 *.pyc
 *.log
+
+# Private database transfers and backups
+.private-transfer/
+.publish_checkout/
+web/db.before_*.sqlite3
+
+# Firebase local configuration and private server credentials
+owner_admin_app/config/firebase.android.json
+owner_admin_app/config/firebase.ios.json
+**/firebase-service-account*.json
+**/*-firebase-adminsdk-*.json
+owner_admin_app/android/app/google-services.json
+owner_admin_app/ios/Runner/GoogleService-Info.plist

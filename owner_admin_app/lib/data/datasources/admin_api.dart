@@ -533,6 +533,8 @@ class AdminApi {
         return 'owner';
       case 'manager':
         return 'manager';
+      case 'accounts':
+        return 'accounts';
       case 'reception':
       case 'housekeeping':
       case 'maintenance':

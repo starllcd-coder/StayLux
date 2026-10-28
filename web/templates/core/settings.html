@@ -13,17 +13,18 @@
   <div class="row g-3 mt-2">
     <div class="col-12">
       <div class="slx-card">
-        <div class="p-3" style="border-bottom:1px solid rgba(229,231,235,0.7);">
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div class="slx-settings-nav">
+          <div class="slx-settings-tabs" aria-label="{% trans 'Settings sections' %}">
             <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "property" %}active{% endif %}" data-tab="tab-property">{% trans "Property" %}</button>
-            <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-employees">{% trans "Employees" %}</button>
-            <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-owners">{% trans "Owners" %}</button>
+            <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "employees" %}active{% endif %}" data-tab="tab-employees">{% trans "Employees" %}</button>
+            <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "owners" %}active{% endif %}" data-tab="tab-owners">{% trans "Owners" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn {% if active_panel == "amenities" %}active{% endif %}" data-tab="tab-amenities">{% trans "Amenities" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-system">{% trans "System" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-notifications">{% trans "Notifications" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-sync">{% if LANGUAGE_CODE|slice:":2" == "ar" %}المزامنة{% else %}{% trans "Sync" %}{% endif %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-database">{% trans "Database" %}</button>
             <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-backup">{% trans "Backup & Restore" %}</button>
+            <button type="button" class="btn btn-sm slx-tab-btn" data-tab="tab-integrations">{% trans "Channel Integrations" %}</button>
           </div>
         </div>
 
@@ -70,6 +71,12 @@
                                     >{% trans "Switch" %}</a>
                                   {% else %}
                                     <span class="text-muted">-</span>
+                                  {% endif %}
+                                  {% if p_item.can_edit_delete %}
+                                    <span class="slx-property-actions">
+                                      <a class="btn btn-sm slx-property-edit" href="{% url 'property_edit' p_item.id %}">{% trans "Edit" %}</a>
+                                      <a class="btn btn-sm slx-property-delete" href="{% url 'property_delete' p_item.id %}">{% trans "Delete" %}</a>
+                                    </span>
                                   {% endif %}
                                 </td>
                               </tr>
@@ -194,29 +201,21 @@
             </div>
           </div>
 
-          <div id="tab-employees" class="slx-tab-pane">
-            <div class="slx-empty">{% trans "Manage employees from the Employees tab below." %}</div>
+          <div id="tab-employees" class="slx-tab-pane {% if active_panel == "employees" %}active{% endif %}">
+            <div class="slx-empty">{% trans "Manage employee accounts and access." %}</div>
             <div class="mt-2">
               <a class="slx-action" href="{% url 'staff_list' %}">
                 <span class="slx-action-ico">👤</span><span class="slx-action-text">{% trans "Open Employees" %}</span>
               </a>
             </div>
-            <div class="mt-3" style="display:flex; gap:10px; flex-wrap:wrap;">
-              <a class="slx-btn" style="max-width:320px;" href="{% url 'staff_list' %}">{% trans "Save" %}</a>
-              <a class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'staff_list' %}">{% trans "Open Employees" %}</a>
-            </div>
           </div>
 
-          <div id="tab-owners" class="slx-tab-pane">
+          <div id="tab-owners" class="slx-tab-pane {% if active_panel == "owners" %}active{% endif %}">
             <div class="slx-empty">{% trans "Manage unit owners and assignments." %}</div>
             <div class="mt-2">
               <a class="slx-action" href="{% url 'owners_list' %}">
                 <span class="slx-action-ico">🏠</span><span class="slx-action-text">{% trans "Open Owners" %}</span>
               </a>
-            </div>
-            <div class="mt-3" style="display:flex; gap:10px; flex-wrap:wrap;">
-              <a class="slx-btn" style="max-width:320px;" href="{% url 'owners_list' %}">{% trans "Save" %}</a>
-              <a class="btn btn-sm" style="border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'owners_list' %}">{% trans "Open Owners" %}</a>
             </div>
           </div>
 
@@ -766,6 +765,79 @@
             </div>
           </form>
         </div>
+        <div id="tab-integrations" class="slx-tab-pane p-3">
+          <div class="slx-channel-intro">
+            <div class="slx-card-title">{% trans "Channel Integrations" %}</div>
+            <p class="text-muted mb-0">{% trans "Prepare your Agoda, Booking.com and Airbnb property connections. Save property IDs and room mappings for each channel." %}</p>
+          </div>
+          <div class="alert alert-info" role="status">
+            {% trans "Setup only: platform connectors are not available yet. Saving details does not connect an account or sync bookings, rates or availability. API access and platform authorization will be required when connectors are enabled." %}
+          </div>
+          {% if not prop %}<p class="text-muted">{% trans "Create a property before saving channel setup." %}</p>{% endif %}
+          <div class="slx-channel-grid">
+            {% for channel in channel_integrations %}
+              <section class="slx-channel-card">
+                <div class="slx-channel-heading">
+                  <h3>{{ channel.name }}</h3>
+                  <span class="slx-channel-status">{% trans "Not configured" %}</span>
+                </div>
+                <p class="text-muted small">{% trans "Property" %}: {{ prop.name_en|default:"?" }}</p>
+                <form method="post" action="{% url 'channel_integration_save' channel.platform %}">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <label class="slx-label" for="{{ channel.form.external_property_id.id_for_label }}">{{ channel.form.external_property_id.label }}</label>
+                    {{ channel.form.external_property_id }}
+                  </div>
+                  <div class="mb-3">
+                    <label class="slx-label" for="{{ channel.form.account_reference.id_for_label }}">{{ channel.form.account_reference.label }}</label>
+                    {{ channel.form.account_reference }}
+                    <div class="text-muted small mt-1">{% trans "Reference only. Do not enter passwords, API keys or access tokens here." %}</div>
+                  </div>
+                  <details class="slx-channel-mapping mb-3">
+                    <summary>{% trans "Room and rate plan mapping" %}</summary>
+                    {% for row in channel.form.unit_rows %}
+                      <div class="slx-channel-unit">
+                        <strong>{{ row.unit.code }}</strong>
+                        <label class="slx-label mt-2" for="{{ row.room.id_for_label }}">{{ row.room.label }}</label>
+                        {{ row.room }}
+                        <label class="slx-label mt-2" for="{{ row.rate.id_for_label }}">{{ row.rate.label }}</label>
+                        {{ row.rate }}
+                      </div>
+                    {% empty %}
+                      <p class="text-muted small p-3">{% trans "Add rooms or units to configure their channel mappings." %}</p>
+                    {% endfor %}
+                  </details>
+                  <details class="slx-channel-mapping mb-3">
+                    <summary>{% trans "API credentials and authorization" %}</summary>
+                    <div class="p-3">
+                      <p class="text-muted small">{% trans "Use only API credentials issued for an approved integration. Platform website login passwords cannot connect StayLux. Fill only the fields supplied for your API access." %}</p>
+                      <label class="slx-label" for="{{ channel.form.authentication_method.id_for_label }}">{% trans "Authentication method" %}</label>
+                      {{ channel.form.authentication_method }}
+                      {% if channel.form.storage_ready %}
+                        {% for field in channel.form.credential_inputs %}
+                          <div class="mt-3"><label class="slx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>
+                        {% endfor %}
+                        <p class="text-muted small mt-2">{% trans "Credentials are encrypted. Saved values are never displayed. Leave fields blank to keep existing values." %}</p>
+                      {% else %}
+                        <div class="alert alert-warning mt-3">{% trans "Secure credential entry is not enabled on this server. Contact the administrator to enable encrypted storage before entering API credentials." %}</div>
+                      {% endif %}
+                      {% if channel.form.instance.credentials_encrypted %}
+                        <p class="text-success small mt-3">{% trans "Encrypted credentials saved" %}</p>
+                        <label class="d-flex gap-2 align-items-center">{{ channel.form.clear_credentials }} <span>{{ channel.form.clear_credentials.label }}</span></label>
+                      {% endif %}
+                    </div>
+                  </details>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" class="slx-btn" {% if not prop %}disabled{% endif %}>{% trans "Save Setup" %}</button>
+                    <button type="submit" name="action" value="check_setup" class="btn btn-outline-secondary" {% if not prop %}disabled{% endif %}>{% trans "Check Setup" %}</button>
+                    <button type="button" class="btn btn-outline-secondary" disabled>{% trans "Test Connection" %}</button>
+                  </div>
+                  <div class="text-muted small mt-3">{% trans "Connection testing and synchronization will be available after the platform connector is implemented and approved." %}</div>
+                </form>
+              </section>
+            {% endfor %}
+          </div>
+        </div>
       </div>
 
       <div class="slx-card mt-3">
@@ -873,7 +945,34 @@
   </script>
 
   <style>
-    .slx-tab-btn.active { background:#0b2340; color:#fff; }
+    .slx-channel-intro { margin-bottom:18px; }
+    .slx-channel-intro .slx-card-title { margin-bottom:6px; }
+    .slx-channel-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:18px; align-items:start; }
+    .slx-channel-card { padding:24px; border:1px solid #e3e9f0; border-radius:18px; background:linear-gradient(180deg,#fff,#fbfcfe); box-shadow:0 6px 22px rgba(11,35,64,.04); }
+    .slx-channel-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+    .slx-channel-heading h3 { margin:0; font-size:19px; font-weight:800; color:#0b2340; }
+    .slx-channel-status { padding:5px 10px; border-radius:20px; color:#805e17; background:#fff5db; border:1px solid #f0dfb0; font-size:11px; font-weight:700; }
+    .slx-channel-mapping { border:1px solid #e3e9f0; border-radius:12px; background:white; }
+    .slx-channel-mapping summary { padding:12px; cursor:pointer; color:#0b2340; font-weight:700; font-size:13px; }
+    .slx-channel-unit { padding:14px; border-top:1px solid #edf0f5; }
+    .slx-channel-card .slx-btn { width:auto; padding:10px 18px; }
+
+    .slx-property-actions { display:inline-flex; gap:8px; margin-inline-start:8px; vertical-align:middle; }
+    .slx-property-actions .btn { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:6px 14px; border:1px solid; border-radius:12px; font-weight:900; text-decoration:none; transition:background-color .15s, border-color .15s, box-shadow .15s; }
+    .slx-property-edit { color:#0b2340; border-color:rgba(229,231,235,.9) !important; background:rgba(255,255,255,.9); }
+    .slx-property-edit:hover { color:#0b2340; background:#f3f6fa; border-color:#cbd5e1 !important; box-shadow:0 3px 8px rgba(11,35,64,.08); }
+    .slx-property-delete { color:#991b1b; border-color:rgba(254,202,202,.9) !important; background:rgba(254,226,226,.8); }
+    .slx-property-delete:hover { color:#7f1d1d; background:#fecaca; border-color:#fca5a5 !important; box-shadow:0 3px 8px rgba(153,27,27,.08); }
+    .slx-property-actions .btn:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+    .slx-settings-nav { padding:20px 22px; border-bottom:1px solid #e8edf3; background:linear-gradient(180deg,#fff,#fcfdff); border-radius:20px 20px 0 0; }
+    .slx-settings-tabs { display:flex; gap:6px; padding:6px; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#cbd5e1 transparent; background:#f2f5f9; border:1px solid #e6ebf2; border-radius:16px; }
+    .slx-settings-tabs .slx-tab-btn { position:relative; flex:1 0 auto; min-height:44px; padding:11px 17px; border:1px solid transparent; border-radius:11px; background:transparent; color:#53647a; font-size:13px; font-weight:700; line-height:1.5; white-space:nowrap; transition:background-color .18s,color .18s,box-shadow .18s,border-color .18s; }
+    .slx-settings-tabs .slx-tab-btn:hover { color:#102c4b; background:#fff; border-color:#e1e7ef; }
+    .slx-settings-tabs .slx-tab-btn.active { color:#fff; background:linear-gradient(135deg,#173957,#0b2340); border-color:#173957; box-shadow:0 3px 9px rgba(11,35,64,.18),inset 0 1px 0 rgba(255,255,255,.1); }
+    .slx-settings-tabs .slx-tab-btn.active::after { content:""; position:absolute; bottom:4px; inset-inline-start:calc(50% - 9px); width:18px; height:2px; border-radius:2px; background:#d4ad59; }
+    .slx-settings-tabs .slx-tab-btn:focus-visible { outline:2px solid #b98f3e; outline-offset:2px; }
+    @media(max-width:640px) { .slx-settings-nav { padding:14px 12px; } .slx-settings-tabs .slx-tab-btn { flex:0 0 auto; padding:10px 15px; } }
+    @media(prefers-reduced-motion:reduce) { .slx-settings-tabs .slx-tab-btn { transition:none; } }
     .slx-tab-pane { display:none; }
     .slx-tab-pane.active { display:block; }
     .slx-tier-dropdown { border:1px solid #e5e7eb; border-radius:12px; margin-bottom:12px; overflow:hidden; }

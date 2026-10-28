@@ -1,3 +1,5 @@
+import 'core/services/staff_job_banner.dart';
+import 'core/services/firebase_push_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -31,6 +33,9 @@ Future<void> main() async {
     return false;
   };
   await TokenStorage.init();
+  await FirebasePushService.instance.initialize();
+  TokenStorage.beforeClear = FirebasePushService.instance.unregister;
+  FirebasePushService.instance.onOpenInbox = () => appRouter.go('/admin/job-notifications');
   runApp(const StayLuxAdminApp());
 }
 
@@ -45,6 +50,10 @@ class StayLuxAdminApp extends StatelessWidget {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
+          builder: (context, child) => StaffJobBanner(
+            onOpen: () => appRouter.go('/admin/job-notifications'),
+            child: child ?? const SizedBox.shrink(),
+          ),
           title: 'StayLux Admin',
           theme: AppTheme.themeForLocale(locale),
           locale: locale,

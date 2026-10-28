@@ -83,7 +83,7 @@ def _authorize_property_access(request, prop: PropertyProfile):
         )
 
     staff_profile = getattr(request.user, "staff_profile", None)
-    if staff_profile and staff_profile.property_id == prop.id:
+    if staff_profile and staff_profile.is_active and staff_profile.role in {"owner_admin", "manager", "accounts"} and staff_profile.property_id == prop.id:
         return None
 
     return Response({"detail": "You do not have access to this property"}, status=drf_status.HTTP_403_FORBIDDEN)

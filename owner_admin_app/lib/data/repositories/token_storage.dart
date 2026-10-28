@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenStorage {
+  static Future<void> Function()? beforeClear;
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static const String _tokenKey = 'admin_token';
@@ -108,6 +109,7 @@ class TokenStorage {
   }
 
   static Future<void> clear() async {
+    try { await beforeClear?.call(); } catch (_) {}
     _cachedToken = null;
     _cachedRefreshToken = null;
     _cachedRole = null;

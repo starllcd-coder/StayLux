@@ -72,8 +72,8 @@
           </a>
         {% endif %}
 
-        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'reception' %}
-          {% if prop and prop.business_type == "apartments" %}
+        {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' or staff_role == 'reception' or staff_role == 'accounts' %}
+          {% if prop and prop.business_type == "apartments" or staff_role == "accounts" %}
             <a class="slx-nav-item {% if request.resolver_match.url_name == 'invoices_list' or request.resolver_match.url_name == 'invoice_create' or request.resolver_match.url_name == 'invoice_edit' %}active{% endif %}" href="{% url 'invoices_list' %}">
               <span class="slx-nav-ico">🧾</span><span>{% if LANGUAGE_CODE == 'ar' %}الفواتير{% else %}{% trans "Invoices" %}{% endif %}</span>
             </a>
@@ -84,6 +84,9 @@
           </a>
         {% endif %}
 
+        {% if staff_role == 'accounts' %}
+          <a class="slx-nav-item {% if request.resolver_match.url_name == 'reports_home' %}active{% endif %}" href="{% url 'reports_home' %}"><span class="slx-nav-ico">&#128202;</span><span>{% trans "Reports" %}</span></a>
+        {% endif %}
         {% if request.user.is_superuser or request.user.owner_profile or staff_role == 'owner_admin' or staff_role == 'manager' %}
           <a class="slx-nav-item {% if request.resolver_match.url_name == 'reports_home' %}active{% endif %}" href="{% url 'reports_home' %}">
             <span class="slx-nav-ico">📊</span><span>{% if LANGUAGE_CODE == 'ar' %}التقارير{% else %}{% trans "Reports" %}{% endif %}</span>
@@ -159,7 +162,9 @@
                   </div>
                 </div>
                 <div class="slx-avatar-menu-links">
+                  {% if request.user.is_superuser or request.user.staff_profile.role == 'owner_admin' or request.user.staff_profile.role == 'manager' %}
                   <a href="{% url 'settings_page' %}">{% trans "Account settings" %}</a>
+                  {% endif %}
                   <a href="{% url 'logout' %}">{% trans "Logout" %}</a>
                 </div>
               </div>
@@ -261,7 +266,9 @@
                   </div>
                 </div>
                 <div class="slx-avatar-menu-links">
+                  {% if request.user.is_superuser or request.user.staff_profile.role == 'owner_admin' or request.user.staff_profile.role == 'manager' %}
                   <a href="{% url 'settings_page' %}">{% trans "Account settings" %}</a>
+                  {% endif %}
                   <a href="{% url 'logout' %}">{% trans "Logout" %}</a>
                 </div>
               </div>

@@ -6,11 +6,12 @@ class BackendPermissionMatrix {
   bool get isOwnerAdmin => backendRole == 'owner_admin';
   bool get isOwner => backendRole == 'owner';
   bool get isManager => backendRole == 'manager';
+  bool get isAccounts => backendRole == 'accounts';
   bool get isReception => backendRole == 'reception';
   bool get isHousekeeping => backendRole == 'housekeeping';
   bool get isMaintenance => backendRole == 'maintenance';
 
-  bool canViewRevenue() => isOwnerAdmin || isOwner || isManager;
+  bool canViewRevenue() => isOwnerAdmin || isOwner || isManager || isAccounts;
 
   bool canManageStaff() => isOwnerAdmin || isManager;
 
@@ -24,5 +25,5 @@ class BackendPermissionMatrix {
       isOwnerAdmin || isManager || isReception || isHousekeeping || isMaintenance;
 
   bool canViewDashboard() =>
-      isOwnerAdmin || isOwner || isManager || isReception || isHousekeeping || isMaintenance;
+      isOwnerAdmin || isOwner || isManager || isAccounts || isReception || isHousekeeping || isMaintenance;
 }

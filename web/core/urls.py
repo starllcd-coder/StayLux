@@ -101,6 +101,9 @@ urlpatterns = [
 
     # Settings
     path("settings/", views.settings_page, name="settings_page"),
+    path("settings/channels/<str:platform>/save/", views.channel_integration_save, name="channel_integration_save"),
+    path("settings/property/<int:pk>/edit/", views.property_edit, name="property_edit"),
+    path("settings/property/<int:pk>/delete/", views.property_delete, name="property_delete"),
     path("settings/property/switch/", views.switch_active_property, name="switch_active_property"),
     path("settings/staff/", views.staff_list, name="staff_list"),
     path("settings/staff/new/", views.staff_create, name="staff_create"),

@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from core.security import get_user_property_profile_id
 from settings_app.models import PropertyProfile
+from rest_framework.exceptions import PermissionDenied
 
 
 class PropertyScopedModelViewSet(viewsets.ModelViewSet):
@@ -12,6 +13,14 @@ class PropertyScopedModelViewSet(viewsets.ModelViewSet):
     """
 
     property_field_name = "property_profile"  # default FK name
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if request.user.is_superuser:
+            return
+        staff = getattr(request.user, "staff_profile", None)
+        if not request.user.is_authenticated or not request.user.is_active or not staff or not staff.is_active:
+            raise PermissionDenied("An active property staff profile is required.")
 
     def _resolve_property_id(self):
         req_prop = self.request.query_params.get("property_profile")

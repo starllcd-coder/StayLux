@@ -8,6 +8,7 @@ from inventory.models import Unit
 class StaffRole(models.TextChoices):
     OWNER_ADMIN = "owner_admin", _("Owner/Admin")
     MANAGER = "manager", _("Manager")
+    ACCOUNTS = "accounts", _("Accounts")
     RECEPTION = "reception", _("Reception/Front Desk")
     HOUSEKEEPING = "housekeeping", _("Housekeeping")
     MAINTENANCE = "maintenance", _("Maintenance")

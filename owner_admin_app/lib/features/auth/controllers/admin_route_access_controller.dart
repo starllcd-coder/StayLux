@@ -28,7 +28,8 @@ class AdminRouteAccessController {
           return _matrix.canManageMaintenance();
         case '/admin/security':
           return _matrix.canManageSecurity();
-        case '/admin/notifications':
+        case '/admin/job-notifications':
+      case '/admin/notifications':
           return _matrix.canViewDashboard();
         case '/admin/reports':
           return _matrix.canViewRevenue();
@@ -54,6 +55,7 @@ class AdminRouteAccessController {
         return RolePermissions.canManageMaintenance(_role);
       case '/admin/security':
         return RolePermissions.canManageSecurity(_role);
+      case '/admin/job-notifications':
       case '/admin/notifications':
         return RolePermissions.canViewDashboard(_role);
       case '/admin/reports':

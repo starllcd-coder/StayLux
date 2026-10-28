@@ -9,6 +9,18 @@ class Channel(models.TextChoices):
     EMAIL = "email", "Email"
 
 
+class StaffJobNotification(TimeStampedModel):
+    recipient = models.ForeignKey("accounts.StaffProfile", on_delete=models.CASCADE, related_name="job_notifications")
+    housekeeping_task = models.ForeignKey("housekeeping.HousekeepingTask", null=True, blank=True, on_delete=models.CASCADE)
+    maintenance_request = models.ForeignKey("maintenance.MaintenanceRequest", null=True, blank=True, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+
 class NotificationSetting(TimeStampedModel):
     property_profile = models.OneToOneField(PropertyProfile, on_delete=models.CASCADE, related_name="notification_setting")
 
@@ -20,6 +32,24 @@ class NotificationSetting(TimeStampedModel):
 
     def __str__(self):
         return f"NotificationSetting({self.property_profile_id})"
+
+
+class StaffPushDevice(TimeStampedModel):
+    recipient = models.ForeignKey("accounts.StaffProfile", on_delete=models.CASCADE, related_name="push_devices")
+    token = models.CharField(max_length=512, unique=True)
+    platform = models.CharField(max_length=10, choices=[("android", "Android"), ("ios", "iOS")])
+    is_active = models.BooleanField(default=True)
+
+
+class StaffPushDelivery(TimeStampedModel):
+    notification = models.ForeignKey(StaffJobNotification, on_delete=models.CASCADE, related_name="push_deliveries")
+    device = models.ForeignKey(StaffPushDevice, on_delete=models.CASCADE)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    attempts = models.PositiveIntegerField(default=0)
+    error_code = models.CharField(max_length=80, blank=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["notification", "device"], name="unique_staff_push_delivery")]
 
 
 class WhatsAppTemplate(TimeStampedModel):

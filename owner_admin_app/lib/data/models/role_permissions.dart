@@ -1,10 +1,11 @@
 class RolePermissions {
   static const String owner = 'owner';
   static const String manager = 'manager';
+  static const String accounts = 'accounts';
   static const String staff = 'staff';
 
   static bool canViewRevenue(String role) {
-    return role == owner || role == manager;
+    return role == owner || role == manager || role == accounts;
   }
 
   static bool canManageStaff(String role) {
@@ -28,6 +29,6 @@ class RolePermissions {
   }
 
   static bool canViewDashboard(String role) {
-    return role == owner || role == manager || role == staff;
+    return role == owner || role == manager || role == accounts || role == staff;
   }
 }

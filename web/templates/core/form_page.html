@@ -7,7 +7,7 @@
   <div class="slx-card">
     <div class="slx-card-head">
       <div class="slx-card-title">{{ title }}</div>
-      <a class="slx-mini-link" href="{% url back_url %}">{% trans "Back" %} &rarr;</a>
+      <a class="slx-mini-link" href="{% url back_url %}{% if back_query %}?{{ back_query }}{% endif %}">{% trans "Back" %} &rarr;</a>
     </div>
 
     <form method="post" class="row g-3" {% if multipart %}enctype="multipart/form-data"{% endif %}>

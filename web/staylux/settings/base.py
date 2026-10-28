@@ -104,3 +104,8 @@ REST_FRAMEWORK = {
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/login/"
+
+# Disabled until a Firebase project and server credentials are configured.
+FIREBASE_PUSH_ENABLED = os.environ.get("FIREBASE_PUSH_ENABLED", "0") == "1"
+FIREBASE_SERVICE_ACCOUNT_FILE = os.environ.get("FIREBASE_SERVICE_ACCOUNT_FILE", "")
+CHANNEL_CREDENTIALS_KEY = os.environ.get("CHANNEL_CREDENTIALS_KEY", "")

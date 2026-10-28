@@ -11,6 +11,8 @@ from inspections.views import MoveOutInspectionViewSet
 from inventory.views import AmenityViewSet, UnitTypeViewSet, UnitViewSet
 from maintenance.views import MaintenanceRequestViewSet
 from notifications.views import NotificationSettingViewSet, OutboxMessageViewSet, WhatsAppTemplateViewSet
+from notifications.views import StaffJobNotificationViewSet
+from notifications.views import StaffPushDeviceViewSet
 from pricing.views import (
     AvailabilitySuggestionView,
     BulkSeasonalRateUpdateView,
@@ -22,6 +24,8 @@ from pricing.views import (
 from settings_app.views import PropertyProfileViewSet
 
 router = DefaultRouter()
+router.register(r"staff-job-notifications", StaffJobNotificationViewSet, basename="staff-job-notifications")
+router.register(r"staff-push-devices", StaffPushDeviceViewSet, basename="staff-push-devices")
 router.register(r"properties", PropertyProfileViewSet, basename="property")
 router.register(r"staff", StaffProfileViewSet, basename="staff")
 router.register(r"amenities", AmenityViewSet, basename="amenity")

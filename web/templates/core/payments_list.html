@@ -90,7 +90,9 @@
               <td>{% if p.is_void %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
               <td class="text-end">
                 <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(229,231,235,0.9); background:rgba(255,255,255,0.9);" href="{% url 'payment_edit' p.id %}">{% trans "Edit" %}</a>
+                {% if request.user.staff_profile.role != 'accounts' %}
                 <a class="btn btn-sm" style="font-weight:900; border-radius:12px; border:1px solid rgba(254,202,202,0.9); background:rgba(254,226,226,0.8); color:#991b1b;" href="{% url 'payment_delete' p.id %}">{% trans "Delete" %}</a>
+                {% endif %}
               </td>
             </tr>
           {% empty %}

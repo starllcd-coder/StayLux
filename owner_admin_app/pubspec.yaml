@@ -23,6 +23,8 @@ dependencies:
 
   # API calls
   http: ^1.2.0
+  firebase_core: ^4.0.0
+  firebase_messaging: ^16.0.0
 
 dev_dependencies:
   flutter_test:

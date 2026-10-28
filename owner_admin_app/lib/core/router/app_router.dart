@@ -1,3 +1,4 @@
+import '../../features/notifications/presentation/pages/staff_jobs_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/repositories/token_storage.dart';
@@ -70,6 +71,7 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
+    GoRoute(path: '/admin/job-notifications', builder: (context, state) => const StaffJobsPage()),
     GoRoute(
       path: '/admin/splash',
       builder: (context, state) => const AdminSplashPage(),
@@ -108,7 +110,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/admin/notifications',
-      builder: (context, state) => const NotificationsPage(),
+      builder: (context, state) => {'housekeeping', 'maintenance', 'reception', 'accounts'}.contains(TokenStorage.currentBackendRole)
+          ? const StaffJobsPage() : const NotificationsPage(),
     ),
     GoRoute(
       path: '/admin/reports',

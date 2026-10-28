@@ -1,0 +1,9 @@
+{
+  "STAYLUX_API_BASE_URL": "https://staylux-web.onrender.com",
+  "STAYLUX_FIREBASE_PUSH_ENABLED": "false",
+  "FIREBASE_API_KEY": "",
+  "FIREBASE_APP_ID": "",
+  "FIREBASE_MESSAGING_SENDER_ID": "",
+  "FIREBASE_PROJECT_ID": "",
+  "FIREBASE_IOS_BUNDLE_ID": ""
+}

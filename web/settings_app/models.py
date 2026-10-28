@@ -7,6 +7,37 @@ class BusinessType(models.TextChoices):
     HOTEL = "hotel", _("Hotel")
     APARTMENTS = "apartments", _("Apartments")
 
+
+class ChannelIntegration(models.Model):
+    class Platform(models.TextChoices):
+        AGODA = "agoda", "Agoda"
+        BOOKING = "booking", "Booking.com"
+        AIRBNB = "airbnb", "Airbnb"
+
+    property_profile = models.ForeignKey("PropertyProfile", on_delete=models.CASCADE, related_name="channel_integrations")
+    platform = models.CharField(max_length=20, choices=Platform.choices)
+    external_property_id = models.CharField(max_length=120, blank=True)
+    account_reference = models.CharField(max_length=120, blank=True)
+    unit_mappings = models.JSONField(default=dict, blank=True)
+    authentication_method = models.CharField(max_length=20, choices=[("api_token", "API token/key"), ("oauth", "OAuth client"), ("machine_account", "API machine account")], default="api_token")
+    credentials_encrypted = models.TextField(blank=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_credentials(self):
+        import json
+        from .channel_security import credential_cipher
+        if not self.credentials_encrypted:
+            return {}
+        return json.loads(credential_cipher().decrypt(self.credentials_encrypted.encode()).decode())
+
+    def set_credentials(self, values):
+        import json
+        from .channel_security import credential_cipher
+        self.credentials_encrypted = credential_cipher().encrypt(json.dumps(values).encode()).decode() if values else ""
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["property_profile", "platform"], name="unique_property_channel")]
+
 class PropertyProfile(TimeStampedModel):
     """One property (hotel/apartment building) profile & branding."""
     business_type = models.CharField(max_length=20, choices=BusinessType.choices, default=BusinessType.HOTEL)

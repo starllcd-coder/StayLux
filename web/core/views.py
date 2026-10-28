@@ -16,6 +16,7 @@ from django.utils.dateparse import parse_date
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.debug import sensitive_post_parameters
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.urls import reverse
@@ -39,6 +40,10 @@ from pricing.models import RatePlan, SeasonalRateRule
 from pricing.services import compute_booking_total
 from settings_app.models import PropertyProfile, BusinessType
 from settings_app.models import DatabaseConnection
+from settings_app.access import can_manage_property
+from settings_app.models import ChannelIntegration
+from settings_app.channel_forms import ChannelIntegrationForm
+from settings_app.channel_security import check_channel_setup
 from notifications.services import queue_event_message
 from notifications.models import NotificationSetting, OutboxMessage, Channel
 from contracts.models import Contract, ContractDocument
@@ -91,6 +96,8 @@ from .permissions import (
     ROLES_UNITS_MANAGE,
     ROLES_UNITS_VIEW,
     ROLES_BILLING,
+    ROLES_REPORTS,
+    ROLE_ACCOUNTS,
     _get_user_role,
     _has_role,
     _require_roles,
@@ -180,6 +187,10 @@ class BookingWizardGuestForm(forms.Form):
 
 
 def _get_active_property(request):
+    staff = getattr(request.user, "staff_profile", None)
+    if staff and staff.is_active and not request.user.is_superuser and staff.role != ROLE_OWNER_ADMIN:
+        request.session["active_property_id"] = staff.property_id
+        return staff.property
     pid = request.session.get("active_property_id")
     if pid:
         try:
@@ -209,7 +220,7 @@ def _is_admin_manager(user) -> bool:
         return False
     if getattr(user, "is_superuser", False):
         return True
-    return _has_role(user, ROLES_ADMIN)
+    return can_manage_property(user)
 
 
 def _can_manage_properties(user) -> bool:
@@ -218,7 +229,8 @@ def _can_manage_properties(user) -> bool:
         return False
     if getattr(user, "is_superuser", False):
         return True
-    return _get_user_role(user) == ROLE_OWNER_ADMIN
+    staff = getattr(user, "staff_profile", None)
+    return bool(staff and staff.is_active and staff.role == ROLE_OWNER_ADMIN)
 
 
 def _filter_rateplans_for_mode(qs, prop):
@@ -332,6 +344,10 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    if not _get_user_role(request.user):
+        return HttpResponse(status=403)
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        return redirect("reports_home")
     owner_profile = getattr(request.user, "owner_profile", None)
     if owner_profile and owner_profile.is_active:
         return redirect("owner-home")
@@ -3310,6 +3326,10 @@ def invoices_list(request):
 def invoice_create(request):
     prop = _get_active_property(request)
     form = InvoiceForm(request.POST or None, property_obj=prop)
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        form.fields.pop("is_void", None)
+        if "status" in form.fields:
+            form.fields["status"].choices = [(value, label) for value, label in form.fields["status"].choices if value != "void"]
     if request.method == "POST" and form.is_valid():
         obj = form.save(commit=False)
         obj.property_profile = prop
@@ -3325,6 +3345,10 @@ def invoice_edit(request, pk: int):
     prop = _get_active_property(request)
     obj = get_object_or_404(Invoice, pk=pk, property_profile=prop)
     form = InvoiceForm(request.POST or None, instance=obj, property_obj=prop)
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        form.fields.pop("is_void", None)
+        if "status" in form.fields:
+            form.fields["status"].choices = [(value, label) for value, label in form.fields["status"].choices if value != "void"]
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, _("Invoice updated."))
@@ -3339,6 +3363,8 @@ def invoice_edit(request, pk: int):
 @require_roles(ROLES_BILLING)
 @login_required
 def invoice_delete(request, pk: int):
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        return HttpResponse(status=403)
     prop = _get_active_property(request)
     obj = get_object_or_404(Invoice, pk=pk, property_profile=prop)
     if request.method == "POST":
@@ -3524,7 +3550,7 @@ def payments_report_excel(request):
     )
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def bookings_report_print(request):
     prop = _get_active_property(request)
@@ -3668,7 +3694,7 @@ def _occupancy_report_rows(prop, d1, d2, unit=None, include_archived=False):
     return rows
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def occupancy_report_print(request):
     prop = _get_active_property(request)
@@ -3709,7 +3735,7 @@ def occupancy_report_print(request):
     )
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def occupancy_report_pdf(request):
     prop = _get_active_property(request)
@@ -3749,7 +3775,7 @@ def occupancy_report_pdf(request):
     return resp
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def occupancy_report_excel(request):
     prop = _get_active_property(request)
@@ -3776,7 +3802,7 @@ def occupancy_report_excel(request):
     )
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def maintenance_report_print(request):
     prop = _get_active_property(request)
@@ -3813,7 +3839,7 @@ def maintenance_report_print(request):
     )
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def maintenance_report_pdf(request):
     prop = _get_active_property(request)
@@ -3867,7 +3893,7 @@ def maintenance_report_pdf(request):
     return resp
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def maintenance_report_excel(request):
     prop = _get_active_property(request)
@@ -3928,7 +3954,7 @@ def _revenue_report_rows(prop, d1, d2, unit=None, include_archived=False):
     return rows
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def revenue_report_print(request):
     prop = _get_active_property(request)
@@ -3973,7 +3999,7 @@ def revenue_report_print(request):
     )
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def revenue_report_pdf(request):
     prop = _get_active_property(request)
@@ -4032,7 +4058,7 @@ def revenue_report_pdf(request):
     return resp
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def revenue_report_excel(request):
     prop = _get_active_property(request)
@@ -4071,6 +4097,10 @@ def revenue_report_excel(request):
 def payment_create(request):
     prop = _get_active_property(request)
     form = PaymentForm(request.POST or None, property_obj=prop)
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        form.fields.pop("is_void", None)
+        if "status" in form.fields:
+            form.fields["status"].choices = [(value, label) for value, label in form.fields["status"].choices if value != "void"]
     if request.method == "POST" and form.is_valid():
         obj = form.save(commit=False)
         obj.property_profile = prop
@@ -4086,6 +4116,10 @@ def payment_edit(request, pk: int):
     prop = _get_active_property(request)
     obj = get_object_or_404(Payment, pk=pk, property_profile=prop)
     form = PaymentForm(request.POST or None, instance=obj, property_obj=prop)
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        form.fields.pop("is_void", None)
+        if "status" in form.fields:
+            form.fields["status"].choices = [(value, label) for value, label in form.fields["status"].choices if value != "void"]
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, _("Payment updated."))
@@ -4096,6 +4130,8 @@ def payment_edit(request, pk: int):
 @require_roles(ROLES_BILLING)
 @login_required
 def payment_delete(request, pk: int):
+    if _get_user_role(request.user) == ROLE_ACCOUNTS:
+        return HttpResponse(status=403)
     prop = _get_active_property(request)
     obj = get_object_or_404(Payment, pk=pk, property_profile=prop)
     if request.method == "POST":
@@ -4150,7 +4186,7 @@ def seasonalrates_list(request):
     return render(request, "core/pricing_seasonal.html", {"prop": prop, "form": form, "items": qs[:200]})
 
 
-@require_roles(ROLES_ADMIN)
+@require_roles(ROLES_REPORTS)
 @login_required
 def reports_home(request):
     prop = _get_active_property(request)
@@ -4363,6 +4399,90 @@ def reports_home(request):
     )
 
 
+@login_required
+def property_edit(request, pk):
+    prop = get_object_or_404(PropertyProfile, pk=pk)
+    if not can_manage_property(request.user, prop):
+        return HttpResponse(status=403)
+    form = PropertyProfileForm(request.POST or None, request.FILES or None, instance=prop)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, _("Property updated."))
+        return redirect(f"{reverse('settings_page')}?panel=property")
+    return render(request, "core/form_page.html", {
+        "prop": prop, "title": _("Edit Property"), "form": form,
+        "multipart": True, "back_url": "settings_page", "back_query": "panel=property",
+    })
+
+
+@login_required
+@sensitive_post_parameters()
+def channel_integration_save(request, platform):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    prop = _get_active_property(request)
+    if not prop or not can_manage_property(request.user, prop):
+        return HttpResponse(status=403)
+    if platform not in ChannelIntegration.Platform.values:
+        return HttpResponse(status=404)
+    instance = ChannelIntegration.objects.filter(property_profile=prop, platform=platform).first()
+    instance = instance or ChannelIntegration(property_profile=prop, platform=platform)
+    form = ChannelIntegrationForm(request.POST, instance=instance, property_obj=prop, prefix=platform)
+    if form.is_valid():
+        config = form.save()
+        if request.POST.get("action") == "check_setup":
+            issues = check_channel_setup(config)
+            for issue in issues:
+                messages.warning(request, issue)
+            if not issues:
+                messages.success(request, _("Local setup checks passed. Live authorization and synchronization still require an approved platform connector."))
+        else:
+            messages.success(request, _("Channel setup saved. No connection or synchronization is active yet."))
+    else:
+        for errors in form.errors.values():
+            for error in errors:
+                messages.error(request, error)
+    return redirect(f"{reverse('settings_page')}?panel=integrations")
+
+
+@login_required
+def property_delete(request, pk):
+    from django.contrib.admin.utils import NestedObjects
+
+    prop = get_object_or_404(PropertyProfile, pk=pk)
+    if not can_manage_property(request.user, prop):
+        return HttpResponse(status=403)
+    collector = NestedObjects(using="default")
+    collector.collect([prop])
+    counts = sorted((str(model._meta.verbose_name_plural), len(objects)) for model, objects in collector.data.items())
+    blocked = bool(collector.protected)
+    error = None
+    if request.method == "POST":
+        if request.POST.get("confirm_name", "").strip() != prop.name_en:
+            error = _("Type the exact property name to confirm deletion.")
+        elif blocked:
+            error = _("This property has protected records. Deactivate it instead to preserve its history.")
+        else:
+            try:
+                staff = getattr(request.user, "staff_profile", None)
+                removes_access = bool(staff and staff.property_id == prop.id and not request.user.is_superuser)
+                with transaction.atomic():
+                    prop.delete()
+                request.session.pop("active_property_id", None)
+                if removes_access:
+                    logout(request)
+                    return redirect("login")
+                messages.success(request, _("Property deleted."))
+                return redirect(f"{reverse('settings_page')}?panel=property")
+            except ProtectedError:
+                blocked = True
+                error = _("This property has protected records. Deactivate it instead to preserve its history.")
+    return render(request, "core/property_delete.html", {
+        "property_to_delete": prop, "deletion_counts": counts,
+        "deletion_blocked": blocked, "deletion_error": error,
+    })
+
+
 def _db_form_initial(profile: DatabaseConnection | None) -> dict:
     if not profile:
         return {
@@ -4417,8 +4537,16 @@ def _test_db_connection(db_config: dict) -> tuple[bool, str | None]:
 @require_roles(ROLES_ADMIN)
 @login_required
 def settings_page(request):
+    if not can_manage_property(request.user):
+        return HttpResponse(status=403)
     prop = _get_active_property(request)
+    staff = getattr(request.user, "staff_profile", None)
+    if not request.user.is_superuser and staff and staff.role == ROLE_MANAGER:
+        prop = staff.property
+        request.session["active_property_id"] = prop.id
     all_properties = list(PropertyProfile.objects.order_by("name_en", "id"))
+    for item in all_properties:
+        item.can_edit_delete = can_manage_property(request.user, item)
     if prop is None and all_properties:
         prop = all_properties[0]
         request.session["active_property_id"] = prop.id
@@ -5211,6 +5339,17 @@ def settings_page(request):
             "active_panel": "amenities" if request.method == "POST" and request.POST.get("form_kind", "").startswith(("amenity_", "tier_amenit")) else request.GET.get("panel", "property"),
             "amenities": amenities,
             "tier_tabs": tier_tabs,
+            "channel_integrations": [
+                {
+                    "platform": platform, "name": name,
+                    "form": ChannelIntegrationForm(
+                        instance=ChannelIntegration.objects.filter(property_profile=prop, platform=platform).first()
+                        or ChannelIntegration(property_profile=prop, platform=platform),
+                        property_obj=prop, prefix=platform,
+                    ),
+                }
+                for platform, name in ChannelIntegration.Platform.choices
+            ],
             "db_form": db_form,
             "db_profile": db_profile,
             "notification_setting": notification_setting,

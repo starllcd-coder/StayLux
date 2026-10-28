@@ -20,8 +20,12 @@ def get_user_property_profile_id(user) -> Optional[int]:
 
 
 def get_user_role(user) -> Optional[str]:
+    if not user or not user.is_authenticated or not user.is_active:
+        return None
+    if user.is_superuser:
+        return "owner_admin"
     sp = get_user_staff_profile(user)
     if not sp:
         owner = getattr(user, "owner_profile", None)
-        return "owner_admin" if owner else None
-    return sp.role
+        return "owner" if owner and owner.is_active else None
+    return sp.role if sp.is_active else None

@@ -8,6 +8,7 @@ ROLE_MANAGER = "manager"
 ROLE_RECEPTION = "reception"
 ROLE_HOUSEKEEPING = "housekeeping"
 ROLE_MAINTENANCE = "maintenance"
+ROLE_ACCOUNTS = "accounts"
 
 ROLES_ADMIN = {ROLE_OWNER_ADMIN, ROLE_MANAGER}
 ROLES_RECEPTION = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_RECEPTION}
@@ -17,21 +18,13 @@ ROLES_HOUSEKEEPING = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_HOUSEKEEPING}
 ROLES_HOUSEKEEPING_VIEW = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_HOUSEKEEPING, ROLE_RECEPTION}
 ROLES_UNITS_MANAGE = {ROLE_OWNER_ADMIN, ROLE_MANAGER}
 ROLES_UNITS_VIEW = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_RECEPTION, ROLE_HOUSEKEEPING, ROLE_MAINTENANCE}
-ROLES_BILLING = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_RECEPTION}
+ROLES_BILLING = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_RECEPTION, ROLE_ACCOUNTS}
+ROLES_REPORTS = {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_ACCOUNTS}
 
 
 def _get_user_role(user) -> str | None:
-    if not user or not user.is_authenticated:
-        return None
-    if user.is_superuser:
-        return ROLE_OWNER_ADMIN
-    staff_profile = getattr(user, "staff_profile", None)
-    if staff_profile:
-        return staff_profile.role
-    owner_profile = getattr(user, "owner_profile", None)
-    if owner_profile:
-        return ROLE_OWNER_ADMIN
-    return None
+    from core.security import get_user_role
+    return get_user_role(user)
 
 
 def _has_role(user, roles: Iterable[str]) -> bool:
@@ -129,6 +122,16 @@ class IsReceptionOrHigher(BasePermission):
             return True
         role = get_user_role(request.user)
         return role in {ROLE_OWNER_ADMIN, ROLE_MANAGER, ROLE_RECEPTION}
+
+
+class IsBillingStaff(BasePermission):
+    def has_permission(self, request, view):
+        role = get_user_role(request.user)
+        if role not in ROLES_BILLING:
+            return False
+        if role == ROLE_ACCOUNTS and (request.method == "DELETE" or getattr(view, "action", "") in {"void", "refund"}):
+            return False
+        return True
 
 
 class IsHousekeepingOrHigher(BasePermission):

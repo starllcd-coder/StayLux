@@ -29,6 +29,15 @@ class AdminBottomNav extends StatelessWidget {
       ];
     }
 
+    if (TokenStorage.currentBackendRole == 'accounts') {
+      return const [
+        _NavItem('dashboard', Icons.dashboard_outlined, '/admin/dashboard'),
+        _NavItem('reports', Icons.bar_chart_outlined, '/admin/reports'),
+        _NavItem('notify', Icons.notifications_outlined, '/admin/notifications'),
+        _NavItem('settings', Icons.settings_outlined, '/admin/settings'),
+      ];
+    }
+
     final items = <_NavItem>[
       const _NavItem('dashboard', Icons.dashboard_outlined, '/admin/dashboard'),
       const _NavItem('bookings', Icons.book_online_outlined, '/admin/reservations'),

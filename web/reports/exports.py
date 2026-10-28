@@ -14,6 +14,8 @@ from reportlab.lib.pagesizes import A4
 from core.security import get_user_property_profile_id
 from bookings.models import Booking, BookingType
 from settings_app.models import PropertyProfile
+from django.contrib.auth.decorators import login_required
+from core.permissions import require_roles, ROLES_REPORTS
 
 
 def _get_prop_id(request) -> int | None:
@@ -28,6 +30,8 @@ def _get_dates(request) -> tuple[date | None, date | None]:
     return d1, d2
 
 
+@login_required
+@require_roles(ROLES_REPORTS)
 def export_bookings_xlsx(request):
     prop_id = _get_prop_id(request)
     if not prop_id:
@@ -115,6 +119,8 @@ def export_bookings_xlsx(request):
     return resp
 
 
+@login_required
+@require_roles(ROLES_REPORTS)
 def export_bookings_pdf(request):
     prop_id = _get_prop_id(request)
     if not prop_id:
